@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "mycelium"
+version = "0.1.0"
+description = "Backend for Mycelium, handling data contracts and ingestion"
+authors = ["ThomasGraff <thomas.graff@servier.com>"]
+license = "AGPL-3.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.115.0"
+uvicorn = "^0.31.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

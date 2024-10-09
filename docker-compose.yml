@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend
+    ports:
+      - "8080:80"
+    networks:
+      - mycelium-network
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+    container_name: backend
+    ports:
+      - "8000:8000"
+    networks:
+      - mycelium-network
+    environment:
+      - DATABASE_URL=${DATABASE_URL}  # Example environment variable
+
+networks:
+  mycelium-network:
+    driver: bridge
