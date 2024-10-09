@@ -33,8 +33,8 @@
   
   <style scoped>
   .results {
-    margin-top: 80px; /* Ajustez cette valeur selon la hauteur de votre NavBar */
-    height: calc(100vh - 250px); /* Ajusté pour laisser de la place à la barre de recherche */
+    margin-top: 10px; /* Ajustez cette valeur selon la hauteur de votre NavBar */
+    height: calc(100vh - 180px); /* Ajusté pour laisser de la place à la barre de recherche */
     overflow-y: auto; /* Active le défilement vertical */
     padding: 20px;
     display: flex;
