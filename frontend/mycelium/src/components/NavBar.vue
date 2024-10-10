@@ -14,11 +14,11 @@
 <script>
 export default {
   methods: {
-    toggleMenu() {
+    toggleMenu () {
       // Logique pour afficher le menu (optionnel)
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style scoped>

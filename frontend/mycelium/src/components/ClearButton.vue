@@ -3,17 +3,17 @@
       Clear All
     </v-btn>
   </template>
-  
-  <script>
-  export default {
-    methods: {
-      clearResults() {
-        this.$emit('clear-results');
-      },
-    },
-  };
-  </script>
-  
+
+<script>
+export default {
+  methods: {
+    clearResults () {
+      this.$emit('clear-results')
+    }
+  }
+}
+</script>
+
   <style scoped>
   .clear-button {
     margin: 10px; /* Espace entre la NavBar et le bouton Clear All */
@@ -22,4 +22,3 @@
     right: 20px; /* Ajustez selon votre design */
   }
   </style>
-  
