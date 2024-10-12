@@ -2,9 +2,8 @@
   <v-app-bar app color="#212121">
     <div class="navbar-content">
       <img :src="require('@/assets/logo.png')" alt="Logo" class="logo" height="40" />
-      <v-toolbar-title class="title">Mycelium</v-toolbar-title>
+      <v-app-bar-title class="title">Mycelium</v-app-bar-title>
     </div>
-    <v-spacer></v-spacer>
     <v-btn icon @click="toggleMenu">
       <v-icon>mdi-menu</v-icon>
     </v-btn>

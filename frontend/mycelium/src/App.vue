@@ -1,61 +1,55 @@
 <template>
   <v-app>
-    <!-- NavBar -->
     <NavBar />
-
-    <!-- ClearButton en haut à droite -->
-    <ClearButton @clear-results="clearResults" />
-
-    <!-- Contenu principal -->
     <v-main>
-      <SearchBar @search="handleSearch" />
-      <ResultsList
-        :results="results"
-        @submit-form="submitForm"
-      />
+      <v-container>
+        <v-row :class="{ 'contract-open': showDataContract }" >
+          <!-- If NO datacontract -->
+          <v-col :cols="showDataContract ? 6 : 12" class="search-results-column">
+            <ChatColumn
+            @showDataContract="showDataContract = $event"
+            />
+          </v-col>
+          <!-- If YES datacontract -->
+          <v-col v-if="showDataContract" cols="6">
+            <DataContract />
+          </v-col>
+        </v-row>
+      </v-container>
     </v-main>
   </v-app>
 </template>
 
 <script>
 import NavBar from './components/NavBar.vue'
-import SearchBar from './components/SearchBar.vue'
-import ResultsList from './components/ResultsList.vue'
-import ClearButton from './components/ClearButton.vue' // Ajout du ClearButton
+import DataContract from './components/dataContract/DataContract.vue' // Import du composant DataContract
+import ChatColumn from './components/chat/ChatColumn.vue' // Import du nouveau composant ChatColumn
 
 export default {
   components: {
     NavBar,
-    SearchBar,
-    ResultsList,
-    ClearButton // Ajout du ClearButton dans les composants
+    DataContract, // Ajout du composant DataContract
+    ChatColumn // Ajout du composant ChatColumn
   },
   data () {
     return {
-      results: [] // Tableau pour stocker les résultats
+      showDataContract: false // Booléen pour contrôler l'affichage du Data Contract
     }
   },
   methods: {
-    handleSearch (query) {
-      if (query.toLowerCase() === 'new') {
-        this.results.push({ type: 'datacontract' }) // Ajoute un DataContract
-      } else {
-        this.results.push({ type: 'response', text: query }) // Ajoute une réponse
-      }
-    },
-    submitForm (index, updatedResult) {
-      // Mettez à jour le tableau de résultats avec le nouveau résultat
-      this.$set(this.results, index, updatedResult) // Utilisez $set pour une réactivité appropriée
-    },
-    clearResults () {
-      this.results = [] // Vide le tableau des résultats
-    }
+
   }
 }
 </script>
 
-<style>
-#app {
+<style scoped>
+/* Lorsque le DataContract est ouvert, décale à gauche */
+.contract-open .search-results-column {
+  text-align: left;
+}
+
+/* Centre le contenu quand aucun Data Contract n'est affiché */
+.search-results-column {
   text-align: center;
 }
 </style>
