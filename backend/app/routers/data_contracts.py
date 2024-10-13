@@ -8,6 +8,10 @@ from ..schemas.data_contract_create import (
     DataContractCreateResponse,
 )
 from ..schemas.data_contract_get import DataContractGetResponse
+from ..schemas.data_contract_update import (
+    DataContractUpdate,
+    DataContractUpdateResponse,
+)
 
 router = APIRouter()
 
@@ -129,4 +133,67 @@ async def get_data_contract(
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f" ❌ Failed to retrieve data contract: {str(e)}"
+        )
+
+
+@router.put(
+    "/{id}",
+    response_model=DataContractUpdateResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Update a data contract",
+    description="Updates an existing data contract in the database.",
+    response_description="Successfully updated data contract",
+    responses={
+        200: {
+            "content": {
+                "application/json": {
+                    "example": DataContractUpdateResponse.model_config["json_schema_extra"]["example"]
+                }
+            },
+        },
+        404: {
+            "description": "Data contract not found",
+            "content": {"application/json": {"example": {"detail": " ❌ Data contract not found"}}},
+        },
+        500: {
+            "description": "Internal server error",
+            "content": {
+                "application/json": {
+                    "example": {"detail": " ❌ Failed to update data contract: Internal server error"}
+                }
+            },
+        },
+    },
+    tags=["Data Contracts"],
+)
+async def update_data_contract(
+    id: str,
+    data_contract_update: DataContractUpdate,
+    db: Session = Depends(db_manager.get_db),
+) -> DataContractUpdateResponse:
+    """
+    Updates an existing data contract in the database.
+
+    This endpoint accepts a data contract ID and update information, attempts to update the corresponding
+    data contract in the database. If successful, it returns the updated contract.
+    If the contract is not found or an error occurs, it raises an appropriate HTTP exception.
+
+    :param str id: The unique identifier of the data contract to update.
+    :param DataContractUpdate data_contract_update: The update information for the data contract.
+    :param Session db: The database session, automatically provided by FastAPI's dependency injection.
+    :return DataContractUpdateResponse: A response containing a success message and the updated data contract.
+    :raises HTTPException:
+        - 404 Not Found: If the data contract with the given ID is not found.
+        - 500 Internal Server Error: If there's an unexpected error during contract update.
+    """
+    try:
+        updated_contract = data_contracts.update_data_contract(db, id, data_contract_update)
+        if updated_contract is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f" ❌ Data contract not found: {id}")
+        return DataContractUpdateResponse(message=" ✅ Data contract updated successfully", data=updated_contract)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f" ❌ Failed to update data contract: {str(e)}"
         )
