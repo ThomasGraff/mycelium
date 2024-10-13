@@ -7,7 +7,7 @@ from sqlalchemy.exc import OperationalError
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.orm import Session, declarative_base, sessionmaker
 
-from ..config import settings
+from ..utils.config import settings
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=settings.LOG_LEVEL, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")

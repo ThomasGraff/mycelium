@@ -6,8 +6,8 @@ from typing import List, Tuple
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .config import settings
 from .database.manager import db_manager
+from .utils.config import settings
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=settings.LOG_LEVEL, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")

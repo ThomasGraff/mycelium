@@ -7,6 +7,7 @@ from ..schemas.data_contract_create import (
     DataContractCreate,
     DataContractCreateResponse,
 )
+from ..schemas.data_contract_get import DataContractGetResponse
 
 router = APIRouter()
 
@@ -69,4 +70,63 @@ async def create_data_contract(
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f" ❌ Failed to create data contract: {str(e)}"
+        )
+
+
+@router.get(
+    "/{id}",
+    response_model=DataContractGetResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Get a data contract",
+    description="Retrieves a data contract from the database by its ID.",
+    response_description="Successfully retrieved data contract",
+    responses={
+        200: {
+            "content": {
+                "application/json": {"example": DataContractGetResponse.model_config["json_schema_extra"]["example"]}
+            },
+        },
+        404: {
+            "description": "Data contract not found",
+            "content": {"application/json": {"example": {"detail": " ❌ Data contract not found"}}},
+        },
+        500: {
+            "description": "Internal server error",
+            "content": {
+                "application/json": {
+                    "example": {"detail": " ❌ Failed to retrieve data contract: Internal server error"}
+                }
+            },
+        },
+    },
+    tags=["Data Contracts"],
+)
+async def get_data_contract(
+    id: str = "urn:datacontract:checkout:orders-latest",
+    db: Session = Depends(db_manager.get_db),
+) -> DataContractGetResponse:
+    """
+    Retrieves a data contract from the database by its ID.
+
+    This endpoint accepts a data contract ID, attempts to retrieve the corresponding
+    data contract from the database. If successful, it returns the retrieved contract.
+    If the contract is not found or an error occurs, it raises an appropriate HTTP exception.
+
+    :param str id: The unique identifier of the data contract to retrieve. Example: "urn:datacontract:checkout:orders-latest"
+    :param Session db: The database session, automatically provided by FastAPI's dependency injection.
+    :return DataContractGetResponse: A response containing a success message and the retrieved data contract.
+    :raises HTTPException:
+        - 404 Not Found: If the data contract with the given ID is not found.
+        - 500 Internal Server Error: If there's an unexpected error during contract retrieval.
+    """
+    try:
+        retrieved_contract = data_contracts.get_data_contract(db, id)
+        if retrieved_contract is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f" ❌ Data contract not found: {id}")
+        return DataContractGetResponse(message=" ✅ Data contract retrieved successfully", data=retrieved_contract)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f" ❌ Failed to retrieve data contract: {str(e)}"
         )

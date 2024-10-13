@@ -37,21 +37,3 @@ class DataContract(db_manager.Base):
         :return str: A string representation of the DataContract object.
         """
         return f"<DataContract(id='{self.id}', title='{self.info_title}', version='{self.info_version}')>"
-
-
-example = {
-    "id": "example-contract-001",
-    "data_contract_specification": "1.0.0",
-    "info_title": "Example Data Contract",
-    "info_version": "1.0.0",
-    "info_description": "This is an example data contract",
-    "info_owner": "Example Team",
-    "info_contact": {"name": "John Doe", "email": "john.doe@example.com"},
-    "servers": [{"url": "https://api.example.com/v1"}],
-    "terms": {"service": "https://example.com/terms"},
-    "models": {"User": {"type": "object", "properties": {"id": {"type": "integer"}, "name": {"type": "string"}}}},
-    "examples": [{"name": "Example 1", "value": {"id": 1, "name": "John Doe"}}],
-    "service_levels": {"availability": "99.9%", "latency": "100ms"},
-    "links": {"documentation": "https://docs.example.com"},
-    "tags": ["example", "data-contract"],
-}
