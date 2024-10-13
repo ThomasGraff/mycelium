@@ -1,5 +1,6 @@
 from pydantic import BaseModel, ConfigDict, Field
 
+from ..models.data_contracts import example as data_contract_example
 from .data_contracts import DataContract
 
 
@@ -24,10 +25,11 @@ class DataContractCreateResponse(BaseModel):
     data: DataContract = Field(..., description="The created data contract.")
 
     model_config = ConfigDict(
+        arbitrary_types_allowed=True,
         json_schema_extra={
             "example": {
                 "message": " ✅ Data contract created successfully",
-                "data": DataContract.model_config["json_schema_extra"]["example"],
+                "data": data_contract_example,
             }
-        }
+        },
     )

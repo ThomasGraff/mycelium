@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from ..crud import data_contracts
-from ..database import get_db
+from ..database.manager import db_manager
 from ..schemas.data_contract_create import (
     DataContractCreate,
     DataContractCreateResponse,
@@ -43,7 +43,7 @@ router = APIRouter()
 )
 async def create_data_contract(
     data_contract: DataContractCreate,
-    db: Session = Depends(get_db),
+    db: Session = Depends(db_manager.get_db),
 ) -> DataContractCreateResponse:
     """
     Creates a new data contract and stores it in the database.
