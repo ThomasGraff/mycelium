@@ -25,3 +25,6 @@ go.work.sum
 .env
 
 .devcontainer
+.venv
+mycelium.db
+__pycache__/
