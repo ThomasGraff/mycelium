@@ -21,7 +21,7 @@ class AppManager:
     def __init__(self):
         self.setup_database()
         self.app = FastAPI(
-            title="Data Contract Management API",
+            title="Mycelium API",
             description="An API for managing data contracts and related operations.",
             version="1.0.0",
         )
@@ -94,6 +94,9 @@ class AppManager:
                         routers.append((module.router, filename[:-3]))
             return routers
         except Exception as e:
+            import traceback
+
+            traceback.print_exc()
             logger.error(f" ❌ Error importing routers: {e}")
             return []
 

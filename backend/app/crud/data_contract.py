@@ -4,11 +4,11 @@ from typing import List, Optional
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
-from ..models.data_contracts import DataContract as DataContractModel
-from ..schemas.data_contract_create import DataContractCreate
-from ..schemas.data_contract_delete import DataContractDelete
-from ..schemas.data_contract_update import DataContractUpdate
-from ..schemas.data_contracts import DataContract
+from ..models.data_contract import DataContract as DataContractModel
+from ..schemas.crud.data_contract_create import DataContractCreate
+from ..schemas.crud.data_contract_delete import DataContractDelete
+from ..schemas.crud.data_contract_update import DataContractUpdate
+from ..schemas.data_contract.data_contract import DataContract
 from ..utils.config import settings
 from ..utils.tools import db_to_pydantic_model, pydantic_to_db_model
 

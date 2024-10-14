@@ -1,5 +1,5 @@
-from ..models.data_contracts import DataContract as DBDataContract
-from ..schemas.data_contracts import DataContract as PydanticDataContract
+from ..models.data_contract import DataContract as DBDataContract
+from ..schemas.data_contract.data_contract import DataContract as PydanticDataContract
 
 
 def pydantic_to_db_model(pydantic_model: PydanticDataContract) -> DBDataContract:

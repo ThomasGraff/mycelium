@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict, Field
 
-from .data_contracts import DataContract
+from ..data_contract.data_contract import DataContract
 
 
 class DataContractCreate(DataContract):

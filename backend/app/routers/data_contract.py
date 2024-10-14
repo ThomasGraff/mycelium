@@ -1,19 +1,25 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from ..crud import data_contracts
+from ..crud.data_contract import (
+    create_data_contract,
+    delete_data_contract,
+    get_data_contract,
+    list_data_contracts,
+    update_data_contract,
+)
 from ..database.manager import db_manager
-from ..schemas.data_contract_create import (
+from ..schemas.crud.data_contract_create import (
     DataContractCreate,
     DataContractCreateResponse,
 )
-from ..schemas.data_contract_delete import (
+from ..schemas.crud.data_contract_delete import (
     DataContractDelete,
     DataContractDeleteResponse,
 )
-from ..schemas.data_contract_get import DataContractGetResponse
-from ..schemas.data_contract_list import DataContractListResponse
-from ..schemas.data_contract_update import (
+from ..schemas.crud.data_contract_get import DataContractGetResponse
+from ..schemas.crud.data_contract_list import DataContractListResponse
+from ..schemas.crud.data_contract_update import (
     DataContractUpdate,
     DataContractUpdateResponse,
 )
@@ -51,7 +57,7 @@ router = APIRouter()
     },
     tags=["Data Contracts"],
 )
-async def create_data_contract(
+async def create_data_contract_route(
     data_contract: DataContractCreate,
     db: Session = Depends(db_manager.get_db),
 ) -> DataContractCreateResponse:
@@ -70,7 +76,7 @@ async def create_data_contract(
         - 500 Internal Server Error: If there's an unexpected error during contract creation.
     """
     try:
-        created_contract = data_contracts.create_data_contract(db, data_contract)
+        created_contract = create_data_contract(db, data_contract)
         return DataContractCreateResponse(message=" ✅ Data contract created successfully", data=created_contract)
     except ValueError as ve:
         raise HTTPException(
@@ -110,7 +116,7 @@ async def create_data_contract(
     },
     tags=["Data Contracts"],
 )
-async def get_data_contract(
+async def get_data_contract_route(
     id: str = "urn:datacontract:checkout:orders-latest",
     db: Session = Depends(db_manager.get_db),
 ) -> DataContractGetResponse:
@@ -129,7 +135,7 @@ async def get_data_contract(
         - 500 Internal Server Error: If there's an unexpected error during contract retrieval.
     """
     try:
-        retrieved_contract = data_contracts.get_data_contract(db, id)
+        retrieved_contract = get_data_contract(db, id)
         if retrieved_contract is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f" ❌ Data contract not found: {id}")
         return DataContractGetResponse(message=" ✅ Data contract retrieved successfully", data=retrieved_contract)
@@ -165,7 +171,7 @@ async def get_data_contract(
     },
     tags=["Data Contracts"],
 )
-async def list_data_contracts(db: Session = Depends(db_manager.get_db)) -> DataContractListResponse:
+async def list_data_contracts_route(db: Session = Depends(db_manager.get_db)) -> DataContractListResponse:
     """
     Retrieves all data contracts from the database.
 
@@ -179,7 +185,7 @@ async def list_data_contracts(db: Session = Depends(db_manager.get_db)) -> DataC
         - 500 Internal Server Error: If there's an unexpected error during contract retrieval.
     """
     try:
-        contracts = data_contracts.list_data_contracts(db)
+        contracts = list_data_contracts(db)
         return DataContractListResponse(message=" ✅ Data contracts retrieved successfully", data=contracts)
     except Exception as e:
         raise HTTPException(
@@ -218,7 +224,7 @@ async def list_data_contracts(db: Session = Depends(db_manager.get_db)) -> DataC
     },
     tags=["Data Contracts"],
 )
-async def update_data_contract(
+async def update_data_contract_route(
     id: str,
     data_contract_update: DataContractUpdate,
     db: Session = Depends(db_manager.get_db),
@@ -239,7 +245,7 @@ async def update_data_contract(
         - 500 Internal Server Error: If there's an unexpected error during contract update.
     """
     try:
-        updated_contract = data_contracts.update_data_contract(db, id, data_contract_update)
+        updated_contract = update_data_contract(db, id, data_contract_update)
         if updated_contract is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f" ❌ Data contract not found: {id}")
         return DataContractUpdateResponse(message=" ✅ Data contract updated successfully", data=updated_contract)
@@ -281,7 +287,7 @@ async def update_data_contract(
     },
     tags=["Data Contracts"],
 )
-async def delete_data_contract(
+async def delete_data_contract_route(
     id: str = "urn:datacontract:checkout:orders-latest",
     db: Session = Depends(db_manager.get_db),
 ) -> DataContractDeleteResponse:
@@ -301,7 +307,7 @@ async def delete_data_contract(
     """
     try:
         data_contract_delete = DataContractDelete(id=id)
-        deleted_contract = data_contracts.delete_data_contract(db, data_contract_delete)
+        deleted_contract = delete_data_contract(db, data_contract_delete)
         if deleted_contract is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f" ❌ Data contract not found: {id}")
         return DataContractDeleteResponse(message=" ✅ Data contract deleted successfully", data=deleted_contract)
