@@ -1,11 +1,12 @@
 import logging
-from typing import Optional
+from typing import List, Optional
 
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from ..models.data_contracts import DataContract as DataContractModel
 from ..schemas.data_contract_create import DataContractCreate
+from ..schemas.data_contract_delete import DataContractDelete
 from ..schemas.data_contract_update import DataContractUpdate
 from ..schemas.data_contracts import DataContract
 from ..utils.config import settings
@@ -53,7 +54,7 @@ def get_data_contract(db: Session, id: str) -> Optional[DataContract]:
     :raises Exception: If there's any other unexpected error.
     """
     try:
-        db_data_contract = db.query(DataContractModel).filter(DataContractModel.id == id).first()
+        db_data_contract = db.query(DataContractModel).filter_by(id=id).first()
         if db_data_contract is None:
             logger.warning(f" ⚠️ Data contract not found: {id}")
             return None
@@ -80,16 +81,16 @@ def update_data_contract(db: Session, id: str, data_contract_update: DataContrac
     :raises Exception: If there's any other unexpected error.
     """
     try:
-        db_data_contract = db.query(DataContractModel).filter(DataContractModel.id == id).first()
+        updated_data_contract = DataContract.model_validate(data_contract_update.model_dump(exclude_unset=True))
+        updated_data_contract_db = pydantic_to_db_model(updated_data_contract)
+
+        db_data_contract = db.query(DataContractModel).filter_by(id=id).first()
         if db_data_contract is None:
             logger.warning(f" ⚠️ Data contract not found for update: {id}")
             return None
 
-        updated_data_contract = DataContract.model_validate(data_contract_update.model_dump(exclude_unset=True))
-        updated_data_contract_db = pydantic_to_db_model(updated_data_contract)
-
         for key, value in updated_data_contract_db.__dict__.items():
-            if hasattr(db_data_contract, key):
+            if hasattr(db_data_contract, key) and key[0] != "_":
                 setattr(db_data_contract, key, value)
             else:
                 logger.warning(f" ⚠️ Attribute {key} not found in DataContractModel")
@@ -102,4 +103,56 @@ def update_data_contract(db: Session, id: str, data_contract_update: DataContrac
         raise
     except Exception as e:
         logger.error(f" ❌ Unexpected error occurred while updating data contract: {str(e)}")
+        raise
+
+
+def list_data_contracts(db: Session) -> List[DataContract]:
+    """
+    Retrieves all data contracts from the database.
+
+    :param Session db: The database session.
+    :return List[DataContract]: A list of all data contracts.
+    :raises SQLAlchemyError: If there's an error during database operations.
+    :raises Exception: If there's any other unexpected error.
+    """
+    try:
+        db_data_contracts = db.query(DataContractModel).all()
+        data_contracts = [db_to_pydantic_model(db_contract) for db_contract in db_data_contracts]
+        logger.info(f" ✅ Retrieved {len(data_contracts)} data contracts successfully")
+        return data_contracts
+    except SQLAlchemyError as e:
+        logger.error(f" ❌ Failed to retrieve data contracts: {str(e)}")
+        raise
+    except Exception as e:
+        logger.error(f" ❌ Unexpected error occurred while retrieving data contracts: {str(e)}")
+        raise
+
+
+def delete_data_contract(db: Session, data_contract_delete: DataContractDelete) -> Optional[DataContract]:
+    """
+    Deletes a data contract from the database.
+
+    :param Session db: The database session.
+    :param DataContractDelete data_contract_delete: The data contract to be deleted.
+    :return Optional[DataContract]: The deleted data contract, or None if not found.
+    :raises SQLAlchemyError: If there's an error during database operations.
+    :raises Exception: If there's any other unexpected error.
+    """
+    try:
+        db_data_contract = db.query(DataContractModel).filter_by(id=data_contract_delete.id).first()
+        if db_data_contract is None:
+            logger.warning(f" ⚠️ Data contract not found for deletion: {data_contract_delete.id}")
+            return None
+
+        deleted_data_contract = db_to_pydantic_model(db_data_contract)
+        db.delete(db_data_contract)
+        db.commit()
+        logger.info(f" ✅ Data contract deleted successfully: {data_contract_delete.id}")
+        return deleted_data_contract
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.error(f" ❌ Failed to delete data contract: {str(e)}")
+        raise
+    except Exception as e:
+        logger.error(f" ❌ Unexpected error occurred while deleting data contract: {str(e)}")
         raise

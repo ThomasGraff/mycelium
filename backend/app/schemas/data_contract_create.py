@@ -15,9 +15,6 @@ class DataContractCreate(DataContract):
 class DataContractCreateResponse(BaseModel):
     """
     Represents the response for a successful data contract creation.
-
-    :param str message: A success message indicating the data contract was created.
-    :param DataContract data: The created data contract.
     """
 
     message: str = Field(..., description="A success message indicating the data contract was created.")

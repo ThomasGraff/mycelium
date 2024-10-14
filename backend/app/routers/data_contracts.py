@@ -7,7 +7,12 @@ from ..schemas.data_contract_create import (
     DataContractCreate,
     DataContractCreateResponse,
 )
+from ..schemas.data_contract_delete import (
+    DataContractDelete,
+    DataContractDeleteResponse,
+)
 from ..schemas.data_contract_get import DataContractGetResponse
+from ..schemas.data_contract_list import DataContractListResponse
 from ..schemas.data_contract_update import (
     DataContractUpdate,
     DataContractUpdateResponse,
@@ -136,6 +141,53 @@ async def get_data_contract(
         )
 
 
+@router.get(
+    "/",
+    response_model=DataContractListResponse,
+    status_code=status.HTTP_200_OK,
+    summary="List all data contracts",
+    description="Retrieves all data contracts from the database.",
+    response_description="Successfully retrieved data contracts",
+    responses={
+        200: {
+            "content": {
+                "application/json": {"example": DataContractListResponse.model_config["json_schema_extra"]["example"]}
+            },
+        },
+        500: {
+            "description": "Internal server error",
+            "content": {
+                "application/json": {
+                    "example": {"detail": " ❌ Failed to retrieve data contracts: Internal server error"}
+                }
+            },
+        },
+    },
+    tags=["Data Contracts"],
+)
+async def list_data_contracts(db: Session = Depends(db_manager.get_db)) -> DataContractListResponse:
+    """
+    Retrieves all data contracts from the database.
+
+    This endpoint attempts to retrieve all data contracts from the database.
+    If successful, it returns a list of all contracts.
+    If an error occurs during the process, it raises an appropriate HTTP exception.
+
+    :param Session db: The database session, automatically provided by FastAPI's dependency injection.
+    :return DataContractListResponse: A response containing a success message and the list of data contracts.
+    :raises HTTPException:
+        - 500 Internal Server Error: If there's an unexpected error during contract retrieval.
+    """
+    try:
+        contracts = data_contracts.list_data_contracts(db)
+        return DataContractListResponse(message=" ✅ Data contracts retrieved successfully", data=contracts)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f" ❌ Failed to retrieve data contracts: {str(e)}",
+        )
+
+
 @router.put(
     "/{id}",
     response_model=DataContractUpdateResponse,
@@ -196,4 +248,66 @@ async def update_data_contract(
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f" ❌ Failed to update data contract: {str(e)}"
+        )
+
+
+@router.delete(
+    "/{id}",
+    response_model=DataContractDeleteResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Delete a data contract",
+    description="Deletes an existing data contract from the database.",
+    response_description="Successfully deleted data contract",
+    responses={
+        200: {
+            "content": {
+                "application/json": {
+                    "example": DataContractDeleteResponse.model_config["json_schema_extra"]["example"]
+                }
+            },
+        },
+        404: {
+            "description": "Data contract not found",
+            "content": {"application/json": {"example": {"detail": " ❌ Data contract not found"}}},
+        },
+        500: {
+            "description": "Internal server error",
+            "content": {
+                "application/json": {
+                    "example": {"detail": " ❌ Failed to delete data contract: Internal server error"}
+                }
+            },
+        },
+    },
+    tags=["Data Contracts"],
+)
+async def delete_data_contract(
+    id: str = "urn:datacontract:checkout:orders-latest",
+    db: Session = Depends(db_manager.get_db),
+) -> DataContractDeleteResponse:
+    """
+    Deletes an existing data contract from the database.
+
+    This endpoint accepts a data contract ID, attempts to delete the corresponding
+    data contract from the database. If successful, it returns the deleted contract.
+    If the contract is not found or an error occurs, it raises an appropriate HTTP exception.
+
+    :param str id: The unique identifier of the data contract to delete.
+    :param Session db: The database session, automatically provided by FastAPI's dependency injection.
+    :return DataContractDeleteResponse: A response containing a success message and the deleted data contract.
+    :raises HTTPException:
+        - 404 Not Found: If the data contract with the given ID is not found.
+        - 500 Internal Server Error: If there's an unexpected error during contract deletion.
+    """
+    try:
+        data_contract_delete = DataContractDelete(id=id)
+        deleted_contract = data_contracts.delete_data_contract(db, data_contract_delete)
+        if deleted_contract is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f" ❌ Data contract not found: {id}")
+        return DataContractDeleteResponse(message=" ✅ Data contract deleted successfully", data=deleted_contract)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f" ❌ Failed to delete data contract: {str(e)}"
         )
