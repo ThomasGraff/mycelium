@@ -1,70 +1,69 @@
 <template>
-  <v-card>
+  <v-card class="position-relative" >
+    <CloseButton @closeObject="handleCloseObject" />
+    <!-- Onglets -->
     <v-tabs v-model="activeTab" background-color="primary">
-      <v-tab>Information</v-tab>
-      <v-tab>Servers</v-tab>
-      <v-tab>Models</v-tab>
-      <v-tab>Links</v-tab>
-      <v-tab>Tags</v-tab>
+      <v-tab value="0">Information</v-tab>
+      <v-tab value="1">Servers</v-tab>
+      <v-tab value="2">Models</v-tab>
+      <v-tab value="3">Links</v-tab>
+      <v-tab value="4">Tags</v-tab>
     </v-tabs>
 
-    <v-tabs-items v-model="activeTab">
+    <!-- Contenu des onglets -->
+    <v-tabs-window v-model="activeTab" class="overflow">
       <!-- Onglet Information -->
-      <v-tab-item>
-        <v-card flat>
-          <v-form ref="infoForm" v-model="valid">
-            <v-text-field v-model="dataContract.title" label="Title" required></v-text-field>
-            <v-text-field v-model="dataContract.version" label="Version" required></v-text-field>
-            <v-textarea v-model="dataContract.description" label="Description" required></v-textarea>
-            <v-text-field v-model="dataContract.owner" label="Owner" required></v-text-field>
-            <v-text-field v-model="dataContract.contactName" label="Contact Name" required></v-text-field>
-            <v-text-field v-model="dataContract.contactEmail" label="Contact Email" required></v-text-field>
-            <v-text-field v-model="dataContract.contactUrl" label="Contact URL"></v-text-field>
-            <v-text-field v-model="dataContract.businessUnit" label="Business Unit" required></v-text-field>
-          </v-form>
-        </v-card>
-      </v-tab-item>
+      <v-tabs-window-item value="0">
+        <InformationTab />
+      </v-tabs-window-item>
 
-      <!-- Les autres onglets seront remplis plus tard -->
-      <v-tab-item>
-        <v-card flat>.</v-card>
-      </v-tab-item>
+      <!-- Onglet Servers -->
+      <v-tabs-window-item value="1">
+        <ServerTab />
+      </v-tabs-window-item>
 
-      <v-tab-item>
+      <!-- Onglets restants (pour plus tard) -->
+      <v-tabs-window-item value="2">
         <v-card flat></v-card>
-      </v-tab-item>
+      </v-tabs-window-item>
 
-      <v-tab-item>
+      <v-tabs-window-item value="3">
         <v-card flat></v-card>
-      </v-tab-item>
+      </v-tabs-window-item>
 
-      <v-tab-item>
+      <v-tabs-window-item value="4">
         <v-card flat></v-card>
-      </v-tab-item>
-    </v-tabs-items>
+      </v-tabs-window-item>
+
+      <v-tabs-window-item value="5">
+        <v-card flat></v-card>
+      </v-tabs-window-item>
+    </v-tabs-window>
   </v-card>
 </template>
 
 <script>
+import InformationTab from './components/InformationTab.vue'
+import ServerTab from './components/ServerTab.vue'
+import CloseButton from './components/CloseButton.vue'
+
 export default {
+  components: {
+    InformationTab,
+    ServerTab,
+    CloseButton
+  },
   data () {
     return {
-      activeTab: 0, // Onglet actif (commence par Information)
-      valid: false, // Validation du formulaire
-      dataContract: {
-        title: '',
-        version: '',
-        description: '',
-        owner: '',
-        contactName: '',
-        contactEmail: '',
-        contactUrl: '',
-        businessUnit: ''
-      }
+      activeTab: 0, // Onglet actif, par défaut "Information"
+      valid: false // Validation des formulaires
     }
   },
   methods: {
-    // Vous pourrez ajouter ici des méthodes pour valider et soumettre le data contract
+    handleCloseObject () {
+      // Accède à l'instance du composant ResultsList et appelle sa méthode clearResults
+      this.$emit('showDataContract', false)
+    }
   }
 }
 </script>
@@ -73,5 +72,14 @@ export default {
 .v-card {
   margin-top: 20px;
   padding: 20px;
+  flex: 1; /* Remplit l'espace disponible */
+  display: flex;
+  flex-direction: column;
 }
+
+.overflow {
+  max-height: calc(100vh - 200px); /* Ajustez cette valeur selon votre besoin */
+  overflow: auto;
+}
+
 </style>

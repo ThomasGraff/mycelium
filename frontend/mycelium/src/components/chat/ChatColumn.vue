@@ -3,10 +3,10 @@
       <!-- Barre de recherche -->
        <v-container class="main-container">
         <v-row>
-            <!-- ClearButton en haut à droite -->
-            <ClearButton @clear-results="handleClearResults" />
+          <v-col >
             <!-- Résultats de la recherche -->
             <ResultsList ref="resultsList" />
+          </v-col>
         </v-row>
     </v-container>
     <v-container >
@@ -19,22 +19,16 @@
     </div>
   </template>
 <script>
-import SearchBar from './SearchBar.vue'
-import ResultsList from './ResultsList.vue'
-import ClearButton from './ClearButton.vue'
+import SearchBar from './components/SearchBar.vue'
+import ResultsList from './components/ResultsList.vue'
 
 export default {
   components: {
     SearchBar,
-    ResultsList,
-    ClearButton
+    ResultsList
   },
 
   methods: {
-    handleClearResults () {
-      // Accède à l'instance du composant ResultsList et appelle sa méthode clearResults
-      this.$refs.resultsList.clearResults()
-    },
     handleSearch (search) {
       if (search.toLowerCase() === 'new') {
         this.$emit('showDataContract', true)
@@ -52,7 +46,7 @@ export default {
 .chat-column {
   display: flex;
   flex-direction: column;
-  height: 88vh; /* Prend la hauteur de la fenêtre */
+  height: 98vh; /* Prend la hauteur de la fenêtre */
 }
 
 .main-container {

@@ -1,8 +1,8 @@
 <template>
   <v-app>
     <NavBar />
-    <v-main>
-      <v-container>
+    <v-main >
+      <v-container color="#2f2f2f">
         <v-row :class="{ 'contract-open': showDataContract }" >
           <!-- If NO datacontract -->
           <v-col :cols="showDataContract ? 6 : 12" class="search-results-column">
@@ -12,7 +12,9 @@
           </v-col>
           <!-- If YES datacontract -->
           <v-col v-if="showDataContract" cols="6">
-            <DataContract />
+            <DataContract
+            @showDataContract="showDataContract = $event"
+            />
           </v-col>
         </v-row>
       </v-container>
@@ -21,7 +23,7 @@
 </template>
 
 <script>
-import NavBar from './components/NavBar.vue'
+import NavBar from './components/navigation/NavBar.vue'
 import DataContract from './components/dataContract/DataContract.vue' // Import du composant DataContract
 import ChatColumn from './components/chat/ChatColumn.vue' // Import du nouveau composant ChatColumn
 

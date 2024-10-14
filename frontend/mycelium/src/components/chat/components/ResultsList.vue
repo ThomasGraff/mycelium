@@ -39,6 +39,6 @@ export default {
   flex: 1;
   display: flex; /* Utiliser flexbox */
   flex-direction: column-reverse; /* Positionner les éléments du bas vers le haut */
-  max-height: 69vh;
+  max-height: 76vh;
 }
 </style>
