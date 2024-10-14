@@ -21,7 +21,7 @@ jobs:
 
       - name: Build frontend Docker image
         run: |
-          docker build -t mon-frontend ./frontend
+          docker build -t mon-frontend ./frontend/mycelium
 
       - name: Run tests (optionnel)
         working-directory: ./frontend
