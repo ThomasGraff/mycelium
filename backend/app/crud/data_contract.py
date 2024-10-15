@@ -28,6 +28,7 @@ def create_data_contract(db: Session, data_contract: DataContractCreate) -> Data
     """
     try:
         created_data_contract = DataContract.model_validate(data_contract.model_dump())
+        print(created_data_contract)
         db_data_contract = pydantic_to_db_model(created_data_contract)
         db.add(db_data_contract)
         db.commit()

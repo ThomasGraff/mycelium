@@ -44,42 +44,42 @@ class DataContract(BaseModel):
     info: InfoObject = Field(
         ...,
         description="REQUIRED. Specifies the metadata of the data contract.",
-        example=InfoObject.model_config.json_schema_extra["example"],
+        example=InfoObject.model_config["json_schema_extra"]["example"],
     )
     servers: Optional[Dict[str, ServerObject]] = Field(
         None,
         description="Specifies the servers of the data contract.",
-        example={"production": ServerObject.model_config.json_schema_extra["example"]},
+        example={"production": ServerObject.model_config["json_schema_extra"]["example"]},
     )
     terms: Optional[TermsObject] = Field(
         None,
         description="Specifies the terms and conditions of the data contract.",
-        example=TermsObject.model_config.json_schema_extra["example"],
+        example=TermsObject.model_config["json_schema_extra"]["example"],
     )
     models: Optional[Dict[str, ModelObject]] = Field(
         None,
         description="Specifies the logical data model.",
-        example={"orders": ModelObject.model_config.json_schema_extra["example"]},
+        example={"orders": ModelObject.model_config["json_schema_extra"]["example"]},
     )
     definitions: Optional[Dict[str, DefinitionObject]] = Field(
         None,
         description="Specifies definitions.",
-        example={"order_id": DefinitionObject.model_config.json_schema_extra["example"]},
+        example={"order_id": DefinitionObject.model_config["json_schema_extra"]["example"]},
     )
     examples: Optional[List[ExampleObject]] = Field(
         None,
         description="Specifies example data sets for the data model.",
-        example=[ExampleObject.model_config.json_schema_extra["example"]],
+        example=[ExampleObject.model_config["json_schema_extra"]["example"]],
     )
     service_levels: Optional[ServiceLevelsObject] = Field(
         None,
         description="Specifies the service level of the provided data.",
-        example=ServiceLevelsObject.model_config.json_schema_extra["example"],
+        example=ServiceLevelsObject.model_config["json_schema_extra"]["example"],
     )
     quality: Optional[QualityObject] = Field(
         None,
         description="Specifies the quality attributes and checks.",
-        example=QualityObject.model_config.json_schema_extra["example"],
+        example=QualityObject.model_config["json_schema_extra"]["example"],
     )
     links: Optional[Dict[str, HttpUrl]] = Field(
         None,
@@ -98,16 +98,16 @@ class DataContract(BaseModel):
             "example": {
                 "dataContractSpecification": "0.9.3",
                 "id": "urn:datacontract:checkout:orders-latest",
-                "info": InfoObject.model_config.json_schema_extra["example"],
+                "info": InfoObject.model_config["json_schema_extra"]["example"],
                 "tags": ["checkout", "orders", "s3"],
                 "links": {"datacontractCli": "https://cli.datacontract.com"},
-                "servers": {"production": ServerObject.model_config.json_schema_extra["example"]},
-                "terms": TermsObject.model_config.json_schema_extra["example"],
-                "models": {"orders": ModelObject.model_config.json_schema_extra["example"]},
-                "definitions": {"order_id": DefinitionObject.model_config.json_schema_extra["example"]},
-                "examples": [ExampleObject.model_config.json_schema_extra["example"]],
-                "servicelevels": ServiceLevelsObject.model_config.json_schema_extra["example"],
-                "quality": QualityObject.model_config.json_schema_extra["example"],
+                "servers": {"production": ServerObject.model_config["json_schema_extra"]["example"]},
+                "terms": TermsObject.model_config["json_schema_extra"]["example"],
+                "models": {"orders": ModelObject.model_config["json_schema_extra"]["example"]},
+                "definitions": {"order_id": DefinitionObject.model_config["json_schema_extra"]["example"]},
+                "examples": [ExampleObject.model_config["json_schema_extra"]["example"]],
+                "servicelevels": ServiceLevelsObject.model_config["json_schema_extra"]["example"],
+                "quality": QualityObject.model_config["json_schema_extra"]["example"],
             }
         },
     )

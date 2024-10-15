@@ -18,16 +18,14 @@ class DataContract(db_manager.Base):
 
     id: Mapped[str] = mapped_column(String, primary_key=True, index=True)
     data_contract_specification: Mapped[str] = mapped_column(String, nullable=False)
-    info_title: Mapped[str] = mapped_column(String, nullable=False)
-    info_version: Mapped[str] = mapped_column(String, nullable=False)
-    info_description: Mapped[Optional[str]] = mapped_column(String)
-    info_owner: Mapped[Optional[str]] = mapped_column(String)
-    info_contact: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSON)
-    servers: Mapped[Optional[List[Dict[str, Any]]]] = mapped_column(JSON)
+    info: Mapped[Dict[str, Any]] = mapped_column(JSON, nullable=False)
+    servers: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSON)
     terms: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSON)
-    models: Mapped[Dict[str, Any]] = mapped_column(JSON)
+    models: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSON)
+    definitions: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSON)
     examples: Mapped[Optional[List[Dict[str, Any]]]] = mapped_column(JSON)
     service_levels: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSON)
+    quality: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSON)
     links: Mapped[Optional[Dict[str, str]]] = mapped_column(JSON)
     tags: Mapped[Optional[List[str]]] = mapped_column(JSON)
 
@@ -36,4 +34,4 @@ class DataContract(db_manager.Base):
         Returns a string representation of the DataContract object.
         :return str: A string representation of the DataContract object.
         """
-        return f"<DataContract(id='{self.id}', title='{self.info_title}', version='{self.info_version}')>"
+        return f"<DataContract(id='{self.id}', title='{self.info.get('title', '')}', version='{self.info.get('version', '')}')>"

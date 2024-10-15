@@ -47,7 +47,7 @@ class InfoObject(BaseModel):
                     "status": "active",
                     "description": "This data contract defines the structure and rules for customer order data.",
                     "owner": "Customer Data Team",
-                    "contact": ContactObject.model_config.json_schema_extra["example"],
+                    "contact": ContactObject.model_config["json_schema_extra"]["example"],
                 }
             }
         }

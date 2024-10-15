@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Literal, Union
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -8,9 +8,8 @@ class SodaCLQualityObject(BaseModel):
     Represents quality attributes in Soda Checks Language.
     """
 
-    type: str = Field(
+    type: Literal["SodaCL"] = Field(
         "SodaCL",
-        const=True,
         description="The type of the schema, always 'SodaCL'.",
         example="SodaCL",
     )
@@ -47,8 +46,8 @@ class MonteCarloQualityObject(BaseModel):
     Represents quality attributes defined as Monte Carlo's Monitors as Code.
     """
 
-    type: str = Field(
-        "montecarlo", const=True, description="The type of the schema, always 'montecarlo'.", example="montecarlo"
+    type: Literal["montecarlo"] = Field(
+        "montecarlo", description="The type of the schema, always 'montecarlo'.", example="montecarlo"
     )
     specification: str = Field(
         ...,
@@ -89,9 +88,8 @@ class GreatExpectationsQualityObject(BaseModel):
     Represents quality attributes defined as Great Expectations Expectations.
     """
 
-    type: str = Field(
+    type: Literal["great-expectations"] = Field(
         "great-expectations",
-        const=True,
         description="The type of the schema, always 'great-expectations'.",
         example="great-expectations",
     )
@@ -140,9 +138,8 @@ class CustomQualityObject(BaseModel):
     Represents custom quality attributes.
     """
 
-    type: str = Field(
+    type: Literal["custom"] = Field(
         "custom",
-        const=True,
         description="The type of the schema, always 'custom'.",
         example="custom",
     )
@@ -174,14 +171,14 @@ class QualityObject(BaseModel):
     ] = Field(
         ...,
         description="REQUIRED. The specification of the quality attributes.",
-        example=SodaCLQualityObject.model_config.json_schema_extra["example"],
+        example=SodaCLQualityObject.model_config["json_schema_extra"]["example"],
     )
 
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
                 "type": "SodaCL",
-                "specification": SodaCLQualityObject.model_config.json_schema_extra["example"],
+                "specification": SodaCLQualityObject.model_config["json_schema_extra"]["example"],
             }
         }
     )

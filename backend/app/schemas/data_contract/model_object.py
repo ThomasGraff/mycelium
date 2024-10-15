@@ -97,7 +97,7 @@ class ModelObject(BaseModel):
                         },
                     },
                 },
-                "config": ConfigObject.model_config.json_schema_extra["example"],
+                "config": ConfigObject.model_config["json_schema_extra"]["example"],
             }
         }
     )

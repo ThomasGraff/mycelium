@@ -55,7 +55,7 @@ router = APIRouter()
             },
         },
     },
-    tags=["Data Contracts"],
+    tags=["Data Contract"],
 )
 async def create_data_contract_route(
     data_contract: DataContractCreate,
@@ -114,7 +114,7 @@ async def create_data_contract_route(
             },
         },
     },
-    tags=["Data Contracts"],
+    tags=["Data Contract"],
 )
 async def get_data_contract_route(
     id: str = "urn:datacontract:checkout:orders-latest",
@@ -169,7 +169,7 @@ async def get_data_contract_route(
             },
         },
     },
-    tags=["Data Contracts"],
+    tags=["Data Contract"],
 )
 async def list_data_contracts_route(db: Session = Depends(db_manager.get_db)) -> DataContractListResponse:
     """
@@ -222,7 +222,7 @@ async def list_data_contracts_route(db: Session = Depends(db_manager.get_db)) ->
             },
         },
     },
-    tags=["Data Contracts"],
+    tags=["Data Contract"],
 )
 async def update_data_contract_route(
     id: str,
@@ -285,7 +285,7 @@ async def update_data_contract_route(
             },
         },
     },
-    tags=["Data Contracts"],
+    tags=["Data Contract"],
 )
 async def delete_data_contract_route(
     id: str = "urn:datacontract:checkout:orders-latest",
