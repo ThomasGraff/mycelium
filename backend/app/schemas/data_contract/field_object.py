@@ -148,18 +148,25 @@ class FieldObject(BaseModel):
         None,
         description="The nested fields of the object, record, or struct. "
         "Use only when type is object, record, or struct.",
+        example={
+            "street": {"type": "string", "description": "Street name"},
+            "number": {"type": "integer", "description": "House number"},
+        },
     )
     items: Optional["FieldObject"] = Field(
         None,
         description="The type of the elements in the array. Use only when type is array.",
+        example={"type": "string", "description": "Product SKU"},
     )
     keys: Optional["FieldObject"] = Field(
         None,
         description="Describes the key structure of a map. Use only when type is map.",
+        example={"type": "string", "description": "Country code"},
     )
     values: Optional["FieldObject"] = Field(
         None,
         description="Describes the value structure of a map. Use only when type is map.",
+        example={"type": "string", "description": "Country name"},
     )
     config: Optional[ConfigObject] = Field(
         None,

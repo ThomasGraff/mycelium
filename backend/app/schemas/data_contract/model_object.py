@@ -33,10 +33,28 @@ class ModelObject(BaseModel):
     fields: Dict[str, FieldObject] = Field(
         ...,
         description="The fields (e.g. columns) of the data model.",
+        example={
+            "order_id": FieldObject(
+                description="Unique identifier for the order",
+                type="string",
+                format="uuid",
+                required=True,
+                unique=True,
+                primary=True,
+                example="243c25e5-a081-43a9-aeab-6d5d5b6cb5e2",
+            ),
+            "order_timestamp": FieldObject(
+                description="Timestamp of the order",
+                type="timestamp",
+                required=True,
+                example="2024-09-09T08:30:00Z",
+            ),
+        },
     )
     config: Optional[ConfigObject] = Field(
         None,
         description="Any additional key-value pairs that might be useful for further tooling.",
+        example={"partition_key": "order_timestamp", "clustering_key": "order_id"},
     )
 
     model_config = ConfigDict(

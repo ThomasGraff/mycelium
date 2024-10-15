@@ -14,7 +14,9 @@ class InfoObject(BaseModel):
     """
 
     title: str = Field(
-        ..., description="REQUIRED. The title of the data contract.", example="Customer Orders Data Contract"
+        ...,
+        description="REQUIRED. The title of the data contract.",
+        example="Customer Orders Data Contract",
     )
     version: str = Field(
         ...,

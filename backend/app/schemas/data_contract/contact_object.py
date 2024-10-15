@@ -12,7 +12,9 @@ class ContactObject(BaseModel):
     """
 
     name: Optional[str] = Field(
-        None, description="The identifying name of the contact person/organization.", example="John Doe"
+        None,
+        description="The identifying name of the contact person/organization.",
+        example="John Doe",
     )
     url: Optional[HttpUrl] = Field(
         None,

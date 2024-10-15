@@ -15,19 +15,6 @@ from .term_object import TermsObject
 class DataContract(BaseModel):
     """
     Represents a Data Contract following the specifications from datacontract.com.
-
-    :param str data_contract_specification: REQUIRED. Specifies the Data Contract Specification being used.
-    :param str id: REQUIRED. An organization-wide unique technical identifier.
-    :param InfoObject info: REQUIRED. Specifies the metadata of the data contract.
-    :param Dict[str, ServerObject] servers: Specifies the servers of the data contract.
-    :param TermsObject terms: Specifies the terms and conditions of the data contract.
-    :param Dict[str, ModelObject] models: Specifies the logical data model.
-    :param Dict[str, DefinitionObject] definitions: Specifies definitions.
-    :param List[ExampleObject] examples: Specifies example data sets for the data model.
-    :param ServiceLevelsObject service_levels: Specifies the service level of the provided data.
-    :param QualityObject quality: Specifies the quality attributes and checks.
-    :param Dict[str, HttpUrl] links: Additional external documentation links.
-    :param List[str] tags: Custom metadata to provide additional context.
     """
 
     data_contract_specification: str = Field(

@@ -14,12 +14,22 @@ class DefinitionObject(BaseModel):
     including its name, type, domain, and various other attributes.
     """
 
-    name: str = Field(..., description="REQUIRED. The technical name of this definition.", example="order_id")
+    name: str = Field(
+        ...,
+        description="REQUIRED. The technical name of this definition.",
+        example="order_id",
+    )
     type: DataType = Field(..., description="REQUIRED. The logical data type.", example="text")
     domain: Optional[str] = Field(
-        "global", description="The domain in which this definition is valid. Default: global.", example="checkout"
+        "global",
+        description="The domain in which this definition is valid. Default: global.",
+        example="checkout",
     )
-    title: Optional[str] = Field(None, description="The business name of this definition.", example="Order ID")
+    title: Optional[str] = Field(
+        None,
+        description="The business name of this definition.",
+        example="Order ID",
+    )
     description: Optional[str] = Field(
         None,
         description="Clear and concise explanations related to the domain.",
@@ -32,13 +42,19 @@ class DefinitionObject(BaseModel):
         example=["PENDING", "PROCESSING", "SHIPPED", "DELIVERED"],
     )
     format: Optional[str] = Field(
-        None, description="Specifies the format of the field (e.g., email, uri, uuid).", example="uuid"
+        None,
+        description="Specifies the format of the field (e.g., email, uri, uuid).",
+        example="uuid",
     )
     precision: Optional[int] = Field(
-        38, description="The maximum number of digits in a number. Only applies to numeric values.", example=10
+        38,
+        description="The maximum number of digits in a number. Only applies to numeric values.",
+        example=10,
     )
     scale: Optional[int] = Field(
-        0, description="The maximum number of decimal places in a number. Only applies to numeric values.", example=2
+        0,
+        description="The maximum number of decimal places in a number. Only applies to numeric values.",
+        example=2,
     )
     minLength: Optional[int] = Field(
         None,
@@ -81,7 +97,9 @@ class DefinitionObject(BaseModel):
         example=1000000,
     )
     example: Optional[Any] = Field(
-        None, description="An example value.", example="243c25e5-a081-43a9-aeab-6d5d5b6cb5e2"
+        None,
+        description="An example value.",
+        example="243c25e5-a081-43a9-aeab-6d5d5b6cb5e2",
     )
     pii: Optional[bool] = Field(
         None,
@@ -95,7 +113,9 @@ class DefinitionObject(BaseModel):
         example="restricted",
     )
     tags: Optional[List[str]] = Field(
-        None, description="Custom metadata to provide additional context.", example=["orders", "checkout"]
+        None,
+        description="Custom metadata to provide additional context.",
+        example=["orders", "checkout"],
     )
     links: Optional[Dict[str, HttpUrl]] = Field(
         None,
