@@ -72,13 +72,13 @@ class FieldObject(BaseModel):
         description="The maximum number of decimal places in a number. Only applies to numeric values.",
         example=2,
     )
-    minLength: Optional[int] = Field(
+    min_length: Optional[int] = Field(
         None,
         description="A value must be greater than, or equal to, the value of this. "
         "Only applies to unicode character sequences types.",
         example=10,
     )
-    maxLength: Optional[int] = Field(
+    max_length: Optional[int] = Field(
         None,
         description="A value must be less than, or equal to, the value of this. "
         "Only applies to unicode character sequences types.",
@@ -96,7 +96,7 @@ class FieldObject(BaseModel):
         "Only applies to numeric values.",
         example=0,
     )
-    exclusiveMinimum: Optional[float] = Field(
+    exclusive_minimum: Optional[float] = Field(
         None,
         description="A value of a number must be greater than the value of this. " "Only applies to numeric values.",
         example=0,
@@ -107,7 +107,7 @@ class FieldObject(BaseModel):
         "Only applies to numeric values.",
         example=1000000,
     )
-    exclusiveMaximum: Optional[float] = Field(
+    exclusive_maximum: Optional[float] = Field(
         None,
         description="A value of a number must be less than the value of this. " "Only applies to numeric values.",
         example=1000000,

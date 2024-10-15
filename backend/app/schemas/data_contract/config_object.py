@@ -12,47 +12,47 @@ class ConfigObject(BaseModel):
     code generation, physical data type specification, and test toggling.
     """
 
-    avroNamespace: Optional[str] = Field(
+    avro_namespace: Optional[str] = Field(
         None,
         description="(Only on model level) The namespace to use when importing and exporting the data model from / to Apache Avro.",
         example="my.namespace",
     )
-    avroType: Optional[str] = Field(
+    avro_type: Optional[str] = Field(
         None,
         description="(Only on field level) Specify the field type to use when exporting the data model to Apache Avro.",
         example="long",
     )
-    avroLogicalType: Optional[str] = Field(
+    avro_logical_type: Optional[str] = Field(
         None,
         description="(Only on field level) Specify the logical field type to use when exporting the data model to Apache Avro.",
         example="timestamp-millis",
     )
-    bigqueryType: Optional[str] = Field(
+    bigquery_type: Optional[str] = Field(
         None,
         description="(Only on field level) Specify the physical column type that is used in a BigQuery table.",
         example="NUMERIC(5, 2)",
     )
-    snowflakeType: Optional[str] = Field(
+    snowflake_type: Optional[str] = Field(
         None,
         description="(Only on field level) Specify the physical column type that is used in a Snowflake table.",
         example="TIMESTAMP_LTZ",
     )
-    redshiftType: Optional[str] = Field(
+    redshift_type: Optional[str] = Field(
         None,
         description="(Only on field level) Specify the physical column type that is used in a Redshift table.",
         example="SMALLINT",
     )
-    sqlserverType: Optional[str] = Field(
+    sqlserver_type: Optional[str] = Field(
         None,
         description="(Only on field level) Specify the physical column type that is used in a SQL Server table.",
         example="DATETIME2",
     )
-    databricksType: Optional[str] = Field(
+    databricks_type: Optional[str] = Field(
         None,
         description="(Only on field level) Specify the physical column type that is used in a Databricks table.",
         example="TIMESTAMP",
     )
-    glueType: Optional[str] = Field(
+    glue_type: Optional[str] = Field(
         None,
         description="(Only on field level) Specify the physical column type that is used in an AWS Glue Data Catalog table.",
         example="timestamp",
@@ -62,10 +62,10 @@ class ConfigObject(BaseModel):
         extra="allow",  # Allows for Specification Extensions
         json_schema_extra={
             "example": {
-                "avroNamespace": "my.namespace",
-                "avroType": "long",
-                "avroLogicalType": "timestamp-millis",
-                "snowflakeType": "TIMESTAMP_TZ",
+                "avro_namespace": "my.namespace",
+                "avro_type": "long",
+                "avro_logical_type": "timestamp-millis",
+                "snowflake_type": "TIMESTAMP_TZ",
             }
         },
     )

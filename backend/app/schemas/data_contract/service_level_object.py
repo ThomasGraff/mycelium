@@ -55,7 +55,7 @@ class RetentionObject(BaseModel):
         description="Indicator that data is kept forever.",
         example=False,
     )
-    timestampField: Optional[str] = Field(
+    timestamp_field: Optional[str] = Field(
         None,
         description="Reference to the field containing the relevant timestamp.",
         example="orders.order_timestamp",
@@ -67,7 +67,7 @@ class RetentionObject(BaseModel):
                 "description": "Data is retained for one year",
                 "period": "P1Y",
                 "unlimited": False,
-                "timestampField": "orders.order_timestamp",
+                "timestamp_field": "orders.order_timestamp",
             }
         }
     )
@@ -91,12 +91,12 @@ class LatencyObject(BaseModel):
         description="Maximum duration between source and processed timestamps.",
         example="25h",
     )
-    sourceTimestampField: Optional[str] = Field(
+    source_timestamp_field: Optional[str] = Field(
         None,
         description="Reference to the field with the source timestamp.",
         example="orders.order_timestamp",
     )
-    processedTimestampField: Optional[str] = Field(
+    processed_timestamp_field: Optional[str] = Field(
         None,
         description="Reference to the field with the processing timestamp.",
         example="orders.processed_timestamp",
@@ -107,8 +107,8 @@ class LatencyObject(BaseModel):
             "example": {
                 "description": "Data is available within 25 hours after the order was placed",
                 "threshold": "25h",
-                "sourceTimestampField": "orders.order_timestamp",
-                "processedTimestampField": "orders.processed_timestamp",
+                "source_timestamp_field": "orders.order_timestamp",
+                "processed_timestamp_field": "orders.processed_timestamp",
             }
         }
     )
@@ -132,7 +132,7 @@ class FreshnessObject(BaseModel):
         description="Maximum age of the youngest entry.",
         example="25h",
     )
-    timestampField: Optional[str] = Field(
+    timestamp_field: Optional[str] = Field(
         None,
         description="Reference to the field containing the relevant timestamp.",
         example="orders.order_timestamp",
@@ -143,7 +143,7 @@ class FreshnessObject(BaseModel):
             "example": {
                 "description": "The age of the youngest row in a table.",
                 "threshold": "25h",
-                "timestampField": "orders.order_timestamp",
+                "timestamp_field": "orders.order_timestamp",
             }
         }
     )
@@ -208,7 +208,7 @@ class SupportObject(BaseModel):
         description="Times when support is available (e.g., '24/7', 'business hours').",
         example="9am to 5pm in EST on business days",
     )
-    responseTime: Optional[str] = Field(
+    response_time: Optional[str] = Field(
         None, description="Expected time for support to acknowledge a request.", example="1h"
     )
 
@@ -217,7 +217,7 @@ class SupportObject(BaseModel):
             "example": {
                 "description": "The data is available during typical business hours at headquarters",
                 "time": "9am to 5pm in EST on business days",
-                "responseTime": "1h",
+                "response_time": "1h",
             }
         }
     )
@@ -246,12 +246,12 @@ class BackupObject(BaseModel):
         description="Cron expression for when data will be backed up.",
         example="0 0 * * 0",
     )
-    recoveryTime: Optional[str] = Field(
+    recovery_time: Optional[str] = Field(
         None,
         description="Maximum time allowed to restore data from a backup.",
         example="24 hours",
     )
-    recoveryPoint: Optional[str] = Field(
+    recovery_point: Optional[str] = Field(
         None,
         description="Maximum acceptable age of files for recovery.",
         example="1 week",
@@ -263,8 +263,8 @@ class BackupObject(BaseModel):
                 "description": "Data is backed up once a week, every Sunday at 0:00 UTC.",
                 "interval": "weekly",
                 "cron": "0 0 * * 0",
-                "recoveryTime": "24 hours",
-                "recoveryPoint": "1 week",
+                "recovery_time": "24 hours",
+                "recovery_point": "1 week",
             }
         }
     )

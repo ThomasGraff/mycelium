@@ -26,7 +26,7 @@ class TermsObject(BaseModel):
         description="The pricing model for using the data (e.g., free, monthly fee, or metered pay-per-use).",
         example="5000 USD per month",
     )
-    noticePeriod: Optional[str] = Field(
+    notice_period: Optional[str] = Field(
         None,
         description="Period of time required to terminate or modify the data usage agreement. Uses ISO-8601 format.",
         example="P3M",
@@ -38,7 +38,7 @@ class TermsObject(BaseModel):
                 "usage": "Data can be used for reports, analytics and machine learning use cases.",
                 "limitations": "Not suitable for real-time use cases. Data may not be used to identify individual customers.",
                 "billing": "5000 USD per month",
-                "noticePeriod": "P3M",
+                "notice_period": "P3M",
             }
         }
     )

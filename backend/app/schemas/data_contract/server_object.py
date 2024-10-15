@@ -33,7 +33,7 @@ class ServerObject(BaseModel):
         description="S3 URL, starting with s3://",
         example="s3://datacontract-example-orders-latest/data/{model}/*.json",
     )
-    endpointUrl: Optional[str] = Field(
+    endpoint_url: Optional[str] = Field(
         None,
         description="The server endpoint for S3-compatible servers",
         example="https://s3.amazonaws.com",
@@ -77,7 +77,7 @@ class ServerObject(BaseModel):
         description="The schema name.",
         example="public",
     )
-    clusterIdentifier: Optional[str] = Field(
+    cluster_identifier: Optional[str] = Field(
         None,
         description="Identifier of the Redshift cluster.",
         example="my-redshift-cluster",
@@ -122,7 +122,7 @@ class ServerObject(BaseModel):
     # Note: 'host', 'port', 'database', and 'schema' fields are reused from previous objects
 
     # Fields for Oracle Server Object
-    serviceName: Optional[str] = Field(
+    service_name: Optional[str] = Field(
         None,
         description="The name of the Oracle service.",
         example="ORCL",

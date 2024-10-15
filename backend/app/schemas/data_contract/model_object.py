@@ -91,8 +91,8 @@ class ModelObject(BaseModel):
                     "customer_id": {
                         "description": "Unique identifier for the customer.",
                         "type": "text",
-                        "minLength": 10,
-                        "maxLength": 20,
+                        "min_length": 10,
+                        "max_length": 20,
                         "example": "1000000001",
                     },
                     "customer_email_address": {
