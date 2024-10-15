@@ -24,7 +24,7 @@ class DataContract(db_manager.Base):
     models: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSON)
     definitions: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSON)
     examples: Mapped[Optional[List[Dict[str, Any]]]] = mapped_column(JSON)
-    service_levels: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSON)
+    service_level: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSON)
     quality: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSON)
     links: Mapped[Optional[Dict[str, str]]] = mapped_column(JSON)
     tags: Mapped[Optional[List[str]]] = mapped_column(JSON)

@@ -136,3 +136,6 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
+
+
+/backend/docs/site

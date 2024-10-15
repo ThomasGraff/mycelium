@@ -8,8 +8,8 @@ from .info_object import InfoObject
 from .model_object import ModelObject
 from .quality_object import QualityObject
 from .server_object import ServerObject
-from .service_level_object import ServiceLevelsObject
-from .term_object import TermsObject
+from .service_level_object import ServiceLevelObject
+from .term_object import TermObject
 
 
 class DataContract(BaseModel):
@@ -38,10 +38,10 @@ class DataContract(BaseModel):
         description="Specifies the servers of the data contract.",
         example={"production": ServerObject.model_config["json_schema_extra"]["example"]},
     )
-    terms: Optional[TermsObject] = Field(
+    terms: Optional[TermObject] = Field(
         None,
         description="Specifies the terms and conditions of the data contract.",
-        example=TermsObject.model_config["json_schema_extra"]["example"],
+        example=TermObject.model_config["json_schema_extra"]["example"],
     )
     models: Optional[Dict[str, ModelObject]] = Field(
         None,
@@ -58,10 +58,10 @@ class DataContract(BaseModel):
         description="Specifies example data sets for the data model.",
         example=[ExampleObject.model_config["json_schema_extra"]["example"]],
     )
-    service_levels: Optional[ServiceLevelsObject] = Field(
+    service_level: Optional[ServiceLevelObject] = Field(
         None,
         description="Specifies the service level of the provided data.",
-        example=ServiceLevelsObject.model_config["json_schema_extra"]["example"],
+        example=ServiceLevelObject.model_config["json_schema_extra"]["example"],
     )
     quality: Optional[QualityObject] = Field(
         None,
@@ -89,11 +89,11 @@ class DataContract(BaseModel):
                 "tags": ["checkout", "orders", "s3"],
                 "links": {"datacontractCli": "https://cli.datacontract.com"},
                 "servers": {"production": ServerObject.model_config["json_schema_extra"]["example"]},
-                "terms": TermsObject.model_config["json_schema_extra"]["example"],
+                "terms": TermObject.model_config["json_schema_extra"]["example"],
                 "models": {"orders": ModelObject.model_config["json_schema_extra"]["example"]},
                 "definitions": {"order_id": DefinitionObject.model_config["json_schema_extra"]["example"]},
                 "examples": [ExampleObject.model_config["json_schema_extra"]["example"]],
-                "servicelevels": ServiceLevelsObject.model_config["json_schema_extra"]["example"],
+                "servicelevels": ServiceLevelObject.model_config["json_schema_extra"]["example"],
                 "quality": QualityObject.model_config["json_schema_extra"]["example"],
             }
         },

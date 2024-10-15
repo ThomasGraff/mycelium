@@ -270,7 +270,7 @@ class BackupObject(BaseModel):
     )
 
 
-class ServiceLevelsObject(BaseModel):
+class ServiceLevelObject(BaseModel):
     """
     Represents the service levels for a data contract.
 

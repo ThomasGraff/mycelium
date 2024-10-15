@@ -11,8 +11,8 @@ from app.schemas.data_contract.info_object import InfoObject
 from app.schemas.data_contract.model_object import ModelObject
 from app.schemas.data_contract.quality_object import QualityObject
 from app.schemas.data_contract.server_object import ServerObject
-from app.schemas.data_contract.service_level_object import ServiceLevelsObject
-from app.schemas.data_contract.term_object import TermsObject
+from app.schemas.data_contract.service_level_object import ServiceLevelObject
+from app.schemas.data_contract.term_object import TermObject
 from app.utils.tools import db_to_pydantic_model, pydantic_to_db_model
 
 
@@ -50,7 +50,7 @@ class TestTools(unittest.TestCase):
                     description="One folder per model. One file per day.",
                 )
             },
-            terms=TermsObject(
+            terms=TermObject(
                 usage="Data can be used for reports, analytics and machine learning use cases. Order may be linked and joined by other tables",
                 limitations="Not suitable for real-time use cases. Data may not be used to identify individual customers. Max data processing per day: 10 TiB",
                 billing="5000 USD per month",
@@ -175,7 +175,7 @@ class TestTools(unittest.TestCase):
                     '"LI-5","1003","4001234567890"\n',
                 ),
             ],
-            service_levels=ServiceLevelsObject(
+            service_level=ServiceLevelObject(
                 availability={"description": "The server is available during support hours", "percentage": "99.9%"},
                 retention={"description": "Data is retained for one year", "period": "P1Y", "unlimited": False},
                 latency={
@@ -372,7 +372,7 @@ class TestTools(unittest.TestCase):
                     '"LI-5","1003","4001234567890"\n',
                 },
             ],
-            service_levels={
+            service_level={
                 "availability": {"description": "The server is available during support hours", "percentage": "99.9%"},
                 "retention": {"description": "Data is retained for one year", "period": "P1Y", "unlimited": False},
                 "latency": {

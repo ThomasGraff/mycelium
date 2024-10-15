@@ -34,9 +34,7 @@ def pydantic_to_db_model(pydantic_model: PydanticDataContract) -> DBDataContract
             if pydantic_model.examples
             else None
         ),
-        service_levels=(
-            pydantic_model.service_levels.model_dump(mode="json") if pydantic_model.service_levels else None
-        ),
+        service_level=(pydantic_model.service_level.model_dump(mode="json") if pydantic_model.service_level else None),
         quality=pydantic_model.quality.model_dump(mode="json") if pydantic_model.quality else None,
         links={str(k): str(v) for k, v in pydantic_model.links.items()} if pydantic_model.links else None,
         tags=pydantic_model.tags,

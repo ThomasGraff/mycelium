@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import BaseModel, ConfigDict, Field
 
 
-class TermsObject(BaseModel):
+class TermObject(BaseModel):
     """
     Represents the terms and conditions of a data contract.
 
