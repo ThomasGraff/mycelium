@@ -78,14 +78,11 @@ markdown_extensions:
   - md_in_html
 
 plugins:
-  - mike:
-      alias_type: symlink
-      canonical_version: latest
   - search
   - mkdocstrings:
       handlers:
         python:
-          paths: ["../app/schemas/data_contract"]
+          paths: ["../backend/app/schemas/data_contract"]
           options:
             show_bases: false
             members_order: source
@@ -98,7 +95,8 @@ plugins:
             signature_crossrefs: true
             show_if_no_docstring: true
             extensions:
-              - ./plugins/mycelium_doc.py
+              - griffe_pydantic:
+                schema: true
 
 
 
@@ -106,7 +104,5 @@ extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/ThomasGraff/mycelium
-  version:
-    provider: mike
 
 copyright: "&copy; 2023 Mycelium Project"
