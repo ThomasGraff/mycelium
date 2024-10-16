@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, Field
 
 
 class TermObject(BaseModel):
@@ -32,8 +32,8 @@ class TermObject(BaseModel):
         example="P3M",
     )
 
-    model_config = ConfigDict(
-        json_schema_extra={
+    class Config:
+        schema_extra = {
             "example": {
                 "usage": "Data can be used for reports, analytics and machine learning use cases.",
                 "limitations": "Not suitable for real-time use cases. Data may not be used to identify individual customers.",
@@ -41,4 +41,3 @@ class TermObject(BaseModel):
                 "notice_period": "P3M",
             }
         }
-    )
