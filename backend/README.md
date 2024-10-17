@@ -20,7 +20,7 @@
 1. Navigate to the backend directory and launch the server:
     ```
     cd backend
-    poetry run uvicorn app.main:app --port 8080
+    poetry run uvicorn app.main:app --port 8000
     ```
 
 
@@ -31,7 +31,7 @@ The documentation uses MkDocs to generate dynamically the documentation from the
 1. Navigate to the `docs` directory and launch the documentation server:
    ```
    cd backend/docs
-   mkdocs serve --dev-addr=127.0.0.1:8080
+   mkdocs serve --dev-addr=127.0.0.1:8000
    ```
 
 

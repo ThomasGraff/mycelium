@@ -1,5 +1,5 @@
 <template>
-  <v-card class="position-relative" >
+  <v-card class="position-relative">
     <CloseButton @closeObject="handleCloseObject" />
     <!-- Onglets -->
     <v-tabs v-model="activeTab" background-color="primary">
@@ -14,7 +14,7 @@
     <v-tabs-window v-model="activeTab" class="overflow">
       <!-- Onglet Information -->
       <v-tabs-window-item value="0">
-        <InformationTab />
+        <InformationTab @update-info="updateDataContractInfo" />
       </v-tabs-window-item>
 
       <!-- Onglet Servers -->
@@ -22,7 +22,7 @@
         <ServerTab />
       </v-tabs-window-item>
 
-      <!-- Onglets restants (pour plus tard) -->
+      <!-- Onglets restants -->
       <v-tabs-window-item value="2">
         <v-card flat></v-card>
       </v-tabs-window-item>
@@ -39,6 +39,8 @@
         <v-card flat></v-card>
       </v-tabs-window-item>
     </v-tabs-window>
+
+    <SubmitButton @submitObject="handleSubmitObject" />
   </v-card>
 </template>
 
@@ -46,25 +48,80 @@
 import InformationTab from './components/InformationTab.vue'
 import ServerTab from './components/ServerTab.vue'
 import CloseButton from './components/CloseButton.vue'
+import SubmitButton from './components/SubmitButton.vue'
+import axios from 'axios'
 
 export default {
   components: {
     InformationTab,
     ServerTab,
-    CloseButton
+    CloseButton,
+    SubmitButton
   },
   data () {
     return {
       activeTab: 0, // Onglet actif, par défaut "Information"
-      valid: false // Validation des formulaires
+      valid: false, // Validation des formulaires
+      dataContract: {
+        dataContractSpecification: '0.9.3', // Valeur par défaut pour data_contract_specification
+        id: 'urn:datacontract:example', // Valeur par défaut pour l'ID
+        info: {
+          title: '',
+          version: '',
+          description: '',
+          owner: '',
+          contactName: '',
+          contactEmail: '',
+          contactUrl: '',
+          businessUnit: ''
+        }
+      }
     }
   },
   methods: {
     handleCloseObject () {
-      // Accède à l'instance du composant ResultsList et appelle sa méthode clearResults
       this.$emit('showDataContract', false)
+    },
+    handleSubmitObject () {
+      this.submitDataContract()
+    },
+    updateDataContractInfo (info) {
+      // Mettre à jour les informations dans dataContract quand l'enfant émet update-info
+      this.dataContract.info = info
+    },
+
+    async submitDataContract () {
+      try {
+        // Envoi de la requête POST à l'API
+        console.log('test')
+        const response = await axios.post('http://localhost:8000/data-contracts/', this.dataContract)
+        console.log('Response received:', response) // Ajoutez cette ligne
+        console.log('Data contract created successfully:', response.data)
+
+        // Affichage d'une notification de succès
+        this.$notify({
+          title: 'Succès',
+          message: 'Le contrat de données a été créé avec succès!',
+          type: 'success'
+        })
+
+        // Réinitialiser ou rediriger l'utilisateur, si nécessaire
+        // this.resetForm(); // Exemple de fonction pour réinitialiser le formulaire
+      } catch (error) {
+        // Gérer les erreurs d'API
+        console.error('Error creating data contract:', error.response ? error.response.data : error.message)
+
+        // Affichage d'une notification d'erreur
+        this.$notify({
+          title: 'Erreur',
+          message: error.response ? error.response.data.message : 'Une erreur s\'est produite lors de la création du contrat de données.',
+          type: 'error'
+        })
+      } finally {
+    console.log('Finished submitDataContract') // Cela s'affichera à chaque fois
     }
   }
+}
 }
 </script>
 
@@ -81,5 +138,4 @@ export default {
   max-height: calc(100vh - 200px); /* Ajustez cette valeur selon votre besoin */
   overflow: auto;
 }
-
 </style>
