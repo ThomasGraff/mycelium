@@ -1,23 +1,23 @@
 <template>
-    <v-card flat>
-          <v-form ref="infoForm" v-model="valid">
-            <v-text-field v-model="dataContract.title" label="Title" required></v-text-field>
-            <v-text-field v-model="dataContract.version" label="Version" required></v-text-field>
-            <v-textarea v-model="dataContract.description" label="Description" required></v-textarea>
-            <v-text-field v-model="dataContract.owner" label="Owner" required></v-text-field>
-            <v-text-field v-model="dataContract.contactName" label="Contact Name" required></v-text-field>
-            <v-text-field v-model="dataContract.contactEmail" label="Contact Email" required></v-text-field>
-            <v-text-field v-model="dataContract.contactUrl" label="Contact URL"></v-text-field>
-            <v-text-field v-model="dataContract.businessUnit" label="Business Unit" required></v-text-field>
-          </v-form>
-        </v-card>
-  </template>
+  <v-card flat>
+    <v-form ref="infoForm" v-model="valid" @input="updateInfo">
+      <v-text-field v-model="info.title" label="Title" required></v-text-field>
+      <v-text-field v-model="info.version" label="Version" required></v-text-field>
+      <v-textarea v-model="info.description" label="Description" required></v-textarea>
+      <v-text-field v-model="info.owner" label="Owner" required></v-text-field>
+      <v-text-field v-model="info.contactName" label="Contact Name" required></v-text-field>
+      <v-text-field v-model="info.contactEmail" label="Contact Email" required></v-text-field>
+      <v-text-field v-model="info.contactUrl" label="Contact URL"></v-text-field>
+      <v-text-field v-model="info.businessUnit" label="Business Unit" required></v-text-field>
+    </v-form>
+  </v-card>
+</template>
 
 <script>
 export default {
   data () {
     return {
-      dataContract: {
+      info: {
         title: '',
         version: '',
         description: '',
@@ -26,20 +26,22 @@ export default {
         contactEmail: '',
         contactUrl: '',
         businessUnit: ''
-      }
+      },
+      valid: false
     }
   },
   methods: {
     updateInfo () {
-      this.$emit('update', { ...this.info }) // Emit the updated information back to the parent
+      // Emit the updated information to the parent
+      this.$emit('update-info', this.info)
     }
   }
 }
 </script>
 
-  <style scoped>
-  .v-form {
-    display: flex;
-    flex-direction: column;
-  }
-  </style>
+<style scoped>
+.v-form {
+  display: flex;
+  flex-direction: column;
+}
+</style>
