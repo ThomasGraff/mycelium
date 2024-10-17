@@ -94,34 +94,18 @@ export default {
       try {
         // Envoi de la requête POST à l'API
         console.log('test')
-        const response = await axios.post('http://localhost:8000/data-contracts/', this.dataContract)
+        const response = await axios.post('http://127.0.0.1:8000/data_contract/', this.dataContract)
         console.log('Response received:', response) // Ajoutez cette ligne
         console.log('Data contract created successfully:', response.data)
-
-        // Affichage d'une notification de succès
-        this.$notify({
-          title: 'Succès',
-          message: 'Le contrat de données a été créé avec succès!',
-          type: 'success'
-        })
 
         // Réinitialiser ou rediriger l'utilisateur, si nécessaire
         // this.resetForm(); // Exemple de fonction pour réinitialiser le formulaire
       } catch (error) {
         // Gérer les erreurs d'API
         console.error('Error creating data contract:', error.response ? error.response.data : error.message)
-
-        // Affichage d'une notification d'erreur
-        this.$notify({
-          title: 'Erreur',
-          message: error.response ? error.response.data.message : 'Une erreur s\'est produite lors de la création du contrat de données.',
-          type: 'error'
-        })
-      } finally {
-    console.log('Finished submitDataContract') // Cela s'affichera à chaque fois
+      }
     }
   }
-}
 }
 </script>
 
