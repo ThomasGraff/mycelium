@@ -1,15 +1,18 @@
 [tool.poetry]
 name = "mycelium"
-version = "0.1.0"
+version = "1.0.0"
 description = "Backend for Mycelium, handling data contracts and ingestion"
-authors = ["ThomasGraff <thomas.graff@servier.com>"]
+authors = ["ThomasGraff <thomas.graff@servier.com>", "victor <victorgoubet@orange.fr>"]
 license = "AGPL-3.0"
-readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.12"
 fastapi = "^0.115.0"
 uvicorn = "^0.31.0"
+sqlalchemy = "^2.0.35"
+pydantic = {extras = ["email"], version = "^2.9.2"}
+black = "^24.10.0"
 
 
 [build-system]
