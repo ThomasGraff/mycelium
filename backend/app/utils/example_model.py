@@ -1,10 +1,9 @@
 from typing import Any, Dict
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 
 
 class BaseModelWithExample(BaseModel):
-    model_config = ConfigDict(extra="forbid")
 
     @classmethod
     def get_example(cls) -> Dict[str, Any]:

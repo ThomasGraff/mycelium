@@ -16,7 +16,7 @@ class ExampleObject(BaseModelWithExample):
     type: str = Field(
         ...,
         description="The type of the data product technology that implements the data contract.",
-        examples=["csv", "json", "yaml", "custom"],
+        example="csv",
     )
     description: Optional[str] = Field(
         None,
