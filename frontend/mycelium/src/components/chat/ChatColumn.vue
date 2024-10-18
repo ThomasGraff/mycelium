@@ -1,23 +1,24 @@
 <template>
-    <div class="chat-column">
-      <!-- Barre de recherche -->
-       <v-container class="main-container">
-        <v-row>
-          <v-col >
-            <!-- Résultats de la recherche -->
-            <ResultsList ref="resultsList" />
-          </v-col>
-        </v-row>
+  <div class="chat-column">
+    <!-- Barre de recherche -->
+    <v-container class="main-container">
+      <v-row>
+        <v-col>
+          <!-- Résultats de la recherche -->
+          <ResultsList ref="resultsList" />
+        </v-col>
+      </v-row>
     </v-container>
-    <v-container >
-        <v-row>
-            <v-col >
-                    <SearchBar @search="handleSearch" />
-            </v-col>
-        </v-row>
-       </v-container>
-    </div>
-  </template>
+    <v-container>
+      <v-row>
+        <v-col>
+          <SearchBar @search="handleSearch" />
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
+</template>
+
 <script>
 import SearchBar from './components/SearchBar.vue'
 import ResultsList from './components/ResultsList.vue'
@@ -30,19 +31,23 @@ export default {
 
   methods: {
     handleSearch (search) {
-      if (search.toLowerCase() === 'new') {
-        this.$emit('showDataContract', true)
+      const lowerCaseSearch = search.toLowerCase()
+
+      // Logique pour déterminer quel objet afficher
+      if (lowerCaseSearch === 'new') {
+        this.$emit('requestObject', 'DataContract')
+      } else if (lowerCaseSearch === 'list') {
+        this.$emit('requestObject', 'ListDataContracts')
+      } else if (lowerCaseSearch === 'close') {
+        this.$emit('closeObject')
       }
       this.$refs.resultsList.addResult(search)
     }
-
   }
 }
-
 </script>
 
 <style scoped>
-
 .chat-column {
   display: flex;
   flex-direction: column;

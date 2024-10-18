@@ -1,19 +1,22 @@
 <template>
   <v-app>
     <NavBar />
-    <v-main >
+    <v-main>
       <v-container color="#2f2f2f">
-        <v-row :class="{ 'contract-open': showDataContract }" >
-          <!-- If NO datacontract -->
-          <v-col :cols="showDataContract ? 6 : 12" class="search-results-column">
+        <v-row :class="{ 'object-open': isObjectVisible }">
+          <!-- Si aucun objet n'est affiché -->
+          <v-col :cols="isObjectVisible ? 6 : 12" class="search-results-column">
             <ChatColumn
-            @showDataContract="showDataContract = $event"
+              @requestObject="handleObjectRequest"
+              @close-object="closeObject"
             />
           </v-col>
-          <!-- If YES datacontract -->
-          <v-col v-if="showDataContract" cols="6">
-            <DataContract
-            @showDataContract="showDataContract = $event"
+
+          <!-- Si un objet est affiché -->
+          <v-col v-if="isObjectVisible" cols="6">
+            <component
+              :is="currentObjectComponent"
+              @close-object="closeObject"
             />
           </v-col>
         </v-row>
@@ -25,32 +28,42 @@
 <script>
 import NavBar from './components/navigation/NavBar.vue'
 import DataContract from './components/dataContract/DataContract.vue' // Import du composant DataContract
-import ChatColumn from './components/chat/ChatColumn.vue' // Import du nouveau composant ChatColumn
+import ListDataContracts from './components/listDataContracts/ListDataContracts.vue' // Import du composant ListDataContracts
+import ChatColumn from './components/chat/ChatColumn.vue' // Import du composant ChatColumn
 
 export default {
   components: {
     NavBar,
-    DataContract, // Ajout du composant DataContract
-    ChatColumn // Ajout du composant ChatColumn
+    DataContract,
+    ListDataContracts,
+    ChatColumn
   },
   data () {
     return {
-      showDataContract: false // Booléen pour contrôler l'affichage du Data Contract
+      isObjectVisible: false, // Booléen pour contrôler l'affichage des objets
+      currentObjectComponent: null // Composant à afficher
     }
   },
   methods: {
-
+    handleObjectRequest (objectType) {
+      this.isObjectVisible = true
+      this.currentObjectComponent = objectType // Définit le composant à afficher
+    },
+    closeObject () {
+      this.isObjectVisible = false
+      this.currentObjectComponent = null // Réinitialise le composant affiché
+    }
   }
 }
 </script>
 
 <style scoped>
-/* Lorsque le DataContract est ouvert, décale à gauche */
-.contract-open .search-results-column {
+/* Lorsque l'objet est ouvert, déplace à gauche */
+.object-open .search-results-column {
   text-align: left;
 }
 
-/* Centre le contenu quand aucun Data Contract n'est affiché */
+/* Centre le contenu quand aucun objet n'est affiché */
 .search-results-column {
   text-align: center;
 }

@@ -64,7 +64,7 @@ export default {
       valid: false, // Validation des formulaires
       dataContract: {
         dataContractSpecification: '0.9.3', // Valeur par défaut pour data_contract_specification
-        id: 'urn:datacontract:example', // Valeur par défaut pour l'ID
+        id: 'urn:datacontract:exampleae', // Valeur par défaut pour l'ID
         info: {
           title: '',
           version: '',
@@ -80,7 +80,7 @@ export default {
   },
   methods: {
     handleCloseObject () {
-      this.$emit('showDataContract', false)
+      this.$emit('closeObject')
     },
     handleSubmitObject () {
       this.submitDataContract()
