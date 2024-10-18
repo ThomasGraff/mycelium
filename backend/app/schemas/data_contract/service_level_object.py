@@ -1,6 +1,7 @@
 from typing import Optional
 
 from pydantic import Field
+
 from ...utils.example_model import BaseModelWithExample
 
 
@@ -210,35 +211,35 @@ class ServiceLevelObject(BaseModelWithExample):
     availability: Optional[AvailabilityObject] = Field(
         None,
         description="Availability service level.",
-        example=AvailabilityObject.example(),
+        example=AvailabilityObject.get_example(),
     )
     retention: Optional[RetentionObject] = Field(
         None,
         description="Data retention service level.",
-        example=RetentionObject.example(),
+        example=RetentionObject.get_example(),
     )
     latency: Optional[LatencyObject] = Field(
         None,
         description="Latency service level.",
-        example=LatencyObject.example(),
+        example=LatencyObject.get_example(),
     )
     freshness: Optional[FreshnessObject] = Field(
         None,
         description="Data freshness service level.",
-        example=FreshnessObject.example(),
+        example=FreshnessObject.get_example(),
     )
     frequency: Optional[FrequencyObject] = Field(
         None,
         description="Data delivery frequency service level.",
-        example=FrequencyObject.example(),
+        example=FrequencyObject.get_example(),
     )
     support: Optional[SupportObject] = Field(
         None,
         description="Support service level.",
-        example=SupportObject.example(),
+        example=SupportObject.get_example(),
     )
     backup: Optional[BackupObject] = Field(
         None,
         description="Backup service level.",
-        example=BackupObject.example(),
+        example=BackupObject.get_example(),
     )

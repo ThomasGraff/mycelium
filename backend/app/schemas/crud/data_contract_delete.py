@@ -1,7 +1,7 @@
 from pydantic import Field
 
-from ..data_contract.data_contract import DataContract
 from ...utils.example_model import BaseModelWithExample
+from ..data_contract.data_contract import DataContract
 
 
 class DataContractDelete(BaseModelWithExample):
@@ -28,6 +28,6 @@ class DataContractDeleteResponse(BaseModelWithExample):
     )
     data: DataContract = Field(
         ...,
-        example=DataContract.example(),
+        example=DataContract.get_example(),
         description="The deleted data contract information.",
     )

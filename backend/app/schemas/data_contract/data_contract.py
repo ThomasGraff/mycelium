@@ -32,42 +32,42 @@ class DataContract(BaseModelWithExample):
     info: InfoObject = Field(
         ...,
         description="REQUIRED. Specifies the metadata of the data contract.",
-        example=InfoObject.example(),
+        example=InfoObject.get_example(),
     )
     servers: Optional[Dict[str, ServerObject]] = Field(
         None,
         description="Specifies the servers of the data contract.",
-        example={"production": ServerObject.example()},
+        example={"production": ServerObject.get_example()},
     )
     terms: Optional[TermObject] = Field(
         None,
         description="Specifies the terms and conditions of the data contract.",
-        example=TermObject.example(),
+        example=TermObject.get_example(),
     )
     models: Optional[Dict[str, ModelObject]] = Field(
         None,
         description="Specifies the logical data model.",
-        example={"orders": ModelObject.example()},
+        example={"orders": ModelObject.get_example()},
     )
     definitions: Optional[Dict[str, DefinitionObject]] = Field(
         None,
         description="Specifies definitions.",
-        example={"order_id": DefinitionObject.example()},
+        example={"order_id": DefinitionObject.get_example()},
     )
     examples: Optional[List[ExampleObject]] = Field(
         None,
         description="Specifies example data sets for the data model.",
-        example=[ExampleObject.example()],
+        example=[ExampleObject.get_example()],
     )
     service_level: Optional[ServiceLevelObject] = Field(
         None,
         description="Specifies the service level of the provided data.",
-        example=ServiceLevelObject.example(),
+        example=ServiceLevelObject.get_example(),
     )
     quality: Optional[QualityObject] = Field(
         None,
         description="Specifies the quality attributes and checks.",
-        example=QualityObject.example(),
+        example=QualityObject.get_example(),
     )
     links: Optional[Dict[str, HttpUrl]] = Field(
         None,

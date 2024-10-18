@@ -2,8 +2,9 @@ from typing import List
 
 from pydantic import ConfigDict, Field
 
-from ..data_contract.data_contract import DataContract
 from ...utils.example_model import BaseModelWithExample
+from ..data_contract.data_contract import DataContract
+
 
 class DataContractListResponse(BaseModelWithExample):
     """
@@ -17,7 +18,7 @@ class DataContractListResponse(BaseModelWithExample):
     )
     data: List[DataContract] = Field(
         ...,
-        example=DataContract.example(),
+        example=DataContract.get_example(),
         description="The list of retrieved data contracts.",
     )
 

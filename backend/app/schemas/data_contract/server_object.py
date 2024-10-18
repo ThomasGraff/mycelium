@@ -4,7 +4,8 @@ from pydantic import Field
 
 from ...utils.example_model import BaseModelWithExample
 
-class ServerObject(BaseModelWithExample ):
+
+class ServerObject(BaseModelWithExample):
     """
     Represents a server object in a data contract.
 
@@ -73,7 +74,7 @@ class ServerObject(BaseModelWithExample ):
         description="The database name.",
         example="orders_db",
     )
-    schema: Optional[str] = Field(
+    schema_name: Optional[str] = Field(
         None,
         description="The schema name.",
         example="public",

@@ -1,7 +1,8 @@
 from pydantic import BaseModel, ConfigDict, Field
 
-from ..data_contract.data_contract import DataContract
 from ...utils.example_model import BaseModelWithExample
+from ..data_contract.data_contract import DataContract
+
 
 class DataContractGetResponse(BaseModelWithExample):
     """
@@ -15,7 +16,7 @@ class DataContractGetResponse(BaseModelWithExample):
     )
     data: DataContract = Field(
         ...,
-        example=DataContract.example(),
+        example=DataContract.get_example(),
         description="The retrieved data contract.",
     )
 

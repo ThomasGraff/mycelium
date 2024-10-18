@@ -1,13 +1,15 @@
 from pydantic import ConfigDict, Field
 
-from ..data_contract.data_contract import DataContract
 from ...utils.example_model import BaseModelWithExample
+from ..data_contract.data_contract import DataContract
+
 
 class DataContractCreate(DataContract):
     """
     Represents the input model for creating a new data contract.
     Inherits all fields from the base DataContract model.
     """
+
     pass
 
 
@@ -23,7 +25,7 @@ class DataContractCreateResponse(BaseModelWithExample):
     )
     data: DataContract = Field(
         ...,
-        example=DataContract.example(),
+        example=DataContract.get_example(),
         description="The created data contract.",
     )
 

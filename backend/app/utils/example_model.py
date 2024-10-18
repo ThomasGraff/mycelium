@@ -7,7 +7,7 @@ class BaseModelWithExample(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     @classmethod
-    def example(cls) -> Dict[str, Any]:
+    def get_example(cls) -> Dict[str, Any]:
         """
         Create a dictionary with example data for all fields in the model.
 
