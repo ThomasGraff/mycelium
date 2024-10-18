@@ -1,9 +1,11 @@
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field, HttpUrl
+from pydantic import EmailStr, Field, HttpUrl
+
+from ...utils.example_model import BaseModelWithExample
 
 
-class ContactObject(BaseModel):
+class ContactObject(BaseModelWithExample):
     """
     Represents contact information for the data contract.
 
@@ -25,14 +27,4 @@ class ContactObject(BaseModel):
         None,
         description="The email address of the contact person/organization. This MUST be in the form of an email address.",
         example="john.doe@example.com",
-    )
-
-    model_config = ConfigDict(
-        json_schema_extra={
-            "example": {
-                "name": "Jane Smith",
-                "url": "https://datacontract.com/support",
-                "email": "jane.smith@datacontract.com",
-            }
-        }
     )

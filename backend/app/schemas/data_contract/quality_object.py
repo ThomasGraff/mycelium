@@ -1,9 +1,11 @@
 from typing import Literal, Union
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import Field
+
+from ...utils.example_model import BaseModelWithExample
 
 
-class SodaCLQualityObject(BaseModel):
+class SodaCLQualityObject(BaseModelWithExample):
     """
     Represents quality attributes in Soda Checks Language.
     """
@@ -25,29 +27,16 @@ class SodaCLQualityObject(BaseModel):
         """,
     )
 
-    model_config = ConfigDict(
-        json_schema_extra={
-            "example": {
-                "type": "SodaCL",
-                "specification": """
-                checks for orders:
-                  - row_count > 0
-                  - duplicate_count(order_id) = 0
-                checks for line_items:
-                  - row_count > 0
-                """,
-            }
-        }
-    )
 
-
-class MonteCarloQualityObject(BaseModel):
+class MonteCarloQualityObject(BaseModelWithExample):
     """
     Represents quality attributes defined as Monte Carlo's Monitors as Code.
     """
 
     type: Literal["montecarlo"] = Field(
-        "montecarlo", description="The type of the schema, always 'montecarlo'.", example="montecarlo"
+        "montecarlo",
+        description="The type of the schema, always 'montecarlo'.",
+        example="montecarlo",
     )
     specification: str = Field(
         ...,
@@ -64,26 +53,8 @@ class MonteCarloQualityObject(BaseModel):
         """,
     )
 
-    model_config = ConfigDict(
-        json_schema_extra={
-            "example": {
-                "type": "montecarlo",
-                "specification": """
-                montecarlo:
-                  field_health:
-                    - table: project:dataset.table_name
-                      timestamp_field: created
-                  dimension_tracking:
-                    - table: project:dataset.table_name
-                      timestamp_field: created
-                      field: order_status
-                """,
-            }
-        }
-    )
 
-
-class GreatExpectationsQualityObject(BaseModel):
+class GreatExpectationsQualityObject(BaseModelWithExample):
     """
     Represents quality attributes defined as Great Expectations Expectations.
     """
@@ -111,29 +82,8 @@ class GreatExpectationsQualityObject(BaseModel):
         },
     )
 
-    model_config = ConfigDict(
-        json_schema_extra={
-            "example": {
-                "type": "great-expectations",
-                "specification": {
-                    "orders": """
-                    [
-                        {
-                            "expectation_type": "expect_table_row_count_to_be_between",
-                            "kwargs": {
-                                "min_value": 10
-                            },
-                            "meta": {}
-                        }
-                    ]
-                    """
-                },
-            }
-        }
-    )
 
-
-class CustomQualityObject(BaseModel):
+class CustomQualityObject(BaseModelWithExample):
     """
     Represents custom quality attributes.
     """
@@ -149,12 +99,8 @@ class CustomQualityObject(BaseModel):
         example="Custom quality specification goes here.",
     )
 
-    model_config = ConfigDict(
-        json_schema_extra={"example": {"type": "custom", "specification": "Custom quality specification goes here."}}
-    )
 
-
-class QualityObject(BaseModel):
+class QualityObject(BaseModelWithExample):
     """
     Represents the quality object containing quality attributes and checks.
 
@@ -171,14 +117,5 @@ class QualityObject(BaseModel):
     ] = Field(
         ...,
         description="REQUIRED. The specification of the quality attributes.",
-        example=SodaCLQualityObject.model_config["json_schema_extra"]["example"],
-    )
-
-    model_config = ConfigDict(
-        json_schema_extra={
-            "example": {
-                "type": "SodaCL",
-                "specification": SodaCLQualityObject.model_config["json_schema_extra"]["example"],
-            }
-        }
+        example=SodaCLQualityObject.get_example(),
     )

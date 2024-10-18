@@ -1,12 +1,13 @@
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, ConfigDict, Field, HttpUrl
+from pydantic import ConfigDict, Field, HttpUrl
 
+from ...utils.example_model import BaseModelWithExample
 from .data_type import DataType
 from .field_object import FieldObject
 
 
-class DefinitionObject(BaseModel):
+class DefinitionObject(BaseModelWithExample):
     """
     Represents a definition object in a data contract.
 
@@ -148,22 +149,4 @@ class DefinitionObject(BaseModel):
         example=FieldObject(type="string", description="Country name"),
     )
 
-    model_config = ConfigDict(
-        extra="allow",  # Allow extra fields
-        json_schema_extra={
-            "example": {
-                "name": "order_id",
-                "type": "string",
-                "domain": "checkout",
-                "title": "Order Identifier",
-                "description": "A unique identifier for an order in our system.",
-                "format": "uuid",
-                "example": "243c25e5-a081-43a9-aeab-6d5d5b6cb5e2",
-                "pii": True,
-                "classification": "restricted",
-                "tags": ["order", "identifier"],
-                "links": {"documentation": "https://docs.example.com/order-id"},
-                "custom_field": "This is an extra field not defined in the model",
-            }
-        },
-    )
+    model_config = ConfigDict(extra="allow")

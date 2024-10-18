@@ -1,12 +1,13 @@
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import Field
 
+from ...utils.example_model import BaseModelWithExample
 from .config_object import ConfigObject
 from .data_type import DataType
 
 
-class FieldObject(BaseModel):
+class FieldObject(BaseModelWithExample):
     """
     Represents a field object in a data contract model.
 
@@ -175,20 +176,6 @@ class FieldObject(BaseModel):
             "jsonType": "string",
             "jsonFormat": "date-time",
         },
-    )
-
-    model_config = ConfigDict(
-        json_schema_extra={
-            "example": {
-                "description": "Unique identifier for the order",
-                "type": "string",
-                "format": "uuid",
-                "required": True,
-                "unique": True,
-                "primary": True,
-                "example": "243c25e5-a081-43a9-aeab-6d5d5b6cb5e2",
-            }
-        }
     )
 
 

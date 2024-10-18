@@ -1,5 +1,6 @@
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import ConfigDict, Field
 
+from ...utils.example_model import BaseModelWithExample
 from ..data_contract.data_contract import DataContract
 
 
@@ -12,7 +13,7 @@ class DataContractUpdate(DataContract):
     pass
 
 
-class DataContractUpdateResponse(BaseModel):
+class DataContractUpdateResponse(BaseModelWithExample):
     """
     Represents the response for a successful data contract update.
 
@@ -20,15 +21,15 @@ class DataContractUpdateResponse(BaseModel):
     :param DataContract data: The updated data contract.
     """
 
-    message: str = Field(..., description="A success message indicating the data contract was updated.")
-    data: DataContract = Field(..., description="The updated data contract.")
-
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-        json_schema_extra={
-            "example": {
-                "message": " ✅ Data contract updated successfully",
-                "data": DataContract.model_config["json_schema_extra"]["example"],
-            }
-        },
+    message: str = Field(
+        ...,
+        example=" ✅ Data contract updated successfully",
+        description="A success message indicating the data contract was updated.",
     )
+    data: DataContract = Field(
+        ...,
+        example=DataContract.get_example(),
+        description="The updated data contract.",
+    )
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)

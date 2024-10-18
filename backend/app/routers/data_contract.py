@@ -36,11 +36,7 @@ router = APIRouter()
     response_description="Successfully created data contract",
     responses={
         201: {
-            "content": {
-                "application/json": {
-                    "example": DataContractCreateResponse.model_config["json_schema_extra"]["example"]
-                }
-            },
+            "content": {"application/json": {"example": DataContractCreateResponse.get_example()}},
         },
         400: {
             "description": "Invalid input",
@@ -97,9 +93,7 @@ async def create_data_contract_route(
     response_description="Successfully retrieved data contract",
     responses={
         200: {
-            "content": {
-                "application/json": {"example": DataContractGetResponse.model_config["json_schema_extra"]["example"]}
-            },
+            "content": {"application/json": {"example": DataContractGetResponse.get_example()}},
         },
         404: {
             "description": "Data contract not found",
@@ -116,10 +110,7 @@ async def create_data_contract_route(
     },
     tags=["Data Contract"],
 )
-async def get_data_contract_route(
-    id: str = "urn:datacontract:checkout:orders-latest",
-    db: Session = Depends(db_manager.get_db),
-) -> DataContractGetResponse:
+async def get_data_contract_route(id: str, db: Session = Depends(db_manager.get_db)) -> DataContractGetResponse:
     """
     Retrieves a data contract from the database by its ID.
 
@@ -156,9 +147,7 @@ async def get_data_contract_route(
     response_description="Successfully retrieved data contracts",
     responses={
         200: {
-            "content": {
-                "application/json": {"example": DataContractListResponse.model_config["json_schema_extra"]["example"]}
-            },
+            "content": {"application/json": {"example": DataContractListResponse.get_example()}},
         },
         500: {
             "description": "Internal server error",
@@ -203,11 +192,7 @@ async def list_data_contracts_route(db: Session = Depends(db_manager.get_db)) ->
     response_description="Successfully updated data contract",
     responses={
         200: {
-            "content": {
-                "application/json": {
-                    "example": DataContractUpdateResponse.model_config["json_schema_extra"]["example"]
-                }
-            },
+            "content": {"application/json": {"example": DataContractUpdateResponse.get_example()}},
         },
         404: {
             "description": "Data contract not found",
@@ -266,11 +251,7 @@ async def update_data_contract_route(
     response_description="Successfully deleted data contract",
     responses={
         200: {
-            "content": {
-                "application/json": {
-                    "example": DataContractDeleteResponse.model_config["json_schema_extra"]["example"]
-                }
-            },
+            "content": {"application/json": {"example": DataContractDeleteResponse.get_example()}},
         },
         404: {
             "description": "Data contract not found",
