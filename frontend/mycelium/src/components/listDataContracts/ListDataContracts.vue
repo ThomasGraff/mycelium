@@ -1,5 +1,6 @@
 <template>
   <v-card class="position-relative">
+    <CloseButton @closeObject="handleCloseObject" />
     <v-card-title>Data Contracts List</v-card-title>
     <v-card-text>
       <!-- Tableau pour afficher la liste des data contracts -->
@@ -16,8 +17,12 @@
 
 <script>
 import axios from 'axios'
+import CloseButton from './components/CloseButton.vue'
 
 export default {
+  components: {
+    CloseButton
+  },
   data () {
     return {
       // Liste des data contracts
@@ -33,6 +38,9 @@ export default {
     }
   },
   methods: {
+    handleCloseObject () {
+      this.$emit('closeObject')
+    },
     async fetchDataContracts () {
       try {
         // Requête GET pour récupérer les data contracts depuis l'API
