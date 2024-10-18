@@ -2,8 +2,8 @@ from typing import Literal, Optional
 
 from pydantic import Field
 
-from .contact_object import ContactObject
 from ...utils.example_model import BaseModelWithExample
+from .contact_object import ContactObject
 
 
 class InfoObject(BaseModelWithExample):
@@ -41,6 +41,6 @@ class InfoObject(BaseModelWithExample):
     )
     contact: Optional[ContactObject] = Field(
         None,
-        example=ContactObject.example(),
+        example=ContactObject.get_example(),
         description="Contact information for the data contract.",
     )

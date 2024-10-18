@@ -2,9 +2,9 @@ from typing import Dict, Optional
 
 from pydantic import Field
 
+from ...utils.example_model import BaseModelWithExample
 from .config_object import ConfigObject
 from .field_object import FieldObject
-from ...utils.example_model import BaseModelWithExample
 
 
 class ModelObject(BaseModelWithExample):
@@ -55,5 +55,5 @@ class ModelObject(BaseModelWithExample):
     config: Optional[ConfigObject] = Field(
         None,
         description="Any additional key-value pairs that might be useful for further tooling.",
-        example=ConfigObject.example(),
+        example=ConfigObject.get_example(),
     )

@@ -34,7 +34,9 @@ class MonteCarloQualityObject(BaseModelWithExample):
     """
 
     type: Literal["montecarlo"] = Field(
-        "montecarlo", description="The type of the schema, always 'montecarlo'.", example="montecarlo"
+        "montecarlo",
+        description="The type of the schema, always 'montecarlo'.",
+        example="montecarlo",
     )
     specification: str = Field(
         ...,
@@ -115,5 +117,5 @@ class QualityObject(BaseModelWithExample):
     ] = Field(
         ...,
         description="REQUIRED. The specification of the quality attributes.",
-        example=SodaCLQualityObject.example(),
+        example=SodaCLQualityObject.get_example(),
     )

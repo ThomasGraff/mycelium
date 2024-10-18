@@ -2,9 +2,9 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import Field
 
+from ...utils.example_model import BaseModelWithExample
 from .config_object import ConfigObject
 from .data_type import DataType
-from ...utils.example_model import BaseModelWithExample
 
 
 class FieldObject(BaseModelWithExample):
