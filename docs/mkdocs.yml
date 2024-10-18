@@ -38,15 +38,15 @@ nav:
     - Welcome to mycelium: home/welcome.md
     - Why use Mycelium?: home/why.md
   - Data Contract Models:
-    #- DataContract: data_contract_models/data_contract.md
-    #- InfoObject: data_contract_models/info_object.md
-    #- ServerObject: data_contract_models/server_object.md
+    - DataContract: data_contract_models/data_contract.md
+    - InfoObject: data_contract_models/info_object.md
+    - ServerObject: data_contract_models/server_object.md
     - TermObject: data_contract_models/term_object.md
-    #- ModelObject: data_contract_models/model_object.md
-    #- DefinitionObject: data_contract_models/definition_object.md
-    #- ExampleObject: data_contract_models/example_object.md
-    #- ServiceLevelObject: data_contract_models/service_level_object.md
-    #- QualityObject: data_contract_models/quality_object.md
+    - ModelObject: data_contract_models/model_object.md
+    - DefinitionObject: data_contract_models/definition_object.md
+    - ExampleObject: data_contract_models/example_object.md
+    - ServiceLevelObject: data_contract_models/service_level_object.md
+    - QualityObject: data_contract_models/quality_object.md
   - API Endpoints:
     - Get Data Contracts: api_endpoints/get_data_contracts.md
     - List Data Contracts: api_endpoints/list_data_contracts.md
@@ -69,9 +69,6 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.extra
-  - pymdownx.emoji:
-      emoji_index: !!python/name:material.extensions.emoji.twemoji
-      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.tabbed:
       alternate_style: true
   - attr_list
@@ -82,7 +79,7 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
-          paths: ["../backend/app/schemas/data_contract"]
+          paths: ["../backend/app/schemas/"]
           options:
             show_bases: false
             members_order: source
@@ -94,9 +91,14 @@ plugins:
             show_signature_annotations: true
             signature_crossrefs: true
             show_if_no_docstring: true
+            show_root_heading: true
+            inherited_members: true
+            unwrap_annotated: true
+            docstring_section_style: spacy
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
             extensions:
-              - griffe_pydantic:
-                schema: true
+            - griffe_typingdoc
 
 
 

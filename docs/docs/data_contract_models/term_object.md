@@ -1,3 +1,3 @@
 # TermObject
 
-::: term_object.TermObject
+::: data_contract.term_object.TermObject
