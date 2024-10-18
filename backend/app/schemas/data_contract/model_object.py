@@ -1,12 +1,13 @@
 from typing import Dict, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import Field
 
 from .config_object import ConfigObject
 from .field_object import FieldObject
+from ...utils.example_model import BaseModelWithExample
 
 
-class ModelObject(BaseModel):
+class ModelObject(BaseModelWithExample):
     """
     Represents a model object in a data contract.
 
@@ -54,68 +55,5 @@ class ModelObject(BaseModel):
     config: Optional[ConfigObject] = Field(
         None,
         description="Any additional key-value pairs that might be useful for further tooling.",
-        example={"partition_key": "order_timestamp", "clustering_key": "order_id"},
-    )
-
-    model_config = ConfigDict(
-        json_schema_extra={
-            "example": {
-                "type": "table",
-                "description": "One record per order. Includes cancelled and deleted orders.",
-                "title": "Orders Latest",
-                "fields": {
-                    "order_id": {
-                        "description": "An internal ID that identifies an order in the online shop.",
-                        "type": "text",
-                        "format": "uuid",
-                        "required": True,
-                        "unique": True,
-                        "primary": True,
-                        "example": "243c25e5-a081-43a9-aeab-6d5d5b6cb5e2",
-                        "pii": True,
-                        "classification": "restricted",
-                        "tags": ["orders"],
-                    },
-                    "order_timestamp": {
-                        "description": "The business timestamp in UTC when the order was successfully registered in the source system and the payment was successful.",
-                        "type": "timestamp",
-                        "required": True,
-                        "example": "2024-09-09T08:30:00Z",
-                    },
-                    "order_total": {
-                        "description": "Total amount in the smallest monetary unit (e.g., cents).",
-                        "type": "long",
-                        "required": True,
-                        "example": 9999,
-                    },
-                    "customer_id": {
-                        "description": "Unique identifier for the customer.",
-                        "type": "text",
-                        "min_length": 10,
-                        "max_length": 20,
-                        "example": "1000000001",
-                    },
-                    "customer_email_address": {
-                        "description": "The email address, as entered by the customer. The email address was not verified.",
-                        "type": "text",
-                        "format": "email",
-                        "required": True,
-                        "pii": True,
-                        "classification": "sensitive",
-                        "example": "mary.taylor82@example.com",
-                    },
-                    "processed_timestamp": {
-                        "description": "The timestamp when the record was processed by the data platform.",
-                        "type": "timestamp",
-                        "required": True,
-                        "example": "2030-09-09T08:31:00Z",
-                        "config": {
-                            "jsonType": "string",
-                            "jsonFormat": "date-time",
-                        },
-                    },
-                },
-                "config": ConfigObject.model_config["json_schema_extra"]["example"],
-            }
-        }
+        example=ConfigObject.example(),
     )

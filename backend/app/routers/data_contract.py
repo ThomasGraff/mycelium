@@ -38,7 +38,7 @@ router = APIRouter()
         201: {
             "content": {
                 "application/json": {
-                    "example": DataContractCreateResponse.model_config["json_schema_extra"]["example"]
+                    "example": DataContractCreateResponse.example()
                 }
             },
         },
@@ -98,7 +98,7 @@ async def create_data_contract_route(
     responses={
         200: {
             "content": {
-                "application/json": {"example": DataContractGetResponse.model_config["json_schema_extra"]["example"]}
+                "application/json": {"example": DataContractGetResponse.example()}
             },
         },
         404: {
@@ -116,10 +116,7 @@ async def create_data_contract_route(
     },
     tags=["Data Contract"],
 )
-async def get_data_contract_route(
-    id: str = "urn:datacontract:checkout:orders-latest",
-    db: Session = Depends(db_manager.get_db),
-) -> DataContractGetResponse:
+async def get_data_contract_route(id: str, db: Session = Depends(db_manager.get_db)) -> DataContractGetResponse:
     """
     Retrieves a data contract from the database by its ID.
 
@@ -157,7 +154,7 @@ async def get_data_contract_route(
     responses={
         200: {
             "content": {
-                "application/json": {"example": DataContractListResponse.model_config["json_schema_extra"]["example"]}
+                "application/json": {"example": DataContractListResponse.example()}
             },
         },
         500: {
@@ -205,7 +202,7 @@ async def list_data_contracts_route(db: Session = Depends(db_manager.get_db)) ->
         200: {
             "content": {
                 "application/json": {
-                    "example": DataContractUpdateResponse.model_config["json_schema_extra"]["example"]
+                    "example": DataContractUpdateResponse.example()
                 }
             },
         },
@@ -268,7 +265,7 @@ async def update_data_contract_route(
         200: {
             "content": {
                 "application/json": {
-                    "example": DataContractDeleteResponse.model_config["json_schema_extra"]["example"]
+                    "example": DataContractDeleteResponse.example()
                 }
             },
         },

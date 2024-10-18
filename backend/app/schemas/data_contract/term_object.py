@@ -1,9 +1,10 @@
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import Field
+from ...utils.example_model import BaseModelWithExample
 
 
-class TermObject(BaseModel):
+class TermObject(BaseModelWithExample):
     """
     Represents the terms and conditions of a data contract.
 
@@ -30,15 +31,4 @@ class TermObject(BaseModel):
         None,
         description="Period of time required to terminate or modify the data usage agreement. Uses ISO-8601 format.",
         example="P3M",
-    )
-
-    model_config = ConfigDict(
-        json_schema_extra={
-            "example": {
-                "usage": "Data can be used for reports, analytics and machine learning use cases.",
-                "limitations": "Not suitable for real-time use cases. Data may not be used to identify individual customers.",
-                "billing": "5000 USD per month",
-                "notice_period": "P3M",
-            }
-        }
     )

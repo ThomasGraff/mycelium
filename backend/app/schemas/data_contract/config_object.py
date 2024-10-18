@@ -1,9 +1,10 @@
 from typing import Any, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import ConfigDict, Field
+from ...utils.example_model import BaseModelWithExample
 
 
-class ConfigObject(BaseModel):
+class ConfigObject(BaseModelWithExample):
     """
     Represents additional metadata for models and fields in a data contract.
 
@@ -58,17 +59,7 @@ class ConfigObject(BaseModel):
         example="timestamp",
     )
 
-    model_config = ConfigDict(
-        extra="allow",  # Allows for Specification Extensions
-        json_schema_extra={
-            "example": {
-                "avro_namespace": "my.namespace",
-                "avro_type": "long",
-                "avro_logical_type": "timestamp-millis",
-                "snowflake_type": "TIMESTAMP_TZ",
-            }
-        },
-    )
+    model_config = ConfigDict(extra="allow")
 
     def __init__(self, **data: Any):
         """

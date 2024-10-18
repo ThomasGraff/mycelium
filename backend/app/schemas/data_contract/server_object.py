@@ -1,9 +1,10 @@
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import Field
 
+from ...utils.example_model import BaseModelWithExample
 
-class ServerObject(BaseModel):
+class ServerObject(BaseModelWithExample ):
     """
     Represents a server object in a data contract.
 
@@ -161,17 +162,4 @@ class ServerObject(BaseModel):
         None,
         description="The relative or absolute path to the data file(s).",
         example="/data/orders/*.json",
-    )
-
-    model_config = ConfigDict(
-        json_schema_extra={
-            "example": {
-                "type": "s3",
-                "description": "Example S3 server",
-                "environment": "prod",
-                "location": "s3://datacontract-example-orders-latest/data/{model}/*.json",
-                "format": "json",
-                "delimiter": "new_line",
-            }
-        }
     )
