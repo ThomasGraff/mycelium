@@ -1,9 +1,10 @@
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import Field
+from ...utils.example_model import BaseModelWithExample
 
 
-class AvailabilityObject(BaseModel):
+class AvailabilityObject(BaseModelWithExample):
     """
     Represents the availability service level for a data contract.
 
@@ -22,17 +23,8 @@ class AvailabilityObject(BaseModel):
         example="99.9%",
     )
 
-    model_config = ConfigDict(
-        json_schema_extra={
-            "example": {
-                "description": "The server is available during support hours",
-                "percentage": "99.9%",
-            }
-        }
-    )
 
-
-class RetentionObject(BaseModel):
+class RetentionObject(BaseModelWithExample):
     """
     Represents the retention service level for a data contract.
 
@@ -61,19 +53,8 @@ class RetentionObject(BaseModel):
         example="orders.order_timestamp",
     )
 
-    model_config = ConfigDict(
-        json_schema_extra={
-            "example": {
-                "description": "Data is retained for one year",
-                "period": "P1Y",
-                "unlimited": False,
-                "timestamp_field": "orders.order_timestamp",
-            }
-        }
-    )
 
-
-class LatencyObject(BaseModel):
+class LatencyObject(BaseModelWithExample):
     """
     Represents the latency service level for a data contract.
 
@@ -102,19 +83,8 @@ class LatencyObject(BaseModel):
         example="orders.processed_timestamp",
     )
 
-    model_config = ConfigDict(
-        json_schema_extra={
-            "example": {
-                "description": "Data is available within 25 hours after the order was placed",
-                "threshold": "25h",
-                "source_timestamp_field": "orders.order_timestamp",
-                "processed_timestamp_field": "orders.processed_timestamp",
-            }
-        }
-    )
 
-
-class FreshnessObject(BaseModel):
+class FreshnessObject(BaseModelWithExample):
     """
     Represents the freshness service level for a data contract.
 
@@ -138,18 +108,8 @@ class FreshnessObject(BaseModel):
         example="orders.order_timestamp",
     )
 
-    model_config = ConfigDict(
-        json_schema_extra={
-            "example": {
-                "description": "The age of the youngest row in a table.",
-                "threshold": "25h",
-                "timestamp_field": "orders.order_timestamp",
-            }
-        }
-    )
 
-
-class FrequencyObject(BaseModel):
+class FrequencyObject(BaseModelWithExample):
     """
     Represents the frequency service level for a data contract.
 
@@ -178,19 +138,8 @@ class FrequencyObject(BaseModel):
         example="0 0 * * *",
     )
 
-    model_config = ConfigDict(
-        json_schema_extra={
-            "example": {
-                "description": "Data is delivered once a day",
-                "type": "batch",
-                "interval": "daily",
-                "cron": "0 0 * * *",
-            }
-        }
-    )
 
-
-class SupportObject(BaseModel):
+class SupportObject(BaseModelWithExample):
     """
     Represents the support service level for a data contract.
 
@@ -209,21 +158,13 @@ class SupportObject(BaseModel):
         example="9am to 5pm in EST on business days",
     )
     response_time: Optional[str] = Field(
-        None, description="Expected time for support to acknowledge a request.", example="1h"
-    )
-
-    model_config = ConfigDict(
-        json_schema_extra={
-            "example": {
-                "description": "The data is available during typical business hours at headquarters",
-                "time": "9am to 5pm in EST on business days",
-                "response_time": "1h",
-            }
-        }
+        None,
+        description="Expected time for support to acknowledge a request.",
+        example="1h",
     )
 
 
-class BackupObject(BaseModel):
+class BackupObject(BaseModelWithExample):
     """
     Represents the backup service level for a data contract.
 
@@ -257,20 +198,8 @@ class BackupObject(BaseModel):
         example="1 week",
     )
 
-    model_config = ConfigDict(
-        json_schema_extra={
-            "example": {
-                "description": "Data is backed up once a week, every Sunday at 0:00 UTC.",
-                "interval": "weekly",
-                "cron": "0 0 * * 0",
-                "recovery_time": "24 hours",
-                "recovery_point": "1 week",
-            }
-        }
-    )
 
-
-class ServiceLevelObject(BaseModel):
+class ServiceLevelObject(BaseModelWithExample):
     """
     Represents the service levels for a data contract.
 
@@ -278,24 +207,38 @@ class ServiceLevelObject(BaseModel):
     retention, latency, freshness, frequency of data delivery, support, and backup.
     """
 
-    availability: Optional[AvailabilityObject] = Field(None, description="Availability service level.")
-    retention: Optional[RetentionObject] = Field(None, description="Data retention service level.")
-    latency: Optional[LatencyObject] = Field(None, description="Latency service level.")
-    freshness: Optional[FreshnessObject] = Field(None, description="Data freshness service level.")
-    frequency: Optional[FrequencyObject] = Field(None, description="Data delivery frequency service level.")
-    support: Optional[SupportObject] = Field(None, description="Support service level.")
-    backup: Optional[BackupObject] = Field(None, description="Backup service level.")
-
-    model_config = ConfigDict(
-        json_schema_extra={
-            "example": {
-                "availability": AvailabilityObject.model_config["json_schema_extra"]["example"],
-                "retention": RetentionObject.model_config["json_schema_extra"]["example"],
-                "latency": LatencyObject.model_config["json_schema_extra"]["example"],
-                "freshness": FreshnessObject.model_config["json_schema_extra"]["example"],
-                "frequency": FrequencyObject.model_config["json_schema_extra"]["example"],
-                "support": SupportObject.model_config["json_schema_extra"]["example"],
-                "backup": BackupObject.model_config["json_schema_extra"]["example"],
-            }
-        }
+    availability: Optional[AvailabilityObject] = Field(
+        None,
+        description="Availability service level.",
+        example=AvailabilityObject.example(),
+    )
+    retention: Optional[RetentionObject] = Field(
+        None,
+        description="Data retention service level.",
+        example=RetentionObject.example(),
+    )
+    latency: Optional[LatencyObject] = Field(
+        None,
+        description="Latency service level.",
+        example=LatencyObject.example(),
+    )
+    freshness: Optional[FreshnessObject] = Field(
+        None,
+        description="Data freshness service level.",
+        example=FreshnessObject.example(),
+    )
+    frequency: Optional[FrequencyObject] = Field(
+        None,
+        description="Data delivery frequency service level.",
+        example=FrequencyObject.example(),
+    )
+    support: Optional[SupportObject] = Field(
+        None,
+        description="Support service level.",
+        example=SupportObject.example(),
+    )
+    backup: Optional[BackupObject] = Field(
+        None,
+        description="Backup service level.",
+        example=BackupObject.example(),
     )
