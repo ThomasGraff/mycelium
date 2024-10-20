@@ -1,11 +1,16 @@
 <template>
   <div>
-    <NavBar />
+    <NavBar
+      @new-chat="handleNewChat"
+      @create-data-contract="handleCreateDataContract"
+      @list-data-contracts="handleListDataContracts"
+    />
     <v-main>
       <v-container color="#2f2f2f">
         <v-row :class="{ 'object-open': isObjectVisible }">
           <v-col :cols="isObjectVisible ? 6 : 12" class="search-results-column">
             <ChatColumn
+              ref="chatColumn"
               @request-object="handleObjectRequest"
               @close-object="closeObject"
             />
@@ -41,6 +46,7 @@ export default defineComponent({
   setup () {
     const isObjectVisible = ref(false)
     const currentObjectComponent = ref(null)
+    const chatColumn = ref(null)
 
     const searchResultsColumnClass = computed(() => ({
       'search-results-column': true,
@@ -57,12 +63,29 @@ export default defineComponent({
       currentObjectComponent.value = null
     }
 
+    const handleNewChat = () => {
+      closeObject()
+      chatColumn.value.clearChat()
+    }
+
+    const handleCreateDataContract = () => {
+      handleObjectRequest('DataContract')
+    }
+
+    const handleListDataContracts = () => {
+      handleObjectRequest('ListDataContracts')
+    }
+
     return {
       isObjectVisible,
       currentObjectComponent,
       searchResultsColumnClass,
       handleObjectRequest,
-      closeObject
+      closeObject,
+      handleNewChat,
+      handleCreateDataContract,
+      handleListDataContracts,
+      chatColumn
     }
   }
 })

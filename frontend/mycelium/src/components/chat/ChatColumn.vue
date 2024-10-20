@@ -46,6 +46,9 @@ export default {
       }
 
       this.$refs.resultsList.addResult(search)
+    },
+    clearChat () {
+      this.$refs.resultsList.clearResults()
     }
   }
 }

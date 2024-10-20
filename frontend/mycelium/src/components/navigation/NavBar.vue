@@ -10,6 +10,7 @@
         :prepend-icon="item.icon"
         :title="item.title"
         :value="item.value"
+        @click="handleItemClick(item.value)"
       ></v-list-item>
     </v-list>
   </v-navigation-drawer>
@@ -19,11 +20,20 @@
 import { MENU_ITEMS } from '@/constants'
 
 const logoSrc = require('@/assets/logo.png')
-</script>
 
-<style scoped>
-.logo-mycelium {
-  text-align: center;
-  padding: 10%;
+const emit = defineEmits(['newChat', 'createDataContract', 'listDataContracts'])
+
+const handleItemClick = (value) => {
+  switch (value) {
+    case 'newChat':
+      emit('newChat')
+      break
+    case 'createDataContract':
+      emit('createDataContract')
+      break
+    case 'listDataContracts':
+      emit('listDataContracts')
+      break
+  }
 }
-</style>
+</script>
