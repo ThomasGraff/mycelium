@@ -1,24 +1,19 @@
 <template>
-    <v-btn
-      icon="mdi-close-thick"
-      size="x-small"
-      @click="closeObject"
-      class="position-absolute top-0 right-0 clear-button pa-2"
-      pad
-    >
-    </v-btn>
+  <v-btn
+    icon="mdi-close-thick"
+    size="x-small"
+    @click="emitCloseEvent"
+    class="position-absolute top-0 right-0 clear-button pa-2"
+  >
+  </v-btn>
 </template>
 
-<script>
-export default {
+<script setup>
+const emit = defineEmits(['close'])
 
-  methods: {
-    closeObject () {
-      this.$emit('closeObject', false)
-    }
-  }
+const emitCloseEvent = () => {
+  emit('close')
 }
-
 </script>
 
 <style scoped>
@@ -26,6 +21,7 @@ export default {
   margin-top: 20px;
   padding: 20px;
 }
+
 .scrollable-card {
   max-height: 100vh;
   display: flex;

@@ -1,8 +1,8 @@
 <template>
   <div class="results">
-    <v-container >
-      <v-row >
-        <v-col cols="12" v-for="(result, index) in results.slice()" :key="index" >
+    <v-container>
+      <v-row>
+        <v-col cols="12" v-for="(result, index) in reversedResults" :key="index">
           <ResultBox :result="result" :index="index" />
         </v-col>
       </v-row>
@@ -10,35 +10,31 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed } from 'vue'
 import ResultBox from './ResultBox.vue'
 
-export default {
-  data () {
-    return {
-      results: [] // Tableau pour stocker les résultats
-    }
-  },
-  components: {
-    ResultBox
-  },
-  methods: {
-    addResult (newResult) {
-      this.results.push(newResult) // Ajoute le nouveau résultat au tableau
-    },
-    clearResults () {
-      this.results = [] // Vide le tableau des résultats
-    }
-  }
+const results = ref([])
+
+const reversedResults = computed(() => [...results.value].reverse())
+
+const addResult = (newResult) => {
+  results.value.push(newResult)
 }
+
+const clearResults = () => {
+  results.value = []
+}
+
+defineExpose({ addResult, clearResults })
 </script>
 
 <style scoped>
-.results{
+.results {
   overflow-y: auto;
   flex: 1;
-  display: flex; /* Utiliser flexbox */
-  flex-direction: column-reverse; /* Positionner les éléments du bas vers le haut */
+  display: flex;
+  flex-direction: column-reverse;
   max-height: 76vh;
 }
 </style>

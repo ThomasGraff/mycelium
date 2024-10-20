@@ -1,125 +1,91 @@
 <template>
-  <v-card class="position-relative">
-    <CloseButton @closeObject="handleCloseObject" />
-    <!-- Onglets -->
-    <v-tabs v-model="activeTab" background-color="primary">
-      <v-tab value="0">Information</v-tab>
-      <v-tab value="1">Servers</v-tab>
-      <v-tab value="2">Models</v-tab>
-      <v-tab value="3">Links</v-tab>
-      <v-tab value="4">Tags</v-tab>
+  <v-card class="scrollable-card">
+    <v-card-title>
+      Data Contract
+      <CloseButton @close="closeObject" />
+    </v-card-title>
+    <v-tabs v-model="tab" background-color="primary">
+      <v-tab value="information">Information</v-tab>
+      <v-tab value="server">Server</v-tab>
     </v-tabs>
-
-    <!-- Contenu des onglets -->
-    <v-tabs-window v-model="activeTab" class="overflow">
-      <!-- Onglet Information -->
-      <v-tabs-window-item value="0">
-        <InformationTab @update-info="updateDataContractInfo" />
-      </v-tabs-window-item>
-
-      <!-- Onglet Servers -->
-      <v-tabs-window-item value="1">
-        <ServerTab />
-      </v-tabs-window-item>
-
-      <!-- Onglets restants -->
-      <v-tabs-window-item value="2">
-        <v-card flat></v-card>
-      </v-tabs-window-item>
-
-      <v-tabs-window-item value="3">
-        <v-card flat></v-card>
-      </v-tabs-window-item>
-
-      <v-tabs-window-item value="4">
-        <v-card flat></v-card>
-      </v-tabs-window-item>
-
-      <v-tabs-window-item value="5">
-        <v-card flat></v-card>
-      </v-tabs-window-item>
-    </v-tabs-window>
-
-    <SubmitButton @submitObject="handleSubmitObject" />
+    <v-card-text>
+      <v-window v-model="tab">
+        <v-window-item value="information">
+          <InformationTab @update-info="updateInfo" />
+        </v-window-item>
+        <v-window-item value="server">
+          <ServerTab @update="updateServer" />
+        </v-window-item>
+      </v-window>
+    </v-card-text>
+    <v-card-actions>
+      <SubmitButton @submitObject="submitObject" :isDisabled="!isValid" />
+    </v-card-actions>
   </v-card>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
+import CloseButton from './components/CloseButton.vue'
 import InformationTab from './components/InformationTab.vue'
 import ServerTab from './components/ServerTab.vue'
-import CloseButton from './components/CloseButton.vue'
 import SubmitButton from './components/SubmitButton.vue'
-import axios from 'axios'
+import { useResizeObserver } from '@/composables/useResizeObserver'
 
-export default {
-  components: {
-    InformationTab,
-    ServerTab,
-    CloseButton,
-    SubmitButton
-  },
-  data () {
-    return {
-      activeTab: 0, // Onglet actif, par défaut "Information"
-      valid: false, // Validation des formulaires
-      dataContract: {
-        dataContractSpecification: '0.9.3', // Valeur par défaut pour data_contract_specification
-        id: 'urn:datacontract:exampleae', // Valeur par défaut pour l'ID
-        info: {
-          title: '',
-          version: '',
-          description: '',
-          owner: '',
-          contactName: '',
-          contactEmail: '',
-          contactUrl: '',
-          businessUnit: ''
-        }
-      }
-    }
-  },
-  methods: {
-    handleCloseObject () {
-      this.$emit('closeObject')
-    },
-    handleSubmitObject () {
-      this.submitDataContract()
-    },
-    updateDataContractInfo (info) {
-      // Mettre à jour les informations dans dataContract quand l'enfant émet update-info
-      this.dataContract.info = info
-    },
+const emit = defineEmits(['close-object'])
 
-    async submitDataContract () {
-      try {
-        // Envoi de la requête POST à l'API
-        console.log('test')
-        const response = await axios.post('http://127.0.0.1:8000/data_contract/', this.dataContract)
-        console.log('Response received:', response) // Ajoutez cette ligne
-        console.log('Data contract created successfully:', response.data)
+const tab = ref('information')
+const isValid = ref(false)
 
-        // Réinitialiser ou rediriger l'utilisateur, si nécessaire
-        // this.resetForm(); // Exemple de fonction pour réinitialiser le formulaire
-      } catch (error) {
-        // Gérer les erreurs d'API
-        console.error('Error creating data contract:', error.response ? error.response.data : error.message)
-      }
+const updateInfo = (info) => {
+  console.log('💡 Info updated:', info)
+  // TODO: Implement logic to update the data contract information
+}
+
+const updateServer = (server) => {
+  console.log('💡 Server updated:', server)
+  // TODO: Implement logic to update the server information
+}
+
+const submitObject = () => {
+  console.log('💡 Object submitted')
+  // TODO: Implement logic to submit the data contract
+}
+
+const closeObject = () => {
+  console.log('💡 Close object')
+  emit('close-object')
+}
+
+useResizeObserver('.v-window-item')
+
+// ResizeObserver error workaround
+const resizeObserverHandler = (entries) => {
+  for (const entry of entries) {
+    if (entry.target.clientHeight === 0) {
+      return
     }
   }
 }
+
+let resizeObserver
+onMounted(() => {
+  resizeObserver = new ResizeObserver(resizeObserverHandler)
+  document.querySelectorAll('.v-window-item').forEach(el => {
+    resizeObserver.observe(el)
+  })
+})
+
+onUnmounted(() => {
+  if (resizeObserver) {
+    resizeObserver.disconnect()
+  }
+})
 </script>
 
 <style scoped>
-.v-card {
-  margin-top: 20px;
-  padding: 20px;
-  flex: 1; /* Remplit l'espace disponible */
-  display: flex;
-  flex-direction: column;
-}
-
-.overflow {
-  max-height: calc(100vh - 200px); /* Ajustez cette valeur selon votre besoin */
-  overflow: auto;
+.scrollable-card {
+  max-height: calc(100vh - 64px); /* Adjust based on your navbar height */
+  overflow-y: auto;
 }
 </style>

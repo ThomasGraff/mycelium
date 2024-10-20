@@ -15,6 +15,7 @@
 
 <script>
 export default {
+  name: 'InformationTab',
   data () {
     return {
       info: {
@@ -32,8 +33,8 @@ export default {
   },
   methods: {
     updateInfo () {
-      // Emit the updated information to the parent
-      this.$emit('update-info', this.info)
+      // Emit the updated information to the parent component
+      this.$emit('update-info', { ...this.info })
     }
   }
 }

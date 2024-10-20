@@ -1,34 +1,29 @@
 <template>
-      <v-navigation-drawer
-        color="#212121"
-        title="Mycelium"
-        permanent
-      >
-        <div class="logo-mycelium">
-          <img :src="require('@/assets/logo.png')" alt="Logo" class="logo" height="60" />
-        </div>
-        <v-list nav>
-          <v-list-item prepend-icon="mdi-plus" title="New Chat" value="newChat"></v-list-item>
-          <v-list-item prepend-icon="mdi-pen" title="Create DataContract" value="createDataContract"></v-list-item>
-          <v-list-item prepend-icon="mdi-format-list-bulleted-square" title="List DataContracts" value="listDataContracts"></v-list-item>
-        </v-list>
-      </v-navigation-drawer>
+  <v-navigation-drawer color="#212121" title="Mycelium" permanent>
+    <div class="logo-mycelium">
+      <img :src="logoSrc" alt="Logo" class="logo" height="60" />
+    </div>
+    <v-list nav>
+      <v-list-item
+        v-for="item in MENU_ITEMS"
+        :key="item.value"
+        :prepend-icon="item.icon"
+        :title="item.title"
+        :value="item.value"
+      ></v-list-item>
+    </v-list>
+  </v-navigation-drawer>
 </template>
 
-<script>
-export default {
-  methods: {
-    toggleMenu () {
-      // Logique pour afficher le menu (optionnel)
-    }
-  }
-}
+<script setup>
+import { MENU_ITEMS } from '@/constants'
+
+const logoSrc = require('@/assets/logo.png')
 </script>
 
 <style scoped>
-
 .logo-mycelium {
-    text-align: center;
-    padding: 10%;
-  }
+  text-align: center;
+  padding: 10%;
+}
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="result-box" >
+  <div class="result-box">
     <v-card color="#f0f0f0">
       <v-card-text>
         {{ result }}
@@ -10,6 +10,7 @@
 
 <script>
 export default {
+  name: 'ResultBox',
   props: {
     result: {
       type: String,
@@ -18,6 +19,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-</style>

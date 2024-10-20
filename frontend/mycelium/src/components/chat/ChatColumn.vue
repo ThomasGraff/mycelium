@@ -1,10 +1,9 @@
 <template>
   <div class="chat-column">
-    <!-- Barre de recherche -->
     <v-container class="main-container">
       <v-row>
         <v-col>
-          <!-- Résultats de la recherche -->
+          <!-- Search results -->
           <ResultsList ref="resultsList" />
         </v-col>
       </v-row>
@@ -24,23 +23,28 @@ import SearchBar from './components/SearchBar.vue'
 import ResultsList from './components/ResultsList.vue'
 
 export default {
+  name: 'ChatColumn',
   components: {
     SearchBar,
     ResultsList
   },
-
   methods: {
     handleSearch (search) {
       const lowerCaseSearch = search.toLowerCase()
 
-      // Logique pour déterminer quel objet afficher
-      if (lowerCaseSearch === 'new') {
-        this.$emit('requestObject', 'DataContract')
-      } else if (lowerCaseSearch === 'list') {
-        this.$emit('requestObject', 'ListDataContracts')
-      } else if (lowerCaseSearch === 'close') {
-        this.$emit('closeObject')
+      // Logic to determine which object to display
+      switch (lowerCaseSearch) {
+        case 'new':
+          this.$emit('requestObject', 'DataContract')
+          break
+        case 'list':
+          this.$emit('requestObject', 'ListDataContracts')
+          break
+        case 'close':
+          this.$emit('closeObject')
+          break
       }
+
       this.$refs.resultsList.addResult(search)
     }
   }
@@ -51,16 +55,16 @@ export default {
 .chat-column {
   display: flex;
   flex-direction: column;
-  height: 98vh; /* Prend la hauteur de la fenêtre */
+  height: 98vh; /* Takes the height of the window */
 }
 
 .main-container {
-  flex: 1; /* Remplit l'espace disponible */
+  flex: 1; /* Fills available space */
   display: flex;
   flex-direction: column;
 }
 
 .search-bar {
-  margin-top: auto; /* Pousse la barre de recherche vers le bas */
+  margin-top: auto; /* Pushes the search bar to the bottom */
 }
 </style>
