@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer color="#212121" title="Mycelium" permanent>
+  <v-navigation-drawer color="#212121" title="Mycelium" permanent class="nav-drawer">
     <div class="logo-container">
       <img :src="logoSrc" alt="Logo" class="logo" height="60" />
     </div>
@@ -13,6 +13,10 @@
         @click="handleItemClick(item.value)"
       ></v-list-item>
     </v-list>
+    <v-spacer></v-spacer>
+    <v-list>
+      <v-list-item @click="$emit('logout')" prepend-icon="mdi-logout" title="Logout" value="logout"></v-list-item>
+    </v-list>
   </v-navigation-drawer>
 </template>
 
@@ -21,7 +25,7 @@ import { MENU_ITEMS } from '@/constants'
 
 const logoSrc = require('@/assets/logo.png')
 
-const emit = defineEmits(['newChat', 'createDataContract', 'listDataContracts'])
+const emit = defineEmits(['newChat', 'createDataContract', 'listDataContracts', 'logout'])
 
 const handleItemClick = (value) => {
   switch (value) {
@@ -43,5 +47,10 @@ const handleItemClick = (value) => {
   display: flex;
   justify-content: center;
   padding: 16px 0;
+}
+
+.nav-drawer {
+  display: flex;
+  flex-direction: column;
 }
 </style>

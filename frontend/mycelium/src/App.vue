@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app class="app-container">
     <router-view></router-view>
   </v-app>
 </template>
@@ -15,8 +15,15 @@ export default {
   --scrollbar-color: #212121;
 }
 
-body {
+html, body {
+  height: 100%;
   overflow: hidden;
+}
+
+.app-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Global scrollbar styles */

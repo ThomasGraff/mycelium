@@ -1,14 +1,15 @@
 <template>
-  <div>
+  <div class="home-container">
     <NavBar
       @new-chat="handleNewChat"
       @create-data-contract="handleCreateDataContract"
       @list-data-contracts="handleListDataContracts"
+      @logout="logout"
     />
-    <v-main>
-      <v-container color="#2f2f2f">
-        <v-row :class="{ 'object-open': isObjectVisible }">
-          <v-col :cols="isObjectVisible ? 6 : 12" class="search-results-column">
+    <v-main class="main-content">
+      <v-container fluid class="pa-0 fill-height">
+        <v-row no-gutters class="fill-height" :class="{ 'object-open': isObjectVisible }">
+          <v-col :cols="isObjectVisible ? 6 : 12" class="d-flex flex-column">
             <ChatColumn
               ref="chatColumn"
               @request-object="handleObjectRequest"
@@ -16,7 +17,7 @@
             />
           </v-col>
 
-          <v-col v-if="isObjectVisible" cols="6">
+          <v-col v-if="isObjectVisible" cols="6" class="d-flex flex-column">
             <component
               :is="currentObjectComponent"
               @close-object="closeObject"
@@ -31,6 +32,7 @@
 
 <script>
 import { defineComponent, ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import NavBar from '@/components/navigation/NavBar.vue'
 import DataContract from '@/components/dataContract/DataContract.vue'
 import ListDataContracts from '@/components/listDataContracts/ListDataContracts.vue'
@@ -45,6 +47,7 @@ export default defineComponent({
     ChatColumn
   },
   setup () {
+    const router = useRouter()
     const isObjectVisible = ref(false)
     const currentObjectComponent = ref(null)
     const chatColumn = ref(null)
@@ -85,6 +88,20 @@ export default defineComponent({
       }
     }
 
+    const logout = async () => {
+      try {
+        // TODO: Implement logout logic here
+        // For example:
+        // await authService.logout()
+        console.log('💡 Logging out...')
+
+        // Redirect to login page
+        router.push('/login')
+      } catch (error) {
+        console.error('❌ Error during logout:', error)
+      }
+    }
+
     return {
       isObjectVisible,
       currentObjectComponent,
@@ -95,13 +112,24 @@ export default defineComponent({
       handleCreateDataContract,
       handleListDataContracts,
       chatColumn,
-      handleContractAdded
+      handleContractAdded,
+      logout
     }
   }
 })
 </script>
 
 <style scoped>
+.home-container {
+  height: 100vh;
+  display: flex;
+}
+
+.main-content {
+  flex: 1;
+  overflow: hidden;
+}
+
 .object-open .search-results-column {
   text-align: left;
 }
