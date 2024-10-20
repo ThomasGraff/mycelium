@@ -1,73 +1,100 @@
 <template>
   <div class="chat-column">
-    <v-container class="main-container">
-      <v-row>
-        <v-col>
-          <!-- Search results -->
-          <ResultsList ref="resultsList" />
-        </v-col>
-      </v-row>
-    </v-container>
-    <v-container>
-      <v-row>
-        <v-col>
-          <SearchBar @search="handleSearch" />
-        </v-col>
-      </v-row>
-    </v-container>
+    <div class="results-wrapper" ref="resultsWrapper">
+      <ResultsList ref="resultsList" />
+    </div>
+    <div class="search-bar-container">
+      <SearchBar @search="handleSearch" />
+    </div>
   </div>
 </template>
 
 <script>
+import { defineComponent, ref, watch } from 'vue'
 import SearchBar from './components/SearchBar.vue'
 import ResultsList from './components/ResultsList.vue'
 
-export default {
+export default defineComponent({
   name: 'ChatColumn',
   components: {
     SearchBar,
     ResultsList
   },
-  methods: {
-    handleSearch (search) {
+  emits: ['requestObject', 'closeObject'],
+  setup (props, { emit }) {
+    const resultsList = ref(null)
+    const resultsWrapper = ref(null)
+
+    const getHelpMessage = () => {
+      return `Here are the available commands:
+* 🆕 **new**: Create a new Data Contract
+* 📋 **list**: Display all Data Contracts
+* 🚪 **close**: Close the current object
+* ❓ **help**: Display this help message`.trim()
+    }
+
+    const handleSearch = (search) => {
       const lowerCaseSearch = search.toLowerCase()
 
-      // Logic to determine which object to display
+      resultsList.value.addResult(search, true)
+
+      let aiResponse = ''
       switch (lowerCaseSearch) {
         case 'new':
-          this.$emit('requestObject', 'DataContract')
+          emit('requestObject', 'DataContract')
+          aiResponse = '✨ Creating a new Data Contract. What would you like to add?'
           break
         case 'list':
-          this.$emit('requestObject', 'ListDataContracts')
+          emit('requestObject', 'ListDataContracts')
+          aiResponse = '📋 Displaying the list of Data Contracts.'
           break
         case 'close':
-          this.$emit('closeObject')
+          emit('closeObject')
+          aiResponse = '🚪 Closing the current object.'
           break
+        case 'help':
+          aiResponse = getHelpMessage()
+          break
+        default:
+          aiResponse = `❓ I'm sorry, I don't understand "${search}".\n\n${getHelpMessage()}`
       }
 
-      this.$refs.resultsList.addResult(search)
-    },
-    clearChat () {
-      this.$refs.resultsList.clearResults()
+      setTimeout(() => {
+        resultsList.value.addResult(aiResponse, false)
+      }, 100)
+    }
+
+    const clearChat = () => {
+      resultsList.value.clearResults()
+    }
+
+    watch(() => resultsList.value?.results, () => {
+    }, { deep: true })
+
+    return {
+      resultsList,
+      resultsWrapper,
+      handleSearch,
+      clearChat
     }
   }
-}
+})
 </script>
 
 <style scoped>
 .chat-column {
   display: flex;
   flex-direction: column;
-  height: 98vh; /* Takes the height of the window */
+  height: 100vh;
 }
 
-.main-container {
-  flex: 1; /* Fills available space */
-  display: flex;
-  flex-direction: column;
+.results-wrapper {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 16px;
 }
 
-.search-bar {
-  margin-top: auto; /* Pushes the search bar to the bottom */
+.search-bar-container {
+  padding: 16px;
 }
 </style>
