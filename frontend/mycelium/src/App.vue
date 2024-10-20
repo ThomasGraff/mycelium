@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <NavBar />
+    <NavBar @requestObject="handleObjectRequest"/>
     <v-main>
       <v-container color="#2f2f2f">
         <v-row :class="{ 'object-open': isObjectVisible }">
