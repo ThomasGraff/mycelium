@@ -1,6 +1,6 @@
 <template>
   <v-card flat>
-    <v-form ref="infoForm" v-model="valid" @input="updateInfo">
+    <v-form ref="infoForm" v-model="valid" @update:modelValue="updateInfo">
       <v-text-field v-model="info.title" label="Title" required></v-text-field>
       <v-text-field v-model="info.version" label="Version" required></v-text-field>
       <v-textarea v-model="info.description" label="Description" required></v-textarea>
@@ -15,6 +15,8 @@
 
 <script>
 export default {
+  name: 'InformationTab',
+  emits: ['update-info', 'validate'],
   data () {
     return {
       info: {
@@ -32,8 +34,13 @@ export default {
   },
   methods: {
     updateInfo () {
-      // Emit the updated information to the parent
-      this.$emit('update-info', this.info)
+      this.$emit('update-info', { ...this.info })
+      this.$emit('validate', this.valid)
+    }
+  },
+  watch: {
+    valid (newValue) {
+      this.$emit('validate', newValue)
     }
   }
 }

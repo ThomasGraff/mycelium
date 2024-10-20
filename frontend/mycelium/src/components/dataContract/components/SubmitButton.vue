@@ -1,30 +1,29 @@
 <template>
-    <v-btn
-    @click="submitObject">
-    Submit
-    </v-btn>
+  <v-btn @click="submitObject" color="primary" :disabled="isDisabled">
+    {{ buttonText }}
+  </v-btn>
 </template>
 
 <script>
 export default {
-
+  name: 'SubmitButton',
+  props: {
+    isDisabled: {
+      type: Boolean,
+      default: false
+    },
+    buttonText: {
+      type: String,
+      default: 'Submit'
+    }
+  },
+  emits: ['submitObject'],
   methods: {
     submitObject () {
-      this.$emit('submitObject', true)
+      if (!this.isDisabled) {
+        this.$emit('submitObject')
+      }
     }
   }
 }
-
 </script>
-
-<style scoped>
-.v-card {
-  margin-top: 20px;
-  padding: 20px;
-}
-.scrollable-card {
-  max-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-</style>
