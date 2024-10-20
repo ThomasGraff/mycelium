@@ -1,6 +1,6 @@
 <template>
   <v-navigation-drawer color="#212121" title="Mycelium" permanent>
-    <div class="logo-mycelium">
+    <div class="logo-container">
       <img :src="logoSrc" alt="Logo" class="logo" height="60" />
     </div>
     <v-list nav>
@@ -37,3 +37,11 @@ const handleItemClick = (value) => {
   }
 }
 </script>
+
+<style scoped>
+.logo-container {
+  display: flex;
+  justify-content: center;
+  padding: 16px 0;
+}
+</style>

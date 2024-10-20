@@ -20,23 +20,10 @@ export default {
   emits: ['submitObject'],
   methods: {
     submitObject () {
-      this.$emit('submitObject', true)
+      if (!this.isDisabled) {
+        this.$emit('submitObject')
+      }
     }
   }
 }
 </script>
-
-<style scoped>
-/* Styles for the card containing the button */
-.v-card {
-  margin-top: 20px;
-  padding: 20px;
-}
-
-/* Styles for scrollable content */
-.scrollable-card {
-  max-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-</style>

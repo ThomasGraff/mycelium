@@ -42,9 +42,7 @@ export default defineComponent({
 
     const fetchDataContracts = async () => {
       try {
-        // GET request to retrieve data contracts from the API
         const response = await axios.get('http://127.0.0.1:8000/data_contract/')
-        // Check if the 'data' key contains an array before assigning it
         if (Array.isArray(response.data.data)) {
           dataContracts.value = response.data.data
         } else {
@@ -56,14 +54,14 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      // Fetch data contracts when the component is mounted
       fetchDataContracts()
     })
 
     return {
       dataContracts,
       headers,
-      handleCloseObject
+      handleCloseObject,
+      fetchDataContracts // Expose the method so it can be called from outside
     }
   }
 })

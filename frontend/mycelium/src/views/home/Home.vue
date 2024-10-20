@@ -20,6 +20,7 @@
             <component
               :is="currentObjectComponent"
               @close-object="closeObject"
+              @contract-added="handleContractAdded"
             />
           </v-col>
         </v-row>
@@ -76,6 +77,14 @@ export default defineComponent({
       handleObjectRequest('ListDataContracts')
     }
 
+    const handleContractAdded = () => {
+      // If ListDataContracts is currently visible, refresh it
+      if (currentObjectComponent.value === 'ListDataContracts') {
+        // Assuming ListDataContracts has a method to refresh its data
+        this.$refs.listDataContracts.fetchDataContracts()
+      }
+    }
+
     return {
       isObjectVisible,
       currentObjectComponent,
@@ -85,7 +94,8 @@ export default defineComponent({
       handleNewChat,
       handleCreateDataContract,
       handleListDataContracts,
-      chatColumn
+      chatColumn,
+      handleContractAdded
     }
   }
 })
