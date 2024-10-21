@@ -9,7 +9,7 @@
 
 2. Run the Docker container:
    ```
-   docker run -p 8080:80 -e BACKEND_URL=http://0.0.0.0:8000 mycelium-frontend
+   docker run -p 8080:80 -e BACKEND_URL=http://host.docker.internal:8000 mycelium-frontend
    ```
 
 ## Local Development

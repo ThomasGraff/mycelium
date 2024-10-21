@@ -25,7 +25,7 @@ RUN chmod +x /entrypoint.sh
 EXPOSE 80
 
 # Set environment variable with a default value
-ENV BACKEND_URL=http://0.0.0.0:8000
+ENV BACKEND_URL=http://host.docker.internal:8000
 
 # Use the entrypoint script
 ENTRYPOINT ["/entrypoint.sh"]
