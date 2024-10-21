@@ -13,6 +13,8 @@
               clearable
               @keyup.enter="search"
               @click:append-inner="search"
+              :disabled="disabled"
+              ref="searchInput"
             ></v-text-field>
           </v-col>
         </v-row>
@@ -22,14 +24,35 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 
 const query = ref('')
+const searchInput = ref(null)
 const emit = defineEmits(['search'])
 
+const props = defineProps({
+  disabled: {
+    type: Boolean,
+    default: false
+  }
+})
+
 const search = () => {
-  if (query.value.trim() === '') return
+  if (query.value.trim() === '' || props.disabled) return
   emit('search', query.value)
   query.value = ''
+  focusInput()
 }
+
+const focusInput = () => {
+  nextTick(() => {
+    searchInput.value?.focus()
+  })
+}
+
+onMounted(() => {
+  focusInput()
+})
+
+defineExpose({ focusInput })
 </script>

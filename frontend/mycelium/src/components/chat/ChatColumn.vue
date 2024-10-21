@@ -4,13 +4,13 @@
       <ResultsList ref="resultsList" />
     </div>
     <div class="search-bar-container">
-      <SearchBar @search="handleSearch" />
+      <SearchBar ref="searchBar" @search="handleSearch" :disabled="isWaitingResponse" />
     </div>
   </div>
 </template>
 
 <script>
-import { defineComponent, ref, watch } from 'vue'
+import { defineComponent, ref, watch, nextTick } from 'vue'
 import SearchBar from './components/SearchBar.vue'
 import ResultsList from './components/ResultsList.vue'
 
@@ -24,6 +24,8 @@ export default defineComponent({
   setup (props, { emit }) {
     const resultsList = ref(null)
     const resultsWrapper = ref(null)
+    const searchBar = ref(null)
+    const isWaitingResponse = ref(false)
 
     const getHelpMessage = () => {
       return `Here are the available commands:
@@ -33,11 +35,17 @@ export default defineComponent({
 * ❓ **help**: Display this help message`.trim()
     }
 
-    const handleSearch = (search) => {
-      const lowerCaseSearch = search.toLowerCase()
+    const handleSearch = async (search) => {
+      if (isWaitingResponse.value) return
 
+      isWaitingResponse.value = true
       resultsList.value.addResult(search, true)
+      resultsList.value.setWaiting(true)
 
+      // Simulate AI response delay
+      await new Promise(resolve => setTimeout(resolve, 1000))
+
+      const lowerCaseSearch = search.toLowerCase()
       let aiResponse = ''
       switch (lowerCaseSearch) {
         case 'new':
@@ -59,9 +67,14 @@ export default defineComponent({
           aiResponse = `❓ I'm sorry, I don't understand "${search}".\n\n${getHelpMessage()}`
       }
 
-      setTimeout(() => {
-        resultsList.value.addResult(aiResponse, false)
-      }, 100)
+      resultsList.value.setWaiting(false)
+      resultsList.value.addResult(aiResponse, false)
+      isWaitingResponse.value = false
+
+      // Refocus the input after the response is received
+      nextTick(() => {
+        searchBar.value.focusInput()
+      })
     }
 
     const clearChat = () => {
@@ -69,13 +82,20 @@ export default defineComponent({
     }
 
     watch(() => resultsList.value?.results, () => {
+      nextTick(() => {
+        if (resultsWrapper.value) {
+          resultsWrapper.value.scrollTop = resultsWrapper.value.scrollHeight
+        }
+      })
     }, { deep: true })
 
     return {
       resultsList,
       resultsWrapper,
+      searchBar,
       handleSearch,
-      clearChat
+      clearChat,
+      isWaitingResponse
     }
   }
 })

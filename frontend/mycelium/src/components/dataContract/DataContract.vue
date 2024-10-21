@@ -1,8 +1,10 @@
 <template>
   <v-card class="scrollable-card">
+    <div class="close-button-container">
+      <CloseButton @close="closeObject" />
+    </div>
     <v-card-title>
       Data Contract
-      <CloseButton @close="closeObject" />
     </v-card-title>
     <v-tabs v-model="tab" background-color="primary">
       <v-tab value="information">Information</v-tab>
@@ -113,11 +115,22 @@ onUnmounted(() => {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+
+.close-button-container {
+  position: sticky;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px;
 }
 
 .submit-button-container {
   display: flex;
   justify-content: center;
-  padding: 16px 0;
+  padding: 5px 0;
 }
 </style>
