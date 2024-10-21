@@ -1,28 +1,69 @@
-version: '3.8'
-
 services:
   frontend:
     build:
-      context: ./frontend
+      context: ./frontend/mycelium
+      dockerfile: Dockerfile
     container_name: frontend
     ports:
-      - "8080:80"
+      - "${FRONTEND_PORT:-8080}:80"
     networks:
-      - mycelium-network
+      - shared-network
     depends_on:
       - backend
+    environment:
+      - BACKEND_URL=http://backend:8000
+      - NGINX_LOG_LEVEL=debug  # Set to debug for verbose logging
 
   backend:
     build:
       context: ./backend
+      dockerfile: Dockerfile
     container_name: backend
     ports:
-      - "8000:8000"
+      - "${BACKEND_PORT:-8000}:8000"
     networks:
-      - mycelium-network
+      - shared-network
     environment:
-      - DATABASE_URL=${DATABASE_URL}  # Example environment variable
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///./app/database/mycelium.db}
+    volumes:
+      - ./backend/app/database:/app/database
+
+  authentik-postgresql:
+    extends:
+      file: authentik-base.yml
+      service: authentik-postgresql
+    networks:
+      - shared-network
+
+  authentik-redis:
+    extends:
+      file: authentik-base.yml
+      service: authentik-redis
+    networks:
+      - shared-network
+
+  authentik-server:
+    extends:
+      file: authentik-base.yml
+      service: authentik-server
+    networks:
+      - shared-network
+
+  authentik-worker:
+    extends:
+      file: authentik-base.yml
+      service: authentik-worker
+    networks:
+      - shared-network
 
 networks:
-  mycelium-network:
+  shared-network:
     driver: bridge
+
+volumes:
+  authentik-database:
+    driver: local
+  authentik-redis:
+    driver: local
+  backend-database:
+    driver: local

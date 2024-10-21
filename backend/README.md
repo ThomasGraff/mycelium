@@ -1,12 +1,28 @@
-# 🚀 Backend for Mycelium
+# 🚀 Mycelium API
 
 
-## 📋 Prerequisites
+
+## 🐳 Docker Deployment
+
+
+1. Build the Docker image:
+   ```
+   docker build -t mycelium-backend .
+   ```
+
+2. Run the Docker container:
+   ```
+   docker run -p 8000:8000 mycelium-backend
+   ```
+
+## Local Development
+
+### 📋 Prerequisites
 
 - 🐍 Python 3.12 or higher
 - 📦 Poetry (Python dependency management tool)
 
-## 🛠️ Setup
+### 🛠️ Setup & Run
 
 1. Clone the repository and install dependencies:
    ```
@@ -15,10 +31,10 @@
    poetry install
    ```
 
-## 🏃‍♂️ Run
+2. Launch the server:
+   ```
+   poetry run uvicorn app.main:app --port 8000
+   ```
 
-1. Navigate to the backend directory and launch the server:
-    ```
-    cd backend
-    poetry run uvicorn app.main:app --port 8000
-    ```
+
+🎉 The backend server will be accessible at `http://localhost:8000`.

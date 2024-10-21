@@ -19,37 +19,13 @@ git clone https://github.com/ThomasGraff/mycelium.git
 cd mycelium
 ```
 
-### **2. Install Dependencies**
-
-#### For the **frontend**:
+### **2. Run the Application**
 
 ```bash
-cd frontend
-yarn install
+docker-compose up -d
 ```
 
-#### For the **backend**:
-
-```bash
-cd backend
-pip install -r requirements.txt
-```
-
-### **3. Run the Application**
-
-#### For the **frontend**:
-
-```bash
-yarn serve
-```
-
-#### For the **backend**:
-
-```bash
-uvicorn main:app --reload
-```
-
-### **4. Access the Application**
+### **3. Access the Application**
 
 Open your browser and go to:
 

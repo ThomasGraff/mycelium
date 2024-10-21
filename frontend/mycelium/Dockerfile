@@ -11,8 +11,21 @@ RUN yarn build
 
 # Step 2: Serve the frontend using Nginx
 FROM nginx:alpine
+
+# Copy the built app
 COPY --from=build /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/nginx.conf
+
+# Copy the Nginx configuration template
+COPY config/nginx.conf /etc/nginx/nginx.conf.template
+
+# Copy the entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+
+# Set environment variable with a default value
+ENV BACKEND_URL=http://0.0.0.0:8000
+
+# Use the entrypoint script
+ENTRYPOINT ["/entrypoint.sh"]
