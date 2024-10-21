@@ -42,7 +42,7 @@ export default defineComponent({
 
     const fetchDataContracts = async () => {
       try {
-        const response = await axios.get('/data_contract/')
+        const response = await axios.get('/api/data_contract/')
         if (Array.isArray(response.data.data)) {
           dataContracts.value = response.data.data
         } else {

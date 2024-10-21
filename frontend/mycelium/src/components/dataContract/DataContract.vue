@@ -69,7 +69,7 @@ const submitObject = async () => {
       info: informationTab.value,
       server: serverTab.value
     }
-    const response = await axios.post('/data_contract/', dataContract)
+    const response = await axios.post('/api/data_contract/', dataContract)
     console.log('💡 Data contract submitted successfully:', response.data)
     emit('contract-added')
     emit('close-object')
