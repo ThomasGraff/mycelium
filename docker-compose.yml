@@ -10,8 +10,10 @@ services:
       - shared-network
     depends_on:
       - backend
+      - authentik-server
     environment:
       - BACKEND_URL=http://backend:8000
+      - AUTH_URL=http://authentik-server:9000
       - NGINX_LOG_LEVEL=debug  # Set to debug for verbose logging
 
   backend:

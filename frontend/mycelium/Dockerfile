@@ -6,6 +6,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN yarn install
 
+ENV VUE_CLI_SERVICE_CONFIG_PATH=config/vue.config.js
+COPY config ./config
 COPY . .
 RUN yarn build
 
@@ -26,6 +28,7 @@ EXPOSE 80
 
 # Set environment variable with a default value
 ENV BACKEND_URL=http://host.docker.internal:8000
+ENV AUTH_URL=http://host.docker.internal:9000
 
 # Use the entrypoint script
 ENTRYPOINT ["/entrypoint.sh"]

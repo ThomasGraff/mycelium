@@ -1,15 +1,14 @@
+const path = require('path');
 const { defineConfig } = require('@vue/cli-service')
 
 module.exports = defineConfig({
   transpileDependencies: true,
-  pluginOptions: {
-    vuetify: {
-      // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vuetify-loader
-    }
-  },
-
-  lintOnSave: false,
   configureWebpack: {
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, '../src'),
+      },
+    },
     module: {
       rules: [
         {
@@ -25,7 +24,11 @@ module.exports = defineConfig({
       ]
     }
   },
-
+  pluginOptions: {
+    vuetify: {
+      // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vuetify-loader
+    }
+  },
   devServer: {
     proxy: {
       '/api': {
@@ -43,5 +46,13 @@ module.exports = defineConfig({
         }
       }
     }
-  }
+  },
+  pages: {
+    index: {
+      entry: path.resolve(__dirname, '../src/main.js'),
+      template: path.resolve(__dirname, '../public/index.html'),
+      filename: 'index.html',
+      title: 'Mycelium',
+    },
+  },
 })
