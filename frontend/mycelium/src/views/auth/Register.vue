@@ -1,5 +1,5 @@
 <template>
-  <div class="login-container">
+  <div class="register-container">
     <v-main class="main-content">
       <v-container fluid class="fill-height">
         <v-row align="center" justify="center">
@@ -9,10 +9,18 @@
             </div>
             <v-card class="elevation-12" color="#2f2f2f">
               <v-toolbar color="#212121" dark flat>
-                <v-toolbar-title>Login</v-toolbar-title>
+                <v-toolbar-title>Register</v-toolbar-title>
               </v-toolbar>
               <v-card-text>
                 <v-form ref="form" v-model="valid" lazy-validation>
+                  <v-text-field
+                    v-model="name"
+                    :rules="nameRules"
+                    label="Name"
+                    required
+                    prepend-icon="mdi-account"
+                    color="primary"
+                  ></v-text-field>
                   <v-text-field
                     v-model="email"
                     :rules="emailRules"
@@ -30,12 +38,21 @@
                     type="password"
                     color="primary"
                   ></v-text-field>
+                  <v-text-field
+                    v-model="confirmPassword"
+                    :rules="confirmPasswordRules"
+                    label="Confirm Password"
+                    required
+                    prepend-icon="mdi-lock-check"
+                    type="password"
+                    color="primary"
+                  ></v-text-field>
                 </v-form>
               </v-card-text>
               <v-card-actions>
-                <v-btn color="secondary" @click="goToRegister" text>Register</v-btn>
+                <v-btn color="secondary" @click="goToLogin" text>Login</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" @click="login" :disabled="!valid">Login</v-btn>
+                <v-btn color="primary" @click="register" :disabled="!valid">Register</v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -46,17 +63,26 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import axios from 'axios'
 
 export default defineComponent({
-  name: 'UserLogin',
+  name: 'UserRegister',
   setup () {
     const router = useRouter()
     const valid = ref(false)
+    const name = ref('')
     const email = ref('')
     const password = ref('')
+    const confirmPassword = ref('')
     const logoSrc = require('@/assets/logo.png')
+    const errorMessage = ref('')
+
+    const nameRules = [
+      v => !!v || 'Name is required',
+      v => (v && v.length <= 50) || 'Name must be less than 50 characters'
+    ]
 
     const emailRules = [
       v => !!v || 'E-mail is required',
@@ -68,31 +94,52 @@ export default defineComponent({
       v => (v && v.length >= 8) || 'Password must be at least 8 characters'
     ]
 
-    const login = () => {
-      // TODO: Implement login logic
-      console.log('💡 Login attempt with:', { email: email.value, password: password.value })
+    const confirmPasswordRules = computed(() => [
+      v => !!v || 'Confirm password is required',
+      v => v === password.value || 'Passwords must match'
+    ])
+
+    const register = async () => {
+      try {
+        const response = await axios.post('/auth/api/v3/core/users/', {
+          username: email.value,
+          name: name.value,
+          email: email.value,
+          password: password.value
+        })
+        console.log('✅ User registered successfully:', response.data)
+        router.push('/login')
+      } catch (error) {
+        console.error('❌ Registration failed:', error)
+        errorMessage.value = 'Registration failed. Please try again.'
+      }
     }
 
-    const goToRegister = () => {
-      router.push('/register')
+    const goToLogin = () => {
+      router.push('/login')
     }
 
     return {
       valid,
+      name,
       email,
       password,
+      confirmPassword,
+      nameRules,
       emailRules,
       passwordRules,
-      login,
+      confirmPasswordRules,
+      register,
       logoSrc,
-      goToRegister
+      goToLogin,
+      errorMessage
     }
   }
 })
 </script>
 
 <style scoped>
-.login-container {
+.register-container {
   height: 100vh;
   display: flex;
   background-color: #2f2f2f;
@@ -109,5 +156,10 @@ export default defineComponent({
 
 :deep(.v-label) {
   color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.error-message {
+  color: #ff5252;
+  margin-top: 10px;
 }
 </style>

@@ -33,6 +33,7 @@
 <script>
 import { defineComponent, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { vueAuth } from '@/services/auth'
 import NavBar from '@/components/navigation/NavBar.vue'
 import DataContract from '@/components/dataContract/DataContract.vue'
 import ListDataContracts from '@/components/listDataContracts/ListDataContracts.vue'
@@ -46,7 +47,7 @@ export default defineComponent({
     ListDataContracts,
     ChatColumn
   },
-  setup () {
+  setup() {
     const router = useRouter()
     const isObjectVisible = ref(false)
     const currentObjectComponent = ref(null)
@@ -90,12 +91,7 @@ export default defineComponent({
 
     const logout = async () => {
       try {
-        // TODO: Implement logout logic here
-        // For example:
-        // await authService.logout()
-        console.log('💡 Logging out...')
-
-        // Redirect to login page
+        await vueAuth.logout()
         router.push('/login')
       } catch (error) {
         console.error('❌ Error during logout:', error)

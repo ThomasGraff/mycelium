@@ -1,13 +1,40 @@
 <template>
   <v-app class="app-container">
-    <router-view></router-view>
+    <v-app-bar v-if="isAuthenticated" app color="primary" dark>
+      <v-toolbar-title>Mycelium</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn text @click="logout">Logout</v-btn>
+    </v-app-bar>
+
+    <v-main>
+      <router-view></router-view>
+    </v-main>
   </v-app>
 </template>
 
 <script>
-export default {
-  name: 'App'
-}
+import { defineComponent, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import auth from '@/services/auth'
+
+export default defineComponent({
+  name: 'App',
+  setup() {
+    const router = useRouter()
+
+    const isAuthenticated = computed(() => auth.isAuthenticated)
+
+    const logout = async () => {
+      await auth.signOut()
+      router.push('/login')
+    }
+
+    return {
+      isAuthenticated,
+      logout
+    }
+  }
+})
 </script>
 
 <style>
