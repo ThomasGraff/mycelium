@@ -32,14 +32,14 @@ module.exports = defineConfig({
   devServer: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8000',
+        target: process.env.BACKEND_URL,
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
         }
       },
       '/auth': {
-        target: 'http://localhost:9000',
+        target: process.env.VUE_APP_AUTHENTIK_URL,
         changeOrigin: true,
         pathRewrite: {
           '^/auth': ''

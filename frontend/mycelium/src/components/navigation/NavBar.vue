@@ -21,7 +21,7 @@
 </template>
 
 <script setup>
-import { MENU_ITEMS } from '@/constants'
+import { MENU_ITEMS } from '@/utils/constants'
 
 const logoSrc = require('@/assets/logo.png')
 

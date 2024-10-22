@@ -33,7 +33,7 @@
 <script>
 import { defineComponent, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { vueAuth } from '@/services/auth'
+import auth from '@/services/auth'
 import NavBar from '@/components/navigation/NavBar.vue'
 import DataContract from '@/components/dataContract/DataContract.vue'
 import ListDataContracts from '@/components/listDataContracts/ListDataContracts.vue'
@@ -91,7 +91,7 @@ export default defineComponent({
 
     const logout = async () => {
       try {
-        await vueAuth.logout()
+        await auth.signOut()
         router.push('/login')
       } catch (error) {
         console.error('❌ Error during logout:', error)

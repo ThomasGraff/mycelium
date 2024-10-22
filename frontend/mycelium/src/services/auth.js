@@ -1,14 +1,16 @@
-import { createOidcAuth, SignInType, LogLevel } from 'vue-auth-oidc'
+import { createOidcAuth, SignInType } from 'vue-oidc-client/vue3'
 
-const authConfig = {
+
+const appUrl = `${window.location.origin}/`
+
+const mainOidc = createOidcAuth('mycelium', SignInType.Window, appUrl, {
   authority: process.env.VUE_APP_AUTHENTIK_URL,
-  clientId: process.env.VUE_APP_AUTHENTIK_CLIENT_ID,
-  responseType: 'code',
+  client_id: process.env.VUE_APP_AUTHENTIK_CLIENT_ID,
+  response_type: 'code',
   scope: 'openid profile email',
-  redirectUri: `${window.location.origin}/auth/callback`,
-  postLogoutRedirectUri: window.location.origin,
-}
+  redirect_uri: `${appUrl}auth/signinwin/mycelium`,
+  silent_redirect_uri: `${appUrl}auth/signinsilent/mycelium`,
+  post_logout_redirect_uri: appUrl,
+})
 
-const auth = createOidcAuth('mycelium', SignInType.Window, authConfig, console, LogLevel.Debug)
-
-export default auth
+export default mainOidc

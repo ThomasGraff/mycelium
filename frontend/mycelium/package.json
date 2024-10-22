@@ -16,6 +16,7 @@
     "roboto-fontface": "*",
     "vue": "^3.2.13",
     "vue-axios": "^3.5.2",
+    "vue-oidc-client": "^1.0.0-alpha.5",
     "vue-router": "^4.4.5",
     "vuetify": "^3.0.0",
     "webfontloader": "^1.0.0",

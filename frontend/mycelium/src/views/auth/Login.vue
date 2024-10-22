@@ -12,7 +12,7 @@
                 <v-toolbar-title>Login</v-toolbar-title>
               </v-toolbar>
               <v-card-text>
-                <v-btn color="primary" @click="login" block>Login with Authentik</v-btn>
+                <v-btn color="primary" @click="login" block>Login</v-btn>
               </v-card-text>
             </v-card>
           </v-col>
@@ -24,7 +24,7 @@
 
 <script>
 import { defineComponent } from 'vue'
-import auth from '@/services/auth'
+import mainOidc from '@/services/auth'
 
 export default defineComponent({
   name: 'UserLogin',
@@ -32,7 +32,7 @@ export default defineComponent({
     const logoSrc = require('@/assets/logo.png')
 
     const login = () => {
-      auth.signIn()
+      mainOidc.signIn()
     }
 
     return {

@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/home/Home.vue'
 import Login from '@/views/auth/Login.vue'
+import Register from '@/views/auth/Register.vue'
+import mainOidc from '@/services/auth'
 import Callback from '@/views/auth/Callback.vue'
-import auth from '@/services/auth'
 
 // Define the routes for the application
 const routes = [
@@ -10,7 +11,7 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home,
-    meta: { requiresAuth: true }
+    meta: { authName: mainOidc.authName }
   },
   {
     path: '/login',
@@ -18,25 +19,23 @@ const routes = [
     component: Login
   },
   {
-    path: '/auth/callback',
-    name: 'AuthCallback',
+    path: '/register',
+    name: 'Register',
+    component: Register
+  },
+  {
+    path: '/auth/signinwin/mycelium',
+    name: 'Callback',
     component: Callback
-  }
+  },
 ]
 
-// Create the router instance with history mode and routes
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
 
-router.beforeEach(async (to, from, next) => {
-  await auth.init()
-  if (to.meta.requiresAuth && !auth.isAuthenticated) {
-    next('/login')
-  } else {
-    next()
-  }
-})
+
+mainOidc.useRouter(router)
 
 export default router
