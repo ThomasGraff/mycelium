@@ -1,11 +1,11 @@
-<div align="center" style="width: 80%; margin: 0 auto;">
+<div align="center">
   <img src="frontend/mycelium/src/assets/logo.png" alt="Mycelium Logo" width="150"/>
   <br><br>
   
-  <kbd>
+  <div style="font-family: 'Courier New', Courier, monospace; padding: 20px; margin: 10px;">
     <h1 align="center"><strong>[ MYCELIUM_CORE ]</strong></h1>
     <br>
-    <table align="center" style="width: 800px">
+    <table align="center">
       <tr>
         <td align="left"><b>LICENSE</b></td>
         <td>
@@ -52,16 +52,16 @@
         </td>
       </tr>
     </table>
-  </kbd>
+  </div>
 </div>
 
 <div align="center">│</div>
 <div align="center">▼</div>
 
-<div align="center" style="width: 80%; margin: 0 auto;">
-  <kbd>
+<div align="center">
+  <div style="font-family: 'Courier New', Courier, monospace; padding: 20px; margin: 10px;">
     <h2><strong>[ CORE_FEATURES ]</strong></h2>
-    <table style="width: 800px">
+    <table>
       <tr>
         <td align="center">
           <img src="https://img.icons8.com/color/48/000000/artificial-intelligence.png" width="30"/>
@@ -95,18 +95,18 @@
         </td>
       </tr>
     </table>
-  </kbd>
+  </div>
 </div>
 
 <div align="center">│</div>
 <div align="center">▼</div>
 
-<div align="center" style="width: 80%; margin: 0 auto;">
-  <kbd>
+<div align="center">
+  <div style="font-family: 'Courier New', Courier, monospace; padding: 20px; margin: 10px;">
     <h2><strong>[ INITIALIZATION_SEQUENCE ]</strong></h2>
     
 > Prerequisites
-<table style="width: 800px">
+<table>
   <tr>
     <td align="center" width="50%">
       <img src="https://img.icons8.com/color/48/000000/docker.png" width="30"/>
@@ -136,7 +136,8 @@
 
 <br>
 
-> One-Line Setup  
+> One-Line Setup
+    
 ```bash
 git clone https://github.com/ThomasGraff/mycelium.git && cd mycelium && cp .env.example .env && docker-compose up -d
 ```
@@ -144,7 +145,7 @@ git clone https://github.com/ThomasGraff/mycelium.git && cd mycelium && cp .env.
 <br>
 
 > Environment Configuration
-<table style="width: 800px">
+<table>
   <tr>
     <th>Variable</th>
     <th>Required</th>
@@ -182,16 +183,16 @@ git clone https://github.com/ThomasGraff/mycelium.git && cd mycelium && cp .env.
     <td>Authentik HTTPS port</td>
   </tr>
 </table>
-  </kbd>
+  </div>
 </div>
 
 <div align="center">│</div>
 <div align="center">▼</div>
 
-<div align="center" style="width: 80%; margin: 0 auto;">
-  <kbd>
+<div align="center">
+  <div style="font-family: 'Courier New', Courier, monospace; padding: 20px; margin: 10px;">
     <h2><strong>[ CONTRIBUTION_PROTOCOL ]</strong></h2>
-    <table style="width: 800px">
+    <table>
       <tr>
         <td align="center">
           <img src="https://img.icons8.com/color/48/000000/code-fork.png" width="30"/>
@@ -239,5 +240,5 @@ git clone https://github.com/ThomasGraff/mycelium.git && cd mycelium && cp .env.
         </td>
       </tr>
     </table>
-  </kbd>
+  </div>
 </div>
