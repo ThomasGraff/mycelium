@@ -146,3 +146,6 @@ custom-templates/
 media/
 
 .lprof/
+
+# SQLite database
+**/database/*.db

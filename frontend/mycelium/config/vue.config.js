@@ -39,7 +39,7 @@ module.exports = defineConfig({
         }
       },
       '/auth': {
-        target: process.env.VUE_APP_AUTHENTIK_URL,
+        target: process.env.AUTHENTIK_URL,
         changeOrigin: true,
         pathRewrite: {
           '^/auth': ''

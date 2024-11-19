@@ -4,7 +4,7 @@ import { createOidcAuth, SignInType } from 'vue-oidc-client/vue3'
 const appUrl = `${window.location.origin}/`
 
 const mainOidc = createOidcAuth('mycelium', SignInType.Window, appUrl, {
-  authority: process.env.VUE_APP_AUTHENTIK_URL,
+  authority: process.env.AUTHENTIK_CLIENT_ID,
   client_id: process.env.VUE_APP_AUTHENTIK_CLIENT_ID,
   response_type: 'code',
   scope: 'openid profile email',

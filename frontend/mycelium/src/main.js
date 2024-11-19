@@ -10,15 +10,18 @@ loadFonts()
 mainOidc.startup().then(ok => {
   if (ok) {
     const app = createApp(App)
-    app.use(vuetify)
     
+    // Install Vuetify before other plugins
+    app.use(vuetify)
     mainOidc.useRouter(router)
     app.use(router)
     
     app.mount('#app')
   } else {
-    console.error('OIDC startup error')
+    console.error('❌ OIDC startup error')
   }
+}).catch(error => {
+  console.error('❌ Application startup failed:', error)
 })
 
 

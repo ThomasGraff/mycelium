@@ -3,22 +3,23 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "cross-env VUE_CLI_SERVICE_CONFIG_PATH=./config/vue.config.js BACKEND_URL=http://localhost:8000 AUTHENTIK_URL=http://localhost:9000 vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@mdi/font": "5.9.55",
+    "@mdi/font": "^7.0.96",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
     "core-js": "^3.8.3",
+    "cross-env": "^7.0.3",
     "marked": "^14.1.3",
     "roboto-fontface": "*",
     "vue": "^3.2.13",
     "vue-axios": "^3.5.2",
     "vue-oidc-client": "^1.0.0-alpha.5",
     "vue-router": "^4.4.5",
-    "vuetify": "^3.0.0",
+    "vuetify": "^3.5.1",
     "webfontloader": "^1.0.0",
     "yarn": "^1.22.22"
   },
@@ -35,6 +36,7 @@
     "eslint-plugin-promise": "^6.6.0",
     "eslint-plugin-vue": "^9.28.0",
     "vue-cli-plugin-vuetify": "~2.5.8",
+    "webpack-dev-server": "^5.1.0",
     "webpack-plugin-vuetify": "^2.0.0"
   },
   "eslintConfig": {

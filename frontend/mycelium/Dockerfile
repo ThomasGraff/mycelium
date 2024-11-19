@@ -1,34 +1,39 @@
-# Step 1: Build the frontend app
-FROM node:18 AS build
+FROM nginx:alpine
+
+# Build-time arguments with default values
+ARG AUTHENTIK_HOST=host.docker.internal
+ARG AUTHENTIK_PORT=9000
+ARG BACKEND_HOST=host.docker.internal 
+ARG BACKEND_PORT=8000
+ARG FRONTEND_PORT=80
+ARG NGINX_LOG_LEVEL=error
+
+# Set environment variables
+ENV AUTHENTIK_URL=http://${AUTHENTIK_HOST}:${AUTHENTIK_PORT} \
+    BACKEND_URL=http://${BACKEND_HOST}:${BACKEND_PORT} \
+    FRONTEND_PORT=${FRONTEND_PORT} \
+    VUE_CLI_SERVICE_CONFIG_PATH=./config/vue.config.js \
+    NGINX_LOG_LEVEL=${NGINX_LOG_LEVEL}
+
+# Install node and yarn
+RUN apk add --no-cache nodejs npm yarn
 
 WORKDIR /app
 
+# Copy files and build frontend
 COPY package*.json ./
 RUN yarn install
-
-ENV VUE_CLI_SERVICE_CONFIG_PATH=config/vue.config.js
 COPY config ./config
 COPY . .
 RUN yarn build
 
-# Step 2: Serve the frontend using Nginx
-FROM nginx:alpine
-
-# Copy the built app
-COPY --from=build /app/dist /usr/share/nginx/html
-
-# Copy the Nginx configuration template
+# Setup nginx
 COPY config/nginx.conf /etc/nginx/nginx.conf.template
-
-# Copy the entrypoint script
 COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN chmod +x /entrypoint.sh && \
+    mv /app/dist/* /usr/share/nginx/html/ && \
+    rm -rf /app
 
-EXPOSE 80
+EXPOSE ${FRONTEND_PORT}
 
-# Set environment variable with a default value
-ENV BACKEND_URL=http://host.docker.internal:8000
-ENV AUTH_URL=http://host.docker.internal:9000
-
-# Use the entrypoint script
 ENTRYPOINT ["/entrypoint.sh"]
