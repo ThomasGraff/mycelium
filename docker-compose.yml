@@ -15,6 +15,10 @@ services:
       - BACKEND_URL=http://backend:8000
       - AUTH_URL=http://authentik-server:9000
       - NGINX_LOG_LEVEL=debug  # Set to debug for verbose logging
+      - AUTHENTIK_HOST=${AUTHENTIK_HOST:-authentik-server}
+      - AUTHENTIK_PORT=${AUTHENTIK_PORT:-9000}
+      - AUTHENTIK_CLIENT_ID=${AUTHENTIK_CLIENT_ID}
+      - AUTHENTIK_CLIENT_SECRET=${AUTHENTIK_CLIENT_SECRET}
 
   backend:
     build:

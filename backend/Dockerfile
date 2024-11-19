@@ -25,16 +25,26 @@ COPY . .
 # Step 8: Install the project
 RUN poetry install --no-interaction --no-ansi
 
-# Step 9: Create database directory with correct permissions
+# Modifications pour la sécurité et la configuration
+# Step 9: Create necessary directories
 RUN mkdir -p /app/app/database && \
     chown -R nobody:nogroup /app/app/database && \
-    chmod 777 /app/app/database
+    chmod 770 /app/app/database
 
-# Step 10: Switch to non-root user
+# Step 10: Set environment variables
+ENV BACKEND_HOST=0.0.0.0
+ENV BACKEND_PORT=8000
+ENV AUTHENTIK_HOST=authentik.local
+ENV AUTHENTIK_PORT=80
+# Ajout de variables importantes pour l'authentification
+ENV AUTHENTIK_CLIENT_ID=""
+ENV AUTHENTIK_CLIENT_SECRET=""
+
+# Step 11: Switch to non-root user
 USER nobody
 
-# Step 11: Expose the FastAPI app port
+# Step 12: Expose the FastAPI app port
 EXPOSE 8000
 
-# Step 12: Command to run the FastAPI app
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Step 13: Command to run the FastAPI app
+CMD ["sh", "-c", "uvicorn app.main:app --host $BACKEND_HOST --port $BACKEND_PORT"]
