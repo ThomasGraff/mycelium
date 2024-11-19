@@ -2,8 +2,8 @@
   <img src="frontend/mycelium/src/assets/logo.png" alt="Mycelium Logo" width="150"/>
   <br><br>
   
-  <div style="font-family: 'Courier New', Courier, monospace; padding: 20px; margin: 10px;">
-    <h1 align="center"><strong>[ MYCELIUM_CORE ]</strong></h1>
+  <div>
+    <h1 align="center"><kbd>[ MYCELIUM_CORE ]</kbd></h1>
     <br>
     <table align="center">
       <tr>
@@ -59,8 +59,8 @@
 <div align="center">▼</div>
 
 <div align="center">
-  <div style="font-family: 'Courier New', Courier, monospace; padding: 20px; margin: 10px;">
-    <h2><strong>[ CORE_FEATURES ]</strong></h2>
+  <div>
+    <h2><kbd>[ CORE_FEATURES ]</kbd></h2>
     <table>
       <tr>
         <td align="center">
@@ -102,8 +102,8 @@
 <div align="center">▼</div>
 
 <div align="center">
-  <div style="font-family: 'Courier New', Courier, monospace; padding: 20px; margin: 10px;">
-    <h2><strong>[ INITIALIZATION_SEQUENCE ]</strong></h2>
+  <div>
+    <h2><kbd>[ INITIALIZATION_SEQUENCE ]</kbd></h2>
     
 > Prerequisites
 <table>
@@ -190,8 +190,8 @@ git clone https://github.com/ThomasGraff/mycelium.git && cd mycelium && cp .env.
 <div align="center">▼</div>
 
 <div align="center">
-  <div style="font-family: 'Courier New', Courier, monospace; padding: 20px; margin: 10px;">
-    <h2><strong>[ CONTRIBUTION_PROTOCOL ]</strong></h2>
+  <div>
+    <h2><kbd>[ CONTRIBUTION_PROTOCOL ]</kbd></h2>
     <table>
       <tr>
         <td align="center">
