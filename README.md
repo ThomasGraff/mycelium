@@ -20,12 +20,19 @@
   </p>
 </div>
 
-<br><br>
-<h2 align="center">Overview</h2>
+---
+
+<details open>
+<summary><h2 align="center">📖 Overview</h2></summary>
 
 Mycelium serves as a central platform for managing data contracts efficiently, connecting business teams, IT services, and data services such as data factories. Our platform streamlines the data contract lifecycle with AI-powered automation and intuitive visualization tools.
-<br><br>
-<h2 align="center">Key Features</h2>
+
+</details>
+
+---
+
+<details open>
+<summary><h2 align="center">✨ Key Features</h2></summary>
 
 <div align="center">
   <table>
@@ -64,8 +71,12 @@ Mycelium serves as a central platform for managing data contracts efficiently, c
   </table>
 </div>
 
-<br><br>  
-<h2 align="center">Quick Start</h2>
+</details>
+
+---
+
+<details open>
+<summary><h2 align="center">🚀 Quick Start</h2></summary>
 
 ### Prerequisites
 
@@ -165,8 +176,12 @@ Mycelium serves as a central platform for managing data contracts efficiently, c
   </table>
 </div>
 
-<br><br>
-<h2 align="center">Contributing</h2>
+</details>
+
+---
+
+<details open>
+<summary><h2 align="center">🤝 Contributing</h2></summary>
 
 <div align="center">
   <table>
@@ -218,3 +233,5 @@ Mycelium serves as a central platform for managing data contracts efficiently, c
     </tr>
   </table>
 </div>
+
+</details>
