@@ -3,7 +3,7 @@
   <br><br>
   
   <div>
-    <h1 align="center"><kbd>[ MYCELIUM_CORE ]</kbd></h1>
+    <kbd><h1 align="center">[ MYCELIUM_CORE ]</h1></kbd>
     <br>
     <table align="center">
       <tr>
@@ -60,7 +60,7 @@
 
 <div align="center">
   <div>
-    <h2><kbd>[ CORE_FEATURES ]</kbd></h2>
+    <kbd><h1 align="center">[ CORE_FEATURES ]</h1></kbd>
     <table>
       <tr>
         <td align="center">
@@ -103,7 +103,7 @@
 
 <div align="center">
   <div>
-    <h2><kbd>[ INITIALIZATION_SEQUENCE ]</kbd></h2>
+    <kbd><h1 align="center">[ INITIALIZATION_SEQUENCE ]</h1></kbd>
     
 > Prerequisites
 <table>
@@ -191,7 +191,7 @@ git clone https://github.com/ThomasGraff/mycelium.git && cd mycelium && cp .env.
 
 <div align="center">
   <div>
-    <h2><kbd>[ CONTRIBUTION_PROTOCOL ]</kbd></h2>
+    <kbd><h1 align="center">[ CONTRIBUTION_PROTOCOL ]</h1></kbd>
     <table>
       <tr>
         <td align="center">
