@@ -168,7 +168,7 @@
     <td>Backend API port</td>
   </tr>
   <tr>
-    <td><code>AUTHENTIK_PORT_HTTP</code></td>
+    <td><code>AUTHENTIK_PORT</code></td>
     <td>❌</td>
     <td>9000</td>
     <td>Authentik HTTP port</td>

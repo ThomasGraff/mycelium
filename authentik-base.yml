@@ -46,7 +46,7 @@ services:
     env_file:
       - .env
     ports:
-      - "${AUTHENTIK_PORT_HTTP:-9000}:9000"
+      - "${AUTHENTIK_PORT:-9000}:9000"
       - "${AUTHENTIK_PORT_HTTPS:-9443}:9443"
     depends_on:
       - authentik-postgresql

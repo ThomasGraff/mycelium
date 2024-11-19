@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "cross-env VUE_CLI_SERVICE_CONFIG_PATH=./config/vue.config.js BACKEND_URL=http://localhost:8000 AUTHENTIK_URL=http://localhost:9000 vue-cli-service serve",
+    "serve": "cross-env VUE_CLI_SERVICE_CONFIG_PATH=./config/vue.config.js BACKEND_URL=http://localhost:8000 vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },

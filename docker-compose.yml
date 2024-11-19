@@ -6,9 +6,12 @@ services:
       args:
         - AUTHENTIK_HOST=${AUTHENTIK_HOST:-authentik-server}
         - AUTHENTIK_PORT=${AUTHENTIK_PORT:-9000}
+        - AUTHENTIK_CLIENT_ID=${AUTHENTIK_CLIENT_ID}
+        - AUTHENTIK_CLIENT_SECRET=${AUTHENTIK_CLIENT_SECRET}
         - BACKEND_HOST=${BACKEND_HOST:-backend}
         - BACKEND_PORT=${BACKEND_PORT:-8000}
         - FRONTEND_PORT=${FRONTEND_PORT:-80}
+        - FRONTEND_HOST=${FRONTEND_HOST:-0.0.0.0}
     container_name: frontend
     ports:
       - "${FRONTEND_PORT:-80}:80"
@@ -22,14 +25,19 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      args:
+        - BACKEND_HOST=${BACKEND_HOST:-0.0.0.0}
+        - BACKEND_PORT=${BACKEND_PORT:-8000}
+        - AUTHENTIK_HOST=${AUTHENTIK_HOST:-authentik-server}
+        - AUTHENTIK_PORT=${AUTHENTIK_PORT:-9000}
+        - AUTHENTIK_CLIENT_ID=${AUTHENTIK_CLIENT_ID}
+        - AUTHENTIK_CLIENT_SECRET=${AUTHENTIK_CLIENT_SECRET}
+        - DATABASE_URL=${DATABASE_URL:-sqlite:///./app/database/mycelium.db}
     container_name: backend
     ports:
       - "${BACKEND_PORT:-8000}:8000"
     networks:
       - shared-network
-    environment:
-      - DATABASE_URL=${DATABASE_URL:-sqlite:///./app/database/mycelium.db}
-      - AUTHENTIK_URL=http://${AUTHENTIK_HOST:-authentik-server}:${AUTHENTIK_PORT:-9000}
     volumes:
       - ./backend/app/database:/app/database
 

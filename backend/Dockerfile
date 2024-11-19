@@ -1,6 +1,22 @@
 # Step 1: Use Python 3.12 as the base image
 FROM python:3.12-slim
 
+# Build-time arguments with default values
+ARG AUTHENTIK_CLIENT_ID
+ARG AUTHENTIK_CLIENT_SECRET
+ARG AUTHENTIK_HOST=0.0.0.0
+ARG AUTHENTIK_PORT=9000
+ARG BACKEND_HOST=0.0.0.0
+ARG BACKEND_PORT=8000
+ARG DATABASE_URL=sqlite:///./app/database/mycelium.db
+
+# Set environment variables
+ENV AUTHENTIK_URL=http://${AUTHENTIK_HOST}:${AUTHENTIK_PORT} \
+    AUTHENTIK_CLIENT_ID=${AUTHENTIK_CLIENT_ID} \
+    AUTHENTIK_CLIENT_SECRET=${AUTHENTIK_CLIENT_SECRET} \
+    DATABASE_URL=${DATABASE_URL}
+
+    
 # Step 2: Set the working directory
 WORKDIR /app
 
@@ -30,15 +46,6 @@ RUN poetry install --no-interaction --no-ansi
 RUN mkdir -p /app/app/database && \
     chown -R nobody:nogroup /app/app/database && \
     chmod 770 /app/app/database
-
-# Step 10: Set environment variables
-ENV BACKEND_HOST=0.0.0.0
-ENV BACKEND_PORT=8000
-ENV AUTHENTIK_HOST=authentik.local
-ENV AUTHENTIK_PORT=80
-# Ajout de variables importantes pour l'authentification
-ENV AUTHENTIK_CLIENT_ID=""
-ENV AUTHENTIK_CLIENT_SECRET=""
 
 # Step 11: Switch to non-root user
 USER nobody

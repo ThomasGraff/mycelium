@@ -38,13 +38,6 @@ module.exports = defineConfig({
           '^/api': ''
         }
       },
-      '/auth': {
-        target: process.env.AUTHENTIK_URL,
-        changeOrigin: true,
-        pathRewrite: {
-          '^/auth': ''
-        }
-      }
     }
   },
   pages: {
