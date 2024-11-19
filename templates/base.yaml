@@ -1,0 +1,179 @@
+info:
+  title: string
+  version: string
+  description: string
+  owner: string
+  contact:
+    name: string
+    url: string
+servers:
+  production:
+    type: string
+    environment: string
+    location: string
+    format: string
+    delimiter: string
+    description: string
+    roles:
+      - name: string
+        description: string
+      - name: string
+        description: string
+terms:
+  usage: string
+  limitations: string
+  policies:
+    - name: string
+      url: string
+    - name: string
+      description: string
+      url: string
+  billing: integer
+  noticePeriod: string
+models:
+  orders:
+    description: string
+    type: string
+    fields:
+      order_id:
+        $ref: string
+        required: boolean
+        unique: boolean
+        primaryKey: boolean
+      order_timestamp:
+        description: string
+        type: string
+        required: boolean
+        examples:
+          - string
+        tags: 
+          - string
+      order_total:
+        description: string
+        type: string
+        required: boolean
+        examples:
+          - integer
+        quality:
+          - type: string
+            description: string
+            query: string
+            mustBeBetween: 
+              - integer
+              - integer
+      customer_id:
+        description: string
+        type: string
+        minLength: integer
+        maxLength: integer
+      customer_email_address:
+        description: string
+        type: string
+        format: string
+        required: boolean
+        pii: boolean
+        classification: string
+        quality:
+          - type: string
+            description: string
+        lineage:
+          inputFields:
+            - namespace: string
+              name: string
+              field: string
+      processed_timestamp:
+        description: string
+        type: string
+        required: boolean
+        config:
+          jsonType: string
+          jsonFormat: string
+    quality:
+      - type: string
+        description: string
+        query: string
+        mustBeLessThan: integer
+      - type: string
+        description: string
+        query: string
+        mustBeGreaterThan: integer
+    examples:
+      - string
+  line_items:
+    description: string
+    type: string
+    fields:
+      line_item_id:
+        type: string
+        description: string
+        required: boolean
+      order_id:
+        $ref: string
+        references: string
+      sku:
+        description: string
+        $ref: string
+    primaryKey: 
+      - string
+      - string
+    examples:
+      - string
+definitions:
+  order_id:
+    title: string
+    type: string
+    format: string
+    description: string
+    examples:
+      - string
+    pii: boolean
+    classification: string
+    tags:
+      - string
+  sku:
+    title: string
+    type: string
+    pattern: string
+    examples:
+      - string
+    description: string
+    links:
+      wikipedia: string
+    tags:
+      - string
+servicelevels:
+  availability:
+    description: string
+    percentage: float
+  retention:
+    description: string
+    period: string
+    unlimited: boolean
+  latency:
+    description: string
+    threshold: string
+    sourceTimestampField: string
+    processedTimestampField: string
+  freshness:
+    description: string
+    threshold: string
+    timestampField: string
+  frequency:
+    description: string
+    type: string
+    interval: string
+    cron: string
+  support:
+    description: string
+    time: string
+    responseTime: string
+  backup:
+    description: string
+    interval: string
+    cron: string
+    recoveryTime: string
+    recoveryPoint: string
+tags:
+  - string
+links:
+  datacontractCli: string

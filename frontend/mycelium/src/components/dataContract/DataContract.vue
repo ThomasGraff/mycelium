@@ -1,73 +1,66 @@
 <template>
   <v-card class="scrollable-card">
-    <v-card-title>
-      Data Contract
-      <CloseButton @close="closeObject" />
-    </v-card-title>
+    <v-card-title>Data Contract <CloseButton @close="closeObject" /></v-card-title>
     <v-tabs v-model="tab" background-color="primary">
-      <v-tab value="information">Information</v-tab>
-      <v-tab value="server">Server</v-tab>
+      <!-- Onglets dynamiques pour chaque section principale -->
+      <v-tab v-for="(tabName, index) in tabNames" :key="index" :value="tabName">
+        {{ tabName }}
+      </v-tab>
     </v-tabs>
     <v-card-text>
-      <v-window v-model="tab">
-        <v-window-item value="information">
-          <InformationTab @update-info="updateInfo" @validate="validateInformation" />
-        </v-window-item>
-        <v-window-item value="server">
-          <ServerTab @update="updateServer" @validate="validateServer" />
-        </v-window-item>
-      </v-window>
+      <v-tabs-window v-model="tab">
+        <!-- Afficher chaque section dans un onglet -->
+        <v-tabs-window-item v-for="(tabName, index) in tabNames" :key="index" :value="tabName">
+          <DynamicFormTab :sectionData="schema[tabName]" :sectionName="tabName" />
+        </v-tabs-window-item>
+      </v-tabs-window>
     </v-card-text>
     <v-card-actions class="submit-button-container">
-      <SubmitButton @submitObject="submitObject" :isDisabled="!isValid" />
+      <SubmitButton @submitObject="submitObject" :isDisabled="!isFormValid" />
     </v-card-actions>
   </v-card>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import CloseButton from './components/CloseButton.vue'
-import InformationTab from './components/InformationTab.vue'
-import ServerTab from './components/ServerTab.vue'
 import SubmitButton from './components/SubmitButton.vue'
-import { useResizeObserver } from '@/composables/useResizeObserver'
+import DynamicFormTab from './components/DynamicFormTab.vue' // Nouveau composant pour chaque onglet
 import axios from 'axios'
 
 const emit = defineEmits(['close-object', 'contract-added'])
 
-const tab = ref('information')
-const informationValid = ref(false)
-const serverValid = ref(false)
-const informationTab = ref({})
-const serverTab = ref({})
+const tab = ref('')
+const schema = ref({})
+const formData = ref({})
+const formValidity = ref({})
 
-const isValid = computed(() => informationValid.value && serverValid.value)
+onMounted(async () => {
+  try {
+    const response = await axios.get('http://127.0.0.1:8000/schema')
+    schema.value = response.data
 
-const updateInfo = (info) => {
-  console.log('💡 Info updated:', info)
-  informationTab.value = info
-}
+    for (const tabName in schema.value) {
+      formData.value[tabName] = {}
+      formValidity.value[tabName] = false
+    }
+    tab.value = Object.keys(schema.value)[0] // Le premier élément est l'onglet par défaut
+  } catch (error) {
+    console.error('❌ Erreur lors du chargement du schéma:', error)
+  }
+})
 
-const updateServer = (server) => {
-  console.log('💡 Server updated:', server)
-  serverTab.value = server
-}
+const tabNames = computed(() => {
+  return Object.keys(schema.value)
+})
 
-const validateInformation = (valid) => {
-  informationValid.value = valid
-}
-
-const validateServer = (valid) => {
-  serverValid.value = valid
-}
+const isFormValid = computed(() => {
+  return Object.values(formValidity.value).every(valid => valid)
+})
 
 const submitObject = async () => {
   try {
-    const dataContract = {
-      info: informationTab.value,
-      server: serverTab.value
-    }
-    const response = await axios.post('http://127.0.0.1:8000/data_contract/', dataContract)
+    const response = await axios.post('http://127.0.0.1:8000/data_contract/', formData.value)
     console.log('💡 Data contract submitted successfully:', response.data)
     emit('contract-added')
     emit('close-object')
@@ -77,41 +70,15 @@ const submitObject = async () => {
 }
 
 const closeObject = () => {
-  console.log('💡 Close object')
   emit('close-object')
 }
-
-useResizeObserver('.v-window-item')
-
-// ResizeObserver error workaround
-const resizeObserverHandler = (entries) => {
-  for (const entry of entries) {
-    if (entry.target.clientHeight === 0) {
-      return
-    }
-  }
-}
-
-let resizeObserver
-onMounted(() => {
-  resizeObserver = new ResizeObserver(resizeObserverHandler)
-  document.querySelectorAll('.v-window-item').forEach(el => {
-    resizeObserver.observe(el)
-  })
-})
-
-onUnmounted(() => {
-  if (resizeObserver) {
-    resizeObserver.disconnect()
-  }
-})
 </script>
 
 <style scoped>
 .scrollable-card {
   max-height: calc(100vh - 64px);
   overflow-y: auto;
-  display: flex;
+
   flex-direction: column;
 }
 
