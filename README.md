@@ -3,11 +3,11 @@
   <br><br>
   
   <div>
-    <kbd><h1 align="center">[ MYCELIUM_CORE ]</h1></kbd>
+    <kbd><h1 align="center">[ MYCELIUM ]</h1></kbd>
     <br><br>
     <table align="center">
       <tr>
-        <td align="left"><b>LICENSE</b></td>
+        <td align="left"><b>[LICENSE]</b></td>
         <td>
           <a href="https://www.gnu.org/licenses/agpl-3.0">
             <img src="https://img.shields.io/badge/License-AGPL_v3-blue.svg" alt="License: AGPL v3"/>
@@ -15,7 +15,7 @@
         </td>
       </tr>
       <tr>
-        <td align="left"><b>METRICS</b></td>
+        <td align="left"><b>[METRICS]</b></td>
         <td>
           <a href="https://github.com/ThomasGraff/mycelium/stargazers">
             <img src="https://img.shields.io/github/stars/ThomasGraff/mycelium.svg" alt="GitHub Stars"/>
@@ -29,7 +29,7 @@
         </td>
       </tr>
       <tr>
-        <td align="left"><b>UTILS</b></td>
+        <td align="left"><b>[UTILS]</b></td>
         <td>
           <a href="#documentation">
             <code>DOCS</code>
@@ -45,10 +45,10 @@
         </td>
       </tr>
       <tr>
-        <td align="left"><b>DESCRIPTION</b></td>
-        <td>
+        <td align="left"><b>[DESCRIPTION]</b></td>
+        <td><i>
           A powerful platform designed to simplify the creation and management<br>
-          of Data Contracts, bridging systems for seamless data ingestion.
+          of Data Contracts, bridging systems for seamless data ingestion.</i>
         </td>
       </tr>
     </table>
@@ -57,7 +57,7 @@
 
 <div align="center">│</div>
 <div align="center">▼</div>
-
+<br>
 <div align="center">
   <div>
     <kbd><h2 align="center">[ CORE_FEATURES ]</h2></kbd>
@@ -101,7 +101,7 @@
 
 <div align="center">│</div>
 <div align="center">▼</div>
-
+<br>
 <div align="center">
   <div>
     <kbd><h2 align="center">[ INITIALIZATION_SEQUENCE ]</h2></kbd>
@@ -140,6 +140,7 @@
 
 <br>
 <code>> One-Line Setup</code>
+<br><br>
 
 ```bash
 git clone https://github.com/ThomasGraff/mycelium.git && cd mycelium && cp .env.example .env && docker-compose up -d
@@ -192,7 +193,7 @@ git clone https://github.com/ThomasGraff/mycelium.git && cd mycelium && cp .env.
 
 <div align="center">│</div>
 <div align="center">▼</div>
-
+<br>
 <div align="center">
   <div>
     <kbd><h2 align="center">[ CONTRIBUTION_PROTOCOL ]</h2></kbd>
@@ -202,21 +203,21 @@ git clone https://github.com/ThomasGraff/mycelium.git && cd mycelium && cp .env.
         <td align="center">
           <img src="https://img.icons8.com/color/48/000000/code-fork.png" width="30"/>
           <br />
-          <b><span style="color: #00ff00;">></span> Fork</b>
+          <b>Fork</b>
           <br />
           Fork the repository
         </td>
         <td align="center">
           <img src="https://img.icons8.com/color/48/000000/split.png" width="30"/>
           <br />
-          <b><span style="color: #00ff00;">></span> Branch</b>
+          <b>Branch</b>
           <br />
           <code>git checkout -b feat/YourFeature</code>
         </td>
         <td align="center">
           <img src="https://img.icons8.com/color/48/000000/commit-git.png" width="30"/>
           <br />
-          <b><span style="color: #00ff00;">></span> Commit</b>
+          <b>Commit</b>
           <br />
           <code>git commit -m 'Add feature'</code>
         </td>
@@ -225,21 +226,21 @@ git clone https://github.com/ThomasGraff/mycelium.git && cd mycelium && cp .env.
         <td align="center">
           <img src="https://img.icons8.com/color/48/000000/upload-to-cloud.png" width="30"/>
           <br />
-          <b><span style="color: #00ff00;">></span> Push</b>
+          <b>Push</b>
           <br />
           <code>git push origin feat/YourFeature</code>
         </td>
         <td align="center">
           <img src="https://img.icons8.com/color/48/000000/pull-request.png" width="30"/>
           <br />
-          <b><span style="color: #00ff00;">></span> Pull Request</b>
+          <b>Pull Request</b>
           <br />
           Open a PR on GitHub
         </td>
         <td align="center">
           <img src="https://img.icons8.com/color/48/000000/communication.png" width="30"/>
           <br />
-          <b><span style="color: #00ff00;">></span> Discuss</b>
+          <b>Discuss</b>
           <br />
           Engage in review process
         </td>
