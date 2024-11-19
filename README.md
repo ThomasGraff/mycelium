@@ -1,11 +1,11 @@
-<div align="center">
+<div align="center" style="width: 80%; margin: 0 auto;">
   <img src="frontend/mycelium/src/assets/logo.png" alt="Mycelium Logo" width="150"/>
   <br><br>
   
   <kbd>
     <h1 align="center"><strong>[ MYCELIUM_CORE ]</strong></h1>
     <br>
-    <table align="center">
+    <table align="center" style="width: 800px">
       <tr>
         <td align="left"><b>LICENSE</b></td>
         <td>
@@ -58,10 +58,10 @@
 <div align="center">│</div>
 <div align="center">▼</div>
 
-<div align="center">
+<div align="center" style="width: 80%; margin: 0 auto;">
   <kbd>
     <h2><strong>[ CORE_FEATURES ]</strong></h2>
-    <table>
+    <table style="width: 800px">
       <tr>
         <td align="center">
           <img src="https://img.icons8.com/color/48/000000/artificial-intelligence.png" width="30"/>
@@ -101,12 +101,12 @@
 <div align="center">│</div>
 <div align="center">▼</div>
 
-<div align="center">
+<div align="center" style="width: 80%; margin: 0 auto;">
   <kbd>
     <h2><strong>[ INITIALIZATION_SEQUENCE ]</strong></h2>
     
 > Prerequisites
-<table>
+<table style="width: 800px">
   <tr>
     <td align="center" width="50%">
       <img src="https://img.icons8.com/color/48/000000/docker.png" width="30"/>
@@ -136,8 +136,7 @@
 
 <br>
 
-> One-Line Setup
-    
+> One-Line Setup  
 ```bash
 git clone https://github.com/ThomasGraff/mycelium.git && cd mycelium && cp .env.example .env && docker-compose up -d
 ```
@@ -145,7 +144,7 @@ git clone https://github.com/ThomasGraff/mycelium.git && cd mycelium && cp .env.
 <br>
 
 > Environment Configuration
-<table>
+<table style="width: 800px">
   <tr>
     <th>Variable</th>
     <th>Required</th>
@@ -189,10 +188,10 @@ git clone https://github.com/ThomasGraff/mycelium.git && cd mycelium && cp .env.
 <div align="center">│</div>
 <div align="center">▼</div>
 
-<div align="center">
+<div align="center" style="width: 80%; margin: 0 auto;">
   <kbd>
     <h2><strong>[ CONTRIBUTION_PROTOCOL ]</strong></h2>
-    <table>
+    <table style="width: 800px">
       <tr>
         <td align="center">
           <img src="https://img.icons8.com/color/48/000000/code-fork.png" width="30"/>
