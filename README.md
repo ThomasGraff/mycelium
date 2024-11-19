@@ -1,14 +1,14 @@
 <div align="center">
-  <img src="frontend/mycelium/src/assets/logo.png" alt="Mycelium Logo" width="200"/>
+  <img src="frontend/mycelium/src/assets/logo.png" alt="Mycelium Logo" width="150"/>
 
   <kbd>
-    <h1><strong>[ MYCELIUM_CORE ]</strong></h1>
+    <h1 align="center"><strong>[ MYCELIUM_CORE ]</strong></h1>
   </kbd>
 
-  <br><br>
+  <br>
   
   <kbd>
-    <table>
+    <table align="center">
       <tr>
         <td align="left"><b>LICENSE</b></td>
         <td>
