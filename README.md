@@ -5,14 +5,10 @@
     <h1><strong>[ MYCELIUM_CORE ]</strong></h1>
   </kbd>
 
-  <br>
+  <br><br>
   
   <kbd>
     <table>
-      <tr>
-        <td align="left"><b>STATUS</b></td>
-        <td>⬤ OPERATIONAL</td>
-      </tr>
       <tr>
         <td align="left"><b>LICENSE</b></td>
         <td>
@@ -39,24 +35,24 @@
         <td align="left"><b>UTILS</b></td>
         <td>
           <a href="#documentation">
-            <img src="https://img.icons8.com/ios-filled/24/000000/book.png" width="18"/>
             <code>DOCS</code>
           </a>
-          &nbsp;&nbsp;
+          &nbsp;&nbsp;|&nbsp;&nbsp;
           <a href="https://github.com/ThomasGraff/mycelium/issues/new?template=bug_report.md">
-            <img src="https://img.icons8.com/ios-filled/24/000000/bug.png" width="18"/>
             <code>BUGS</code>
           </a>
-          &nbsp;&nbsp;
+          &nbsp;&nbsp;|&nbsp;&nbsp;
           <a href="https://github.com/ThomasGraff/mycelium/issues/new?template=feature_request.md">
-            <img src="https://img.icons8.com/ios-filled/24/000000/plus-math.png" width="18"/>
             <code>FEATURES</code>
           </a>
         </td>
       </tr>
       <tr>
         <td align="left"><b>DESCRIPTION</b></td>
-        <td>A powerful platform designed to simplify the creation and management of Data Contracts, bridging systems for seamless data ingestion.</td>
+        <td>
+          A powerful platform designed to simplify the creation and management<br>
+          of Data Contracts, bridging systems for seamless data ingestion.
+        </td>
       </tr>
     </table>
   </kbd>
