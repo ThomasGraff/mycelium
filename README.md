@@ -4,7 +4,7 @@
   
   <div>
     <kbd><h1 align="center">[ MYCELIUM_CORE ]</h1></kbd>
-    <br>
+    <br><br>
     <table align="center">
       <tr>
         <td align="left"><b>LICENSE</b></td>
@@ -60,7 +60,8 @@
 
 <div align="center">
   <div>
-    <kbd><h1 align="center">[ CORE_FEATURES ]</h1></kbd>
+    <kbd><h2 align="center">[ CORE_FEATURES ]</h2></kbd>
+    <br><br>
     <table>
       <tr>
         <td align="center">
@@ -103,9 +104,12 @@
 
 <div align="center">
   <div>
-    <kbd><h1 align="center">[ INITIALIZATION_SEQUENCE ]</h1></kbd>
-    
-> Prerequisites
+    <kbd><h2 align="center">[ INITIALIZATION_SEQUENCE ]</h2></kbd>
+    <br><br>
+
+
+<code>> Prerequisites</code>
+
 <table>
   <tr>
     <td align="center" width="50%">
@@ -135,16 +139,16 @@
 </table>
 
 <br>
+<code>> One-Line Setup</code>
 
-> One-Line Setup
-    
 ```bash
 git clone https://github.com/ThomasGraff/mycelium.git && cd mycelium && cp .env.example .env && docker-compose up -d
 ```
 
 <br>
 
-> Environment Configuration
+<code>> Environment Configuration</code>
+
 <table>
   <tr>
     <th>Variable</th>
@@ -191,7 +195,8 @@ git clone https://github.com/ThomasGraff/mycelium.git && cd mycelium && cp .env.
 
 <div align="center">
   <div>
-    <kbd><h1 align="center">[ CONTRIBUTION_PROTOCOL ]</h1></kbd>
+    <kbd><h2 align="center">[ CONTRIBUTION_PROTOCOL ]</h2></kbd>
+    <br><br>
     <table>
       <tr>
         <td align="center">
