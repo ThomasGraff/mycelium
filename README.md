@@ -1,13 +1,10 @@
 <div align="center">
   <img src="frontend/mycelium/src/assets/logo.png" alt="Mycelium Logo" width="150"/>
-
-  <kbd>
-    <h1 align="center"><strong>[ MYCELIUM_CORE ]</strong></h1>
-  </kbd>
-
-  <br>
+  <br><br>
   
   <kbd>
+    <h1 align="center"><strong>[ MYCELIUM_CORE ]</strong></h1>
+    <br>
     <table align="center">
       <tr>
         <td align="left"><b>LICENSE</b></td>
