@@ -7,7 +7,7 @@
     <br><br>
     <table align="center">
       <tr>
-        <td align="left"><b>[LICENSE]</b></td>
+        <td align="left"><code>[LICENSE]</code></td>
         <td>
           <a href="https://www.gnu.org/licenses/agpl-3.0">
             <img src="https://img.shields.io/badge/License-AGPL_v3-blue.svg" alt="License: AGPL v3"/>
@@ -15,7 +15,7 @@
         </td>
       </tr>
       <tr>
-        <td align="left"><b>[METRICS]</b></td>
+        <td align="left"><code>[METRICS]</code></td>
         <td>
           <a href="https://github.com/ThomasGraff/mycelium/stargazers">
             <img src="https://img.shields.io/github/stars/ThomasGraff/mycelium.svg" alt="GitHub Stars"/>
@@ -29,7 +29,7 @@
         </td>
       </tr>
       <tr>
-        <td align="left"><b>[UTILS]</b></td>
+        <td align="left"><code>[UTILS]</code></td>
         <td>
           <a href="#documentation">
             <code>DOCS</code>
@@ -45,7 +45,7 @@
         </td>
       </tr>
       <tr>
-        <td align="left"><b>[DESCRIPTION]</b></td>
+        <td align="left"><code>[DESCRIPTION]</code></td>
         <td><i>
           A powerful platform designed to simplify the creation and management<br>
           of Data Contracts, bridging systems for seamless data ingestion.</i>
@@ -139,16 +139,10 @@
 </table>
 
 <br>
-<code>> One-Line Setup</code>
-<br><br>
-
-```bash
-git clone https://github.com/ThomasGraff/mycelium.git && cd mycelium && cp .env.example .env && docker-compose up -d
-```
-
-<br>
 
 <code>> Environment Configuration</code>
+
+<br>
 
 <table>
   <tr>
@@ -188,8 +182,23 @@ git clone https://github.com/ThomasGraff/mycelium.git && cd mycelium && cp .env.
     <td>Authentik HTTPS port</td>
   </tr>
 </table>
-  </div>
+
+<div align="center">
+  <i>.env file required for next step</i>
 </div>
+<br><br>
+<code>> One-Line Setup</code>
+<br><br>
+
+```bash
+git clone https://github.com/ThomasGraff/mycelium.git && cd mycelium && docker-compose up -d
+```
+
+
+</div>
+</div>
+
+
 
 <div align="center">│</div>
 <div align="center">▼</div>
