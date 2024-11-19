@@ -5,27 +5,36 @@ FROM python:3.12-slim
 WORKDIR /app
 
 # Step 3: Install system dependencies
-RUN apt-get update && apt-get install -y build-essential
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
-# Step 4: Install Poetry
-RUN pip install poetry
+# Step 4: Install Poetry and configure it
+RUN pip install poetry && \
+    poetry config virtualenvs.create false
 
-# Step 5: Copy Poetry files and install dependencies
+# Step 5: Copy Poetry files
 COPY pyproject.toml poetry.lock* ./
-RUN poetry config virtualenvs.create false \
-    && poetry install --no-interaction --no-ansi
 
-# Step 6: Copy the application code
+# Step 6: Install dependencies
+RUN poetry install --no-interaction --no-ansi --no-root
+
+# Step 7: Copy the application code
 COPY . .
 
-# Step 7: Create database directory
-RUN mkdir -p /app/database && chown -R nobody:nogroup /app/database
+# Step 8: Install the project
+RUN poetry install --no-interaction --no-ansi
 
-# Step 8: Switch to non-root user
+# Step 9: Create database directory with correct permissions
+RUN mkdir -p /app/app/database && \
+    chown -R nobody:nogroup /app/app/database && \
+    chmod 777 /app/app/database
+
+# Step 10: Switch to non-root user
 USER nobody
 
-# Step 9: Expose the FastAPI app port
+# Step 11: Expose the FastAPI app port
 EXPOSE 8000
 
-# Step 10: Command to run the FastAPI app
-CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Step 12: Command to run the FastAPI app
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

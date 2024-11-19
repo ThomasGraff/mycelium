@@ -142,8 +142,6 @@
 
 <code>> Environment Configuration</code>
 
-<br>
-
 <table>
   <tr>
     <th>Variable</th>
