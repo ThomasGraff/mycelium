@@ -4,24 +4,20 @@ services:
       context: ./frontend/mycelium
       dockerfile: Dockerfile
       args:
-        - AUTHENTIK_HOST=authentik-server
-        - AUTHENTIK_PORT=${AUTHENTIK_PORT}
-        - BACKEND_HOST=backend
-        - BACKEND_PORT=${BACKEND_PORT}
+        - AUTHENTIK_HOST=${AUTHENTIK_HOST:-authentik-server}
+        - AUTHENTIK_PORT=${AUTHENTIK_PORT:-9000}
+        - BACKEND_HOST=${BACKEND_HOST:-backend}
+        - BACKEND_PORT=${BACKEND_PORT:-8000}
+        - FRONTEND_PORT=${FRONTEND_PORT:-80}
     container_name: frontend
     ports:
-      - "${FRONTEND_PORT:-8080}:8080"
+      - "${FRONTEND_PORT:-80}:80"
     networks:
       - shared-network
     depends_on:
       - backend
       - authentik-server
-    environment:
-      - BACKEND_HOST=backend
-      - BACKEND_PORT=${BACKEND_PORT}
-      - AUTHENTIK_HOST=authentik-server
-      - AUTHENTIK_PORT=${AUTHENTIK_PORT}
-      - NGINX_LOG_LEVEL=debug
+
 
   backend:
     build:
@@ -34,6 +30,7 @@ services:
       - shared-network
     environment:
       - DATABASE_URL=${DATABASE_URL:-sqlite:///./app/database/mycelium.db}
+      - AUTHENTIK_URL=http://${AUTHENTIK_HOST:-authentik-server}:${AUTHENTIK_PORT:-9000}
     volumes:
       - ./backend/app/database:/app/database
 
