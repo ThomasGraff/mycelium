@@ -20,11 +20,12 @@
   </p>
 </div>
 
-## Overview
+<br><br>
+<h2 align="center">Overview</h2>
 
 Mycelium serves as a central platform for managing data contracts efficiently, connecting business teams, IT services, and data services such as data factories. Our platform streamlines the data contract lifecycle with AI-powered automation and intuitive visualization tools.
-
-## Key Features
+<br><br>
+<h2 align="center">Key Features</h2>
 
 <div align="center">
   <table>
@@ -63,7 +64,8 @@ Mycelium serves as a central platform for managing data contracts efficiently, c
   </table>
 </div>
 
-## Quick Start
+<br><br>  
+<h2 align="center">Quick Start</h2>
 
 ### Prerequisites
 
@@ -108,7 +110,7 @@ Mycelium serves as a central platform for managing data contracts efficiently, c
 2. **Environment Setup**
    ```bash
    cp .env.example .env
-   # Configure your environment variables
+   # Configure your environment variables (see environment variables section)
    ```
 
 3. **Launch the Application**
@@ -116,12 +118,55 @@ Mycelium serves as a central platform for managing data contracts efficiently, c
    docker-compose up -d
    ```
 
-4. **Access the Platform**
-   ```
-   http://localhost:8080
-   ```
+4. **Access the Applications**  
 
-## Contributing
+   Go on `http://localhost:8080`
+
+### Environment Variables
+
+<div align="center">
+  <table>
+    <tr>
+      <th>Variable</th>
+      <th>Required</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td><code>PG_PASS</code></td>
+      <td>✅</td>
+      <td>-</td>
+      <td>PostgreSQL password for Authentik</td>
+    </tr>
+    <tr>
+      <td><code>FRONTEND_PORT</code></td>
+      <td>❌</td>
+      <td>8080</td>
+      <td>Frontend application port</td>
+    </tr>
+    <tr>
+      <td><code>BACKEND_PORT</code></td>
+      <td>❌</td>
+      <td>8000</td>
+      <td>Backend API port</td>
+    </tr>
+    <tr>
+      <td><code>AUTHENTIK_PORT_HTTP</code></td>
+      <td>❌</td>
+      <td>9000</td>
+      <td>Authentik HTTP port</td>
+    </tr>
+    <tr>
+      <td><code>AUTHENTIK_PORT_HTTPS</code></td>
+      <td>❌</td>
+      <td>9443</td>
+      <td>Authentik HTTPS port</td>
+    </tr>
+  </table>
+</div>
+
+<br><br>
+<h2 align="center">Contributing</h2>
 
 <div align="center">
   <table>
