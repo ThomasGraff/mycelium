@@ -1,75 +1,175 @@
+<div align="center">
+  <img src="frontend/mycelium/src/assets/logo.png" alt="Mycelium Logo" width="200"/>
 
-# 🌱 **Mycelium: Data Contract Editor**
+  # Mycelium: Data Contract Editor
 
-Mycelium is a powerful platform designed to simplify the creation and management of Data Contracts, facilitating seamless data ingestion by acting as a bridge between different systems. It is built to serve business teams, IT services, and data services such as data factories, making it a central platform for managing data contracts efficiently.
+  [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+  [![GitHub Stars](https://img.shields.io/github/stars/ThomasGraff/mycelium.svg)](https://github.com/ThomasGraff/mycelium/stargazers)
+  [![GitHub Forks](https://img.shields.io/github/forks/ThomasGraff/mycelium.svg)](https://github.com/ThomasGraff/mycelium/network)
+  [![GitHub Issues](https://img.shields.io/github/issues/ThomasGraff/mycelium.svg)](https://github.com/ThomasGraff/mycelium/issues)
 
-## 🧠 **Key Features**
+  <p align="center">
+    A powerful platform designed to simplify the creation and management of Data Contracts, bridging systems for seamless data ingestion.
+    <br />
+    <a href="#documentation"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/ThomasGraff/mycelium/issues/new?template=bug_report.md">Report Bug</a>
+    ·
+    <a href="https://github.com/ThomasGraff/mycelium/issues/new?template=feature_request.md">Request Feature</a>
+  </p>
+</div>
 
-- **AI-Powered Data Contracts**: Mycelium leverages a Large Language Model (LLM) to auto-generate data contracts when provided with database details such as the host, secret, and user.
-- **Accelerated Data Ingestion**: Simplify and automate the process of generating ingestion configurations based on provided Data Contracts.
-- **Visualization**: Easily track which data sources have Data Contracts.
-- **Collaboration**: Align data engineers, business teams, and IT services around centralized data contract management.
-  
-## 📦 **Installation**
+## Overview
 
-### **1. Clone the Repository**
+Mycelium serves as a central platform for managing data contracts efficiently, connecting business teams, IT services, and data services such as data factories. Our platform streamlines the data contract lifecycle with AI-powered automation and intuitive visualization tools.
 
-```bash
-git clone https://github.com/ThomasGraff/mycelium.git
-cd mycelium
-```
+## Key Features
 
-### **2. Run the Application**
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="https://img.icons8.com/color/48/000000/artificial-intelligence.png" width="30"/>
+        <br />
+        <b>AI-Powered Contracts</b>
+        <br />
+        Auto-generate data contracts using advanced LLM technology
+      </td>
+      <td align="center">
+        <img src="https://img.icons8.com/color/48/000000/speed.png" width="30"/>
+        <br />
+        <b>Fast Ingestion</b>
+        <br />
+        Automated configuration and streamlined pipeline setup
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="https://img.icons8.com/color/48/000000/dashboard.png" width="30"/>
+        <br />
+        <b>Smart Visualization</b>
+        <br />
+        Track contracts and map data sources in real-time
+      </td>
+      <td align="center">
+        <img src="https://img.icons8.com/color/48/000000/collaboration.png" width="30"/>
+        <br />
+        <b>Team Collaboration</b>
+        <br />
+        Unite teams with centralized contract management
+      </td>
+    </tr>
+  </table>
+</div>
 
-```bash
-docker-compose up -d
-```
+## Quick Start
 
-### **3. Access the Application**
+### Prerequisites
 
-Open your browser and go to:
+<div align="center">
+  <table>
+    <tr>
+      <td align="center" width="50%">
+        <img src="https://img.icons8.com/color/48/000000/docker.png" width="30"/>
+        <br />
+        <b>Local Usage</b>
+        <br />
+        <ul align="left">
+          <li>Docker and Docker Compose</li>
+          <li>Git</li>
+        </ul>
+      </td>
+      <td align="center" width="50%">
+        <img src="https://img.icons8.com/color/48/000000/code.png" width="30"/>
+        <br />
+        <b>Development</b>
+        <br />
+        <ul align="left">
+          <li>Node.js (v18+)</li>
+          <li>Yarn (preferred over npm)</li>
+          <li>Python (v3.10+)</li>
+          <li>Poetry</li>
+          <li>Git</li>
+        </ul>
+      </td>
+    </tr>
+  </table>
+</div>
 
-```
-http://localhost:8080
-```
+### Installation
 
-This will start the Mycelium application on your local machine.
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/ThomasGraff/mycelium.git
+   cd mycelium
+   ```
 
----
+2. **Environment Setup**
+   ```bash
+   cp .env.example .env
+   # Configure your environment variables
+   ```
 
-## 🚀 **Usage**
+3. **Launch the Application**
+   ```bash
+   docker-compose up -d
+   ```
 
-Once the application is running, you can:
+4. **Access the Platform**
+   ```
+   http://localhost:8080
+   ```
 
-1. **Search or Create Data Contracts**:  
-   - Type keywords in the search bar to browse existing Data Contracts.
-   - Type `new` to initiate the creation of a new Data Contract.
+## Contributing
 
-2. **Auto-generate Data Contracts**:  
-   - Upload your list of company databases including information like `host`, `secret`, and `user`.  
-   - The system will use a Large Language Model (LLM) to auto-generate relevant Data Contracts.
-
-3. **Ingestion Configuration Generation**:  
-   - Provide an example configuration for ingestion tools.  
-   - Mycelium will automatically generate the appropriate ingestion configuration for any Data Contract.
-
-4. **Visualization**:  
-   - Easily visualize which data sources already have Data Contracts in place.
-
----
-
-## 🔄 **License**
-
-This project is licensed under the [AGPL 3.0 License](https://www.gnu.org/licenses/agpl-3.0.en.html).
-
----
-
-## 🤝 **Contributing**
-
-Feel free to contribute by submitting a pull request or opening an issue. Contributions are always welcome!
-
-- Fork the repo
-- Create your feature branch (`git checkout -b feature/YourFeature`)
-- Commit your changes (`git commit -m 'Add feature'`)
-- Push to the branch (`git push origin feature/YourFeature`)
-- Open a pull request
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="https://img.icons8.com/color/48/000000/code-fork.png" width="30"/>
+        <br />
+        <b>1. Fork</b>
+        <br />
+        Fork the repository
+      </td>
+      <td align="center">
+        <img src="https://img.icons8.com/color/48/000000/split.png" width="30"/>
+        <br />
+        <b>2. Branch</b>
+        <br />
+        <code>git checkout -b feat/YourFeature</code>
+      </td>
+      <td align="center">
+        <img src="https://img.icons8.com/color/48/000000/commit-git.png" width="30"/>
+        <br />
+        <b>3. Commit</b>
+        <br />
+        <code>git commit -m 'Add feature'</code>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="https://img.icons8.com/color/48/000000/upload-to-cloud.png" width="30"/>
+        <br />
+        <b>4. Push</b>
+        <br />
+        <code>git push origin feat/YourFeature</code>
+      </td>
+      <td align="center">
+        <img src="https://img.icons8.com/color/48/000000/pull-request.png" width="30"/>
+        <br />
+        <b>5. Pull Request</b>
+        <br />
+        Open a PR on GitHub
+      </td>
+      <td align="center">
+        <img src="https://img.icons8.com/color/48/000000/communication.png" width="30"/>
+        <br />
+        <b>6. Discuss</b>
+        <br />
+        Engage in review process
+      </td>
+    </tr>
+  </table>
+</div>

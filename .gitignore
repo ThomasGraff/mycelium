@@ -145,3 +145,4 @@ certs/
 custom-templates/
 media/
 
+.lprof/
