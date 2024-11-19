@@ -1,33 +1,64 @@
 <div align="center">
   <img src="frontend/mycelium/src/assets/logo.png" alt="Mycelium Logo" width="200"/>
 
-  # Mycelium: Data Contract Editor
-
-  [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-  [![GitHub Stars](https://img.shields.io/github/stars/ThomasGraff/mycelium.svg)](https://github.com/ThomasGraff/mycelium/stargazers)
-  [![GitHub Forks](https://img.shields.io/github/forks/ThomasGraff/mycelium.svg)](https://github.com/ThomasGraff/mycelium/network)
-  [![GitHub Issues](https://img.shields.io/github/issues/ThomasGraff/mycelium.svg)](https://github.com/ThomasGraff/mycelium/issues)
-
-  <p align="center">
-    A powerful platform designed to simplify the creation and management of Data Contracts, bridging systems for seamless data ingestion.
-    <br />
-    <a href="#documentation"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/ThomasGraff/mycelium/issues/new?template=bug_report.md">Report Bug</a>
-    ·
-    <a href="https://github.com/ThomasGraff/mycelium/issues/new?template=feature_request.md">Request Feature</a>
-  </p>
-</div>
-
-<br>
-
-<div align="center">
   <kbd>
-    <h2><strong>[ OVERVIEW ]</strong></h2>
-    <p>
-      <span style="color: #00ff00;">></span> Mycelium serves as a central platform for managing data contracts efficiently, connecting business teams, IT services, and data services such as data factories. Our platform streamlines the data contract lifecycle with AI-powered automation and intuitive visualization tools.
-    </p>
+    <h1><strong>[ MYCELIUM_CORE ]</strong></h1>
+  </kbd>
+
+  <br>
+  
+  <kbd>
+    <table>
+      <tr>
+        <td align="left"><b>STATUS</b></td>
+        <td>⬤ OPERATIONAL</td>
+      </tr>
+      <tr>
+        <td align="left"><b>LICENSE</b></td>
+        <td>
+          <a href="https://www.gnu.org/licenses/agpl-3.0">
+            <img src="https://img.shields.io/badge/License-AGPL_v3-blue.svg" alt="License: AGPL v3"/>
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td align="left"><b>METRICS</b></td>
+        <td>
+          <a href="https://github.com/ThomasGraff/mycelium/stargazers">
+            <img src="https://img.shields.io/github/stars/ThomasGraff/mycelium.svg" alt="GitHub Stars"/>
+          </a>
+          <a href="https://github.com/ThomasGraff/mycelium/network">
+            <img src="https://img.shields.io/github/forks/ThomasGraff/mycelium.svg" alt="GitHub Forks"/>
+          </a>
+          <a href="https://github.com/ThomasGraff/mycelium/issues">
+            <img src="https://img.shields.io/github/issues/ThomasGraff/mycelium.svg" alt="GitHub Issues"/>
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td align="left"><b>UTILS</b></td>
+        <td>
+          <a href="#documentation">
+            <img src="https://img.icons8.com/ios-filled/24/000000/book.png" width="18"/>
+            <code>DOCS</code>
+          </a>
+          &nbsp;&nbsp;
+          <a href="https://github.com/ThomasGraff/mycelium/issues/new?template=bug_report.md">
+            <img src="https://img.icons8.com/ios-filled/24/000000/bug.png" width="18"/>
+            <code>BUGS</code>
+          </a>
+          &nbsp;&nbsp;
+          <a href="https://github.com/ThomasGraff/mycelium/issues/new?template=feature_request.md">
+            <img src="https://img.icons8.com/ios-filled/24/000000/plus-math.png" width="18"/>
+            <code>FEATURES</code>
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td align="left"><b>DESCRIPTION</b></td>
+        <td>A powerful platform designed to simplify the creation and management of Data Contracts, bridging systems for seamless data ingestion.</td>
+      </tr>
+    </table>
   </kbd>
 </div>
 
@@ -36,7 +67,7 @@
 
 <div align="center">
   <kbd>
-    <h2><strong>[ KEY FEATURES ]</strong></h2>
+    <h2><strong>[ CORE_FEATURES ]</strong></h2>
     <table>
       <tr>
         <td align="center">
@@ -79,23 +110,15 @@
 
 <div align="center">
   <kbd>
-    <h2><strong>[ QUICK START ]</strong></h2>
+    <h2><strong>[ INITIALIZATION_SEQUENCE ]</strong></h2>
     
-<span style="color: #00ff00;">></span> One-Line Setup
-    
-```bash
-git clone https://github.com/ThomasGraff/mycelium.git && cd mycelium && cp .env.example .env && docker-compose up -d
-```
-
-<div align="center">│</div>
-
-<span style="color: #00ff00;">></span> Prerequisites
+> Prerequisites
 <table>
   <tr>
     <td align="center" width="50%">
       <img src="https://img.icons8.com/color/48/000000/docker.png" width="30"/>
       <br />
-      <b><span style="color: #00ff00;">></span> Local Usage</b>
+      <b>> Local Usage</b>
       <br />
       <ul align="left">
         <li>Docker and Docker Compose</li>
@@ -105,7 +128,7 @@ git clone https://github.com/ThomasGraff/mycelium.git && cd mycelium && cp .env.
     <td align="center" width="50%">
       <img src="https://img.icons8.com/color/48/000000/code.png" width="30"/>
       <br />
-      <b><span style="color: #00ff00;">></span> Development</b>
+      <b>> Development</b>
       <br />
       <ul align="left">
         <li>Node.js (v18+)</li>
@@ -118,9 +141,17 @@ git clone https://github.com/ThomasGraff/mycelium.git && cd mycelium && cp .env.
   </tr>
 </table>
 
-<div align="center">│</div>
+<br>
 
-<span style="color: #00ff00;">></span> Environment Configuration
+> One-Line Setup
+    
+```bash
+git clone https://github.com/ThomasGraff/mycelium.git && cd mycelium && cp .env.example .env && docker-compose up -d
+```
+
+<br>
+
+> Environment Configuration
 <table>
   <tr>
     <th>Variable</th>
@@ -167,7 +198,7 @@ git clone https://github.com/ThomasGraff/mycelium.git && cd mycelium && cp .env.
 
 <div align="center">
   <kbd>
-    <h2><strong>[ CONTRIBUTING ]</strong></h2>
+    <h2><strong>[ CONTRIBUTION_PROTOCOL ]</strong></h2>
     <table>
       <tr>
         <td align="center">
