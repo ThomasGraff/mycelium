@@ -2,16 +2,14 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/home/Home.vue'
 import Login from '@/views/auth/Login.vue'
 import Register from '@/views/auth/Register.vue'
-import mainOidc from '@/services/auth'
-import Callback from '@/views/auth/Callback.vue'
+import auth from '@/services/auth'
 
-// Define the routes for the application
 const routes = [
   {
     path: '/',
     name: 'Home',
     component: Home,
-    meta: { authName: mainOidc.authName }
+    meta: { requiresAuth: true }
   },
   {
     path: '/login',
@@ -23,11 +21,6 @@ const routes = [
     name: 'Register',
     component: Register
   },
-  {
-    path: '/auth/signinwin/mycelium',
-    name: 'Callback',
-    component: Callback
-  },
 ]
 
 const router = createRouter({
@@ -35,7 +28,18 @@ const router = createRouter({
   routes
 })
 
-
-mainOidc.useRouter(router)
+// Navigation guard
+router.beforeEach(async (to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    try {
+      await auth.getCurrentUser();
+      next();
+    } catch (error) {
+      next('/login');
+    }
+  } else {
+    next();
+  }
+});
 
 export default router

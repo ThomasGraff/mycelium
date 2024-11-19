@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { defineComponent, computed } from 'vue'
+import { defineComponent, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import auth from '@/services/auth'
 
@@ -21,11 +21,19 @@ export default defineComponent({
   name: 'App',
   setup() {
     const router = useRouter()
+    const isAuthenticated = ref(false)
 
-    const isAuthenticated = computed(() => auth.isAuthenticated)
+    onMounted(async () => {
+      try {
+        await auth.getCurrentUser()
+        isAuthenticated.value = auth.isAuthenticated
+      } catch (error) {
+        console.error('❌ Failed to get user:', error)
+      }
+    })
 
     const logout = async () => {
-      await auth.signOut()
+      await auth.logout()
       router.push('/login')
     }
 

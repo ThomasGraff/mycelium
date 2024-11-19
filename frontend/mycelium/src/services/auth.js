@@ -1,16 +1,38 @@
-import { createOidcAuth, SignInType } from 'vue-oidc-client/vue3'
+import axios from 'axios';
 
+class AuthService {
+  constructor() {
+    this.isAuthenticated = false;
+    this.user = null;
+  }
 
-const appUrl = `${window.location.origin}/`
+  async login() {
+    // Redirect to backend login endpoint
+    window.location.href = '/api/auth/login';
+  }
 
-const mainOidc = createOidcAuth('mycelium', SignInType.Window, appUrl, {
-  authority: process.env.AUTHENTIK_CLIENT_ID,
-  client_id: process.env.VUE_APP_AUTHENTIK_CLIENT_ID,
-  response_type: 'code',
-  scope: 'openid profile email',
-  redirect_uri: `${appUrl}auth/signinwin/mycelium`,
-  silent_redirect_uri: `${appUrl}auth/signinsilent/mycelium`,
-  post_logout_redirect_uri: appUrl,
-})
+  async logout() {
+    try {
+      await axios.get('/api/auth/logout');
+      this.isAuthenticated = false;
+      this.user = null;
+    } catch (error) {
+      console.error('❌ Logout failed:', error);
+    }
+  }
 
-export default mainOidc
+  async getCurrentUser() {
+    try {
+      const response = await axios.get('/api/auth/me');
+      this.user = response.data.user;
+      this.isAuthenticated = true;
+      return this.user;
+    } catch (error) {
+      this.isAuthenticated = false;
+      this.user = null;
+      throw error;
+    }
+  }
+}
+
+export default new AuthService();
