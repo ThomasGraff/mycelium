@@ -149,3 +149,8 @@ media/
 
 # SQLite database
 **/database/*.db
+
+# Environment variables
+.env
+.env.*
+!.env.example
