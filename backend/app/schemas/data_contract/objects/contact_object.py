@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import EmailStr, Field, HttpUrl
 
-from ...utils.example_model import BaseModelWithExample
+from ....utils.example_model import BaseModelWithExample
 
 
 class ContactObject(BaseModelWithExample):

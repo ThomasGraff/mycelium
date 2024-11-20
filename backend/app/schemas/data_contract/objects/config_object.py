@@ -2,7 +2,7 @@ from typing import Any, Optional
 
 from pydantic import ConfigDict, Field
 
-from ...utils.example_model import BaseModelWithExample
+from ....utils.example_model import BaseModelWithExample
 
 
 class ConfigObject(BaseModelWithExample):

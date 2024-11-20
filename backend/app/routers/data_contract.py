@@ -9,17 +9,17 @@ from ..crud.data_contract import (
     update_data_contract,
 )
 from ..database.manager import db_manager
-from ..schemas.crud.data_contract_create import (
+from ..schemas.data_contract.routes.data_contract_create import (
     DataContractCreate,
     DataContractCreateResponse,
 )
-from ..schemas.crud.data_contract_delete import (
+from ..schemas.data_contract.routes.data_contract_delete import (
     DataContractDelete,
     DataContractDeleteResponse,
 )
-from ..schemas.crud.data_contract_get import DataContractGetResponse
-from ..schemas.crud.data_contract_list import DataContractListResponse
-from ..schemas.crud.data_contract_update import (
+from ..schemas.data_contract.routes.data_contract_get import DataContractGetResponse
+from ..schemas.data_contract.routes.data_contract_list import DataContractListResponse
+from ..schemas.data_contract.routes.data_contract_update import (
     DataContractUpdate,
     DataContractUpdateResponse,
 )

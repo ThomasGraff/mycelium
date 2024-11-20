@@ -1,7 +1,9 @@
 from typing import Any, Dict
 
 from ..models.data_contract import DataContract as DBDataContract
-from ..schemas.data_contract.data_contract import DataContract as PydanticDataContract
+from ..schemas.data_contract.objects.data_contract import (
+    DataContract as PydanticDataContract,
+)
 
 
 def pydantic_to_db_model(pydantic_model: PydanticDataContract) -> DBDataContract:

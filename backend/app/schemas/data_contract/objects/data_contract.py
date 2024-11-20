@@ -2,7 +2,7 @@ from typing import Dict, List, Optional
 
 from pydantic import AliasChoices, ConfigDict, Field, HttpUrl
 
-from ...utils.example_model import BaseModelWithExample
+from ....utils.example_model import BaseModelWithExample
 from .definition_object import DefinitionObject
 from .example_object import ExampleObject
 from .info_object import InfoObject

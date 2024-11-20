@@ -2,8 +2,8 @@ from typing import List
 
 from pydantic import ConfigDict, Field
 
-from ...utils.example_model import BaseModelWithExample
-from ..data_contract.data_contract import DataContract
+from ....utils.example_model import BaseModelWithExample
+from ..objects.data_contract import DataContract
 
 
 class DataContractListResponse(BaseModelWithExample):

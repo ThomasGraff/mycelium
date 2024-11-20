@@ -2,7 +2,7 @@ from typing import Dict, Optional
 
 from pydantic import Field
 
-from ...utils.example_model import BaseModelWithExample
+from ....utils.example_model import BaseModelWithExample
 from .config_object import ConfigObject
 from .field_object import FieldObject
 

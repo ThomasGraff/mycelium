@@ -2,7 +2,7 @@ from typing import Literal, Union
 
 from pydantic import Field
 
-from ...utils.example_model import BaseModelWithExample
+from ....utils.example_model import BaseModelWithExample
 
 
 class SodaCLQualityObject(BaseModelWithExample):

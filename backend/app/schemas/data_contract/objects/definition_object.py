@@ -2,7 +2,7 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import ConfigDict, Field, HttpUrl
 
-from ...utils.example_model import BaseModelWithExample
+from ....utils.example_model import BaseModelWithExample
 from .data_type import DataType
 from .field_object import FieldObject
 
