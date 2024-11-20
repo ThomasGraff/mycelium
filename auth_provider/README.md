@@ -7,12 +7,7 @@
    docker compose --env-file ../.env up -d
    ```
 
-2. Initialize admin user:
-   ```bash
-   ./bootstrap.sh
-   ```
-
-3. Setup OAuth application:
+2. Setup OAuth application:
    ```bash
    ./setup.sh
    ```
