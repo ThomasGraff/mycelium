@@ -14,8 +14,6 @@ services:
       POSTGRES_PASSWORD: ${PG_PASS:?database password required}
       POSTGRES_USER: ${PG_USER:-authentik}
       POSTGRES_DB: ${PG_DB:-authentik}
-    env_file:
-      - .env
 
   authentik-redis:
     image: docker.io/library/redis:alpine
@@ -31,7 +29,7 @@ services:
       - authentik-redis:/data
 
   authentik-server:
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2024.8.3}
+    image: ${AUTHENTIK_IMAGE}:${AUTHENTIK_TAG}
     restart: unless-stopped
     command: server
     environment:
@@ -40,11 +38,10 @@ services:
       AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
     volumes:
       - ./media:/media
       - ./custom-templates:/templates
-    env_file:
-      - .env
     ports:
       - "${AUTHENTIK_PORT:-9000}:9000"
       - "${AUTHENTIK_PORT_HTTPS:-9443}:9443"
@@ -53,7 +50,7 @@ services:
       - authentik-redis
 
   authentik-worker:
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2024.8.3}
+    image: ${AUTHENTIK_IMAGE}:${AUTHENTIK_TAG}
     restart: unless-stopped
     command: worker
     environment:
@@ -62,14 +59,13 @@ services:
       AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+      AUTHENTIK_SECRET_KEY: ${SECRET_KEY}
     user: root
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./media:/media
       - ./certs:/certs
       - ./custom-templates:/templates
-    env_file:
-      - .env
     depends_on:
       - authentik-postgresql
       - authentik-redis

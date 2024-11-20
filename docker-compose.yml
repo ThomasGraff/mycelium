@@ -20,6 +20,8 @@ services:
     depends_on:
       - backend
       - authentik-server
+    env_file:
+      - .env
 
   backend:
     build:
@@ -40,6 +42,8 @@ services:
       - shared-network
     volumes:
       - ./backend/app/database:/app/database
+    env_file:
+      - .env
 
   authentik-postgresql:
     extends:
@@ -47,6 +51,8 @@ services:
       service: authentik-postgresql
     networks:
       - shared-network
+    env_file:
+      - .env
 
   authentik-redis:
     extends:
@@ -54,6 +60,8 @@ services:
       service: authentik-redis
     networks:
       - shared-network
+    env_file:
+      - .env
 
   authentik-server:
     extends:
@@ -61,6 +69,8 @@ services:
       service: authentik-server
     networks:
       - shared-network
+    env_file:
+      - .env
 
   authentik-worker:
     extends:
@@ -68,6 +78,8 @@ services:
       service: authentik-worker
     networks:
       - shared-network
+    env_file:
+      - .env
 
 networks:
   shared-network:
