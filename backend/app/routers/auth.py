@@ -1,58 +1,63 @@
 from datetime import timedelta
+from typing import Any, Dict
 
 import httpx
-from fastapi import APIRouter, HTTPException, Request, Response, status
-from jose import JWTError, jwt
+from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi.security import HTTPBearer
 from passlib.context import CryptContext
 
 from ..schemas.auth.routes.login import LoginInput, LoginResponse
 from ..schemas.auth.routes.logout import LogoutResponse
 from ..schemas.auth.routes.me import MeResponse
 from ..schemas.auth.routes.register import RegisterInput, RegisterResponse
-from ..utils.auth import create_access_token, verify_authentik_credentials
+from ..utils.auth import (
+    create_access_token,
+    get_authentik_tokens,
+    get_current_user_from_token,
+)
 from ..utils.config import settings
 
-router = APIRouter(prefix="/auth", tags=["Authentication"])
+router = APIRouter(tags=["Authentication"])
 
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+security = HTTPBearer()
 
 
-@router.post("/login", response_model=LoginResponse)
-async def login(response: Response, user_data: LoginInput) -> LoginResponse:
-    """Login endpoint"""
-    try:
-        # Verify credentials with Authentik
-        auth_result = await verify_authentik_credentials(user_data.username, user_data.password, user_data.mfa_code)
-
-        # Create access token
-        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-        access_token = create_access_token(
-            data={"sub": user_data.username, **auth_result["user"]}, expires_delta=access_token_expires
-        )
-
-        # Set HTTP-only cookie
-        response.set_cookie(
-            key="access_token",
-            value=f"Bearer {access_token}",
-            httponly=True,
-            secure=True,
-            samesite="lax",
-            max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-        )
-
-        return LoginResponse(
-            access_token=access_token, token_type="bearer", expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
-        )
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f" ❌ Login failed: {str(e)}")
-
-
-@router.post("/register", response_model=RegisterResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/register",
+    response_model=RegisterResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Register new user",
+    description="Registers a new user in Authentik.",
+    response_description="Successfully registered user",
+    responses={
+        201: {
+            "content": {"application/json": {"example": {"message": " ✅ User registered successfully"}}},
+        },
+        400: {
+            "description": "Invalid input",
+            "content": {"application/json": {"example": {"detail": " ❌ Registration failed: Invalid input"}}},
+        },
+        500: {
+            "description": "Internal server error",
+            "content": {"application/json": {"example": {"detail": " ❌ Registration error: Internal server error"}}},
+        },
+    },
+)
 async def register(user_data: RegisterInput) -> RegisterResponse:
-    """Register new user in Authentik"""
+    """
+    Registers a new user in Authentik.
+
+    This endpoint accepts user registration data and creates a new user account
+    in the Authentik authentication system.
+
+    :param RegisterInput user_data: The user registration information
+    :return RegisterResponse: Success message
+    :raises HTTPException:
+        - 400 Bad Request: If registration data is invalid
+        - 500 Internal Server Error: If there's an unexpected error during registration
+    """
     async with httpx.AsyncClient() as client:
         try:
             response = await client.post(
@@ -73,23 +78,128 @@ async def register(user_data: RegisterInput) -> RegisterResponse:
             )
 
 
-@router.post("/logout", response_model=LogoutResponse)
+@router.post(
+    "/login",
+    response_model=LoginResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Login user",
+    description="Authenticates a user against Authentik and returns access tokens.",
+    response_description="Successfully authenticated user",
+    responses={
+        200: {
+            "content": {
+                "application/json": {"example": {"access_token": "token", "token_type": "bearer", "expires_in": 1800}}
+            },
+        },
+        401: {
+            "description": "Invalid credentials",
+            "content": {"application/json": {"example": {"detail": " ❌ Invalid credentials"}}},
+        },
+        500: {
+            "description": "Internal server error",
+            "content": {"application/json": {"example": {"detail": " ❌ Login failed: Internal server error"}}},
+        },
+    },
+)
+async def login(response: Response, user_data: LoginInput) -> LoginResponse:
+    """
+    Authenticates a user against Authentik and returns access tokens.
+
+    :param Response response: FastAPI response object for setting cookies
+    :param LoginInput user_data: The user credentials for authentication
+    :return LoginResponse: Access token and related information
+    :raises HTTPException: If authentication fails
+    """
+    try:
+        # Get tokens from Authentik
+        auth_result = await get_authentik_tokens(user_data.username, user_data.password, user_data.mfa_code)
+
+        # Create our own access token that includes user info
+        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(
+            data={
+                "sub": user_data.username,
+                "authentik_token": auth_result["access_token"],
+                "scope": auth_result.get("scope", ""),
+            },
+            expires_delta=access_token_expires,
+        )
+
+        # Set secure cookie with access token
+        response.set_cookie(
+            key="access_token",
+            value=f"Bearer {access_token}",
+            httponly=True,  # Prevents JavaScript access
+            secure=True,  # Only sent over HTTPS
+            samesite="lax",  # Protects against CSRF
+            max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+            path="/",  # Available across all paths
+        )
+
+        return LoginResponse(
+            access_token=access_token,
+            token_type="bearer",
+            expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f" ❌ Login failed: {str(e)}")
+
+
+@router.post(
+    "/logout",
+    response_model=LogoutResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Logout user",
+    description="Logs out the current user by clearing their access token cookie.",
+    response_description="Successfully logged out user",
+    responses={
+        200: {
+            "content": {"application/json": {"example": {"message": " ✅ Logged out successfully"}}},
+        },
+    },
+)
 async def logout(response: Response) -> LogoutResponse:
-    """Logout user"""
+    """
+    Logs out the current user.
+
+    This endpoint clears the user's access token cookie, effectively logging them out.
+
+    :param Response response: FastAPI response object for clearing cookies
+    :return LogoutResponse: Success message
+    """
     response.delete_cookie("access_token")
     return LogoutResponse(message=" ✅ Logged out successfully")
 
 
-@router.get("/me", response_model=MeResponse)
-async def get_current_user(request: Request) -> MeResponse:
-    """Get current user info"""
-    try:
-        token = request.cookies.get("access_token")
-        if not token:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=" ❌ Not authenticated")
+@router.get(
+    "/me",
+    response_model=MeResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Get current user",
+    description="Retrieves information about the currently authenticated user.",
+    response_description="Successfully retrieved user information",
+    responses={
+        200: {
+            "content": {"application/json": {"example": {"user": {"sub": "username", "email": "user@example.com"}}}},
+        },
+        401: {
+            "description": "Not authenticated",
+            "content": {"application/json": {"example": {"detail": " ❌ Not authenticated"}}},
+        },
+    },
+)
+async def get_current_user(user: Dict[str, Any] = Depends(get_current_user_from_token)) -> MeResponse:
+    """
+    Retrieves information about the currently authenticated user.
 
-        token = token.replace("Bearer ", "")
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        return MeResponse(user=payload)
-    except JWTError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=" ❌ Invalid token")
+    This endpoint extracts user information from the access token
+    in the request cookies.
+
+    :param Request request: FastAPI request object containing cookies
+    :return MeResponse: Current user information
+    :raises HTTPException:
+        - 401 Unauthorized: If user is not authenticated or token is invalid
+    """
+    return MeResponse(user=user)

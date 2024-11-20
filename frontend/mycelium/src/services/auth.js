@@ -17,6 +17,9 @@ class AuthService {
         return Promise.reject(error);
       }
     );
+
+    // Configure axios to include credentials
+    axios.defaults.withCredentials = true;
   }
 
   async login(username, password, mfaCode = null) {
@@ -60,6 +63,7 @@ class AuthService {
 
   async getCurrentUser() {
     try {
+      // The cookie will be automatically included in the request
       const response = await axios.get('/api/auth/me');
       this.user = response.data.user;
       this.isAuthenticated = true;
@@ -67,16 +71,6 @@ class AuthService {
     } catch (error) {
       this.isAuthenticated = false;
       this.user = null;
-      throw error;
-    }
-  }
-
-  async checkMfaRequired(username) {
-    try {
-      const response = await axios.post('/api/auth/check-mfa', { username });
-      return response.data.mfa_required;
-    } catch (error) {
-      console.error(' ❌ MFA check failed:', error);
       throw error;
     }
   }

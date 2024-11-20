@@ -24,7 +24,7 @@ from ..schemas.data_contract.routes.data_contract_update import (
     DataContractUpdateResponse,
 )
 
-router = APIRouter()
+router = APIRouter(tags=["Data Contracts"])
 
 
 @router.post(
