@@ -1,4 +1,3 @@
-import os
 from os import getenv
 from typing import Final, List
 
@@ -10,24 +9,37 @@ class Settings:
     This class holds the configuration settings for the application, including
     database connection details, LLM API information, and server configuration.
     It uses environment variables with default values.
+
+    :raises ValueError: If required environment variables are not set
     """
 
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./app/database/mycelium.db")
-    DEFAULT_HOST: str = "0.0.0.0"
-    DEFAULT_PORT: int = 8000
-    DEFAULT_WORKERS: int = 4
-    ALLOWED_ORIGINS: List[str] = ["*"]
-    LOG_LEVEL: str = "INFO"
+    def __init__(self):
+        """Initialize settings and validate required environment variables."""
+        # Required environment variables
+        self.SECRET_KEY: Final[str] = self._get_required_env("SECRET_KEY")
+        self.AUTHENTIK_URL: Final[str] = self._get_required_env("AUTHENTIK_URL")
+        self.AUTHENTIK_CLIENT_ID: Final[str] = self._get_required_env("AUTHENTIK_CLIENT_ID")
+        self.AUTHENTIK_CLIENT_SECRET: Final[str] = self._get_required_env("AUTHENTIK_CLIENT_SECRET")
 
-    # Auth Configuration
-    SECRET_KEY: Final[str] = getenv("SECRET_KEY", "your-secret-key-here")
-    ALGORITHM: Final[str] = getenv("ALGORITHM", "HS256")
-    ACCESS_TOKEN_EXPIRE_MINUTES: Final[int] = int(getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
+        # Optional environment variables with defaults
+        self.DATABASE_URL: str = getenv("DATABASE_URL", "sqlite:///./app/database/mycelium.db")
+        self.ALLOWED_ORIGINS: List[str] = ["*"]
+        self.LOG_LEVEL: str = "INFO"
+        self.ALGORITHM: Final[str] = getenv("ALGORITHM", "HS256")
+        self.ACCESS_TOKEN_EXPIRE_MINUTES: Final[int] = int(getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
 
-    # Authentik Configuration
-    AUTHENTIK_URL: Final[str] = getenv("AUTHENTIK_URL", "https://auth.example.com")
-    AUTHENTIK_CLIENT_ID: Final[str] = getenv("AUTHENTIK_CLIENT_ID", "")
-    AUTHENTIK_CLIENT_SECRET: Final[str] = getenv("AUTHENTIK_CLIENT_SECRET", "")
+    def _get_required_env(self, key: str) -> str:
+        """
+        Get a required environment variable.
+
+        :param str key: The environment variable key
+        :return str: The environment variable value
+        :raises ValueError: If the environment variable is not set
+        """
+        value = getenv(key)
+        if value is None:
+            raise ValueError(f" ❌ Required environment variable {key} is not set")
+        return value
 
 
 settings = Settings()
