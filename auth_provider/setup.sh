@@ -137,7 +137,7 @@ if [ -z "$PROVIDER_ID" ] || [ "$PROVIDER_ID" = "null" ]; then
             \"include_claims_in_id_token\": true,
             \"sub_mode\": \"hashed_user_id\",
             \"issuer_mode\": \"global\",
-            \"application\": \"$APP_UUID\",
+            \"application\": \"$APP_UUID\"
         }")
 
     PROVIDER_ID=$(echo $PROVIDER_RESPONSE | jq -r '.pk')
@@ -157,7 +157,7 @@ else
         -H "Authorization: Bearer $AUTHENTIK_ADMIN_TOKEN" \
         -H "Content-Type: application/json" \
         -d "{
-            \"application\": \"$APP_UUID\",
+            \"application\": \"$APP_UUID\"
         }")
 fi
 
@@ -185,7 +185,7 @@ echo "💡 Saving OAuth credentials..."
 cat > .oauth_creds.json << EOF
 {
     "client_id": "$CLIENT_ID",
-    "client_secret": "$CLIENT_SECRET",
+    "client_secret": "$CLIENT_SECRET"
 }
 EOF
 
