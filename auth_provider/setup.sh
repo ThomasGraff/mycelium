@@ -180,15 +180,6 @@ if [ -z "$CLIENT_SECRET" ]; then
     exit 1
 fi
 
-# Save credentials to a file for later use
-echo "💡 Saving OAuth credentials..."
-cat > .oauth_creds.json << EOF
-{
-    "client_id": "$CLIENT_ID",
-    "client_secret": "$CLIENT_SECRET"
-}
-EOF
-
 echo "✅ Setup complete!"
 echo "📋 OAuth Credentials:"
 echo "🔑 Client ID: $CLIENT_ID"
