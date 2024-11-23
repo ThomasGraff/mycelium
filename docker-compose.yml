@@ -4,14 +4,12 @@ services:
       context: ./frontend/mycelium
       dockerfile: Dockerfile
       args:
-        - AUTHENTIK_HOST=${AUTHENTIK_HOST:-authentik-server}
-        - AUTHENTIK_PORT=${AUTHENTIK_PORT:-9000}
-        - AUTHENTIK_CLIENT_ID=${AUTHENTIK_CLIENT_ID}
-        - AUTHENTIK_CLIENT_SECRET=${AUTHENTIK_CLIENT_SECRET}
         - BACKEND_HOST=${BACKEND_HOST:-backend}
         - BACKEND_PORT=${BACKEND_PORT:-8000}
         - FRONTEND_PORT=${FRONTEND_PORT:-80}
         - FRONTEND_HOST=${FRONTEND_HOST:-0.0.0.0}
+        - SUPABASE_URL=${SUPABASE_URL}
+        - SUPABASE_KEY=${SUPABASE_KEY}
     container_name: frontend
     ports:
       - "${FRONTEND_PORT:-80}:80"
@@ -19,7 +17,6 @@ services:
       - shared-network
     depends_on:
       - backend
-      - authentik-server
     env_file:
       - .env
 
@@ -30,65 +27,34 @@ services:
       args:
         - BACKEND_HOST=${BACKEND_HOST:-0.0.0.0}
         - BACKEND_PORT=${BACKEND_PORT:-8000}
-        - AUTHENTIK_HOST=${AUTHENTIK_HOST:-authentik-server}
-        - AUTHENTIK_PORT=${AUTHENTIK_PORT:-9000}
-        - AUTHENTIK_CLIENT_ID=${AUTHENTIK_CLIENT_ID}
-        - AUTHENTIK_CLIENT_SECRET=${AUTHENTIK_CLIENT_SECRET}
-        - DATABASE_URL=${DATABASE_URL:-sqlite:///./app/database/mycelium.db}
+        - DATABASE_TYPE=${DATABASE_TYPE:-supabase}
+        - SUPABASE_URL=${SUPABASE_URL}
+        - SUPABASE_KEY=${SUPABASE_KEY}
     container_name: backend
     ports:
       - "${BACKEND_PORT:-8000}:8000"
     networks:
       - shared-network
-    volumes:
-      - ./backend/app/database:/app/database
+    depends_on:
+      - supabase
     env_file:
       - .env
+    environment:
+      - DATABASE_TYPE=${DATABASE_TYPE:-supabase}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
 
-  authentik-postgresql:
+  supabase:
     extends:
-      file: authentik-base.yml
-      service: authentik-postgresql
+      file: ./backend/supabase/docker-compose.yml
+      service: supabase
     networks:
       - shared-network
-    env_file:
-      - .env
-
-  authentik-redis:
-    extends:
-      file: authentik-base.yml
-      service: authentik-redis
-    networks:
-      - shared-network
-    env_file:
-      - .env
-
-  authentik-server:
-    extends:
-      file: authentik-base.yml
-      service: authentik-server
-    networks:
-      - shared-network
-    env_file:
-      - .env
-
-  authentik-worker:
-    extends:
-      file: authentik-base.yml
-      service: authentik-worker
-    networks:
-      - shared-network
-    env_file:
-      - .env
 
 networks:
   shared-network:
     driver: bridge
 
 volumes:
-  authentik-database:
-    driver: local
-  authentik-redis:
-    driver: local
-  backend-database:
+  supabase-data:
     driver: local

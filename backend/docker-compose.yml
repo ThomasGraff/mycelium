@@ -6,27 +6,16 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - BACKEND_HOST=${BACKEND_HOST:-0.0.0.0}
         - BACKEND_PORT=${BACKEND_PORT:-8000}
-        - DATABASE_TYPE=${DATABASE_TYPE:-supabase}
         - SUPABASE_URL=${SUPABASE_URL}
         - SUPABASE_KEY=${SUPABASE_KEY}
-        - AUTHENTIK_HOST=${AUTHENTIK_HOST:-authentik-server}
-        - AUTHENTIK_PORT=${AUTHENTIK_PORT:-9000}
-        - AUTHENTIK_CLIENT_ID=${AUTHENTIK_CLIENT_ID}
-        - AUTHENTIK_CLIENT_SECRET=${AUTHENTIK_CLIENT_SECRET}
     ports:
       - "${BACKEND_PORT:-8000}:8000"
     volumes:
       - .:/app
-      - ./app/database:/app/database
     environment:
-      - DATABASE_TYPE=${DATABASE_TYPE:-supabase}
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_KEY=${SUPABASE_KEY}
-      - AUTHENTIK_URL=http://${AUTHENTIK_HOST:-authentik-server}:${AUTHENTIK_PORT:-9000}
-      - AUTHENTIK_CLIENT_ID=${AUTHENTIK_CLIENT_ID}
-      - AUTHENTIK_CLIENT_SECRET=${AUTHENTIK_CLIENT_SECRET}
       - SECRET_KEY=${SECRET_KEY}
     depends_on:
       - supabase
@@ -47,10 +36,6 @@ services:
       JWT_SECRET: ${SUPABASE_JWT_SECRET:-your-super-secret-jwt-token}
       DASHBOARD_USERNAME: ${DASHBOARD_USERNAME:-admin}
       DASHBOARD_PASSWORD: ${DASHBOARD_PASSWORD:-admin}
-      STUDIO_PORT: 54322
-      API_PORT: 54321
-      DB_PORT: 54320
-      KONG_PORT: 54321
       SUPABASE_URL: ${SUPABASE_URL:-http://localhost:54321}
       SUPABASE_KEY: ${SUPABASE_KEY:-your-supabase-anon-key}
       SUPABASE_JWT_SECRET: ${SUPABASE_JWT_SECRET:-your-super-secret-jwt-token}

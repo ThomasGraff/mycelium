@@ -15,7 +15,6 @@ class Settings:
         self.SUPABASE_KEY: str = self._get_required_env("SUPABASE_KEY")
 
         # Optional environment variables with defaults
-        self.DATABASE_TYPE: str = getenv("DATABASE_TYPE", "supabase")
         self.ALLOWED_ORIGINS: List[str] = ["*"]
         self.LOG_LEVEL: str = "INFO"
         self.ACCESS_TOKEN_EXPIRE_MINUTES: Final[int] = int(getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
