@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - BACKEND_HOST=${BACKEND_HOST:-0.0.0.0}
+        - BACKEND_PORT=${BACKEND_PORT:-8000}
+        - DATABASE_TYPE=${DATABASE_TYPE:-supabase}
+        - SUPABASE_URL=${SUPABASE_URL}
+        - SUPABASE_KEY=${SUPABASE_KEY}
+        - AUTHENTIK_HOST=${AUTHENTIK_HOST:-authentik-server}
+        - AUTHENTIK_PORT=${AUTHENTIK_PORT:-9000}
+        - AUTHENTIK_CLIENT_ID=${AUTHENTIK_CLIENT_ID}
+        - AUTHENTIK_CLIENT_SECRET=${AUTHENTIK_CLIENT_SECRET}
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    volumes:
+      - .:/app
+      - ./app/database:/app/database
+    environment:
+      - DATABASE_TYPE=${DATABASE_TYPE:-supabase}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - AUTHENTIK_URL=http://${AUTHENTIK_HOST:-authentik-server}:${AUTHENTIK_PORT:-9000}
+      - AUTHENTIK_CLIENT_ID=${AUTHENTIK_CLIENT_ID}
+      - AUTHENTIK_CLIENT_SECRET=${AUTHENTIK_CLIENT_SECRET}
+      - SECRET_KEY=${SECRET_KEY}
+    depends_on:
+      - supabase
+    networks:
+      - backend-network
+
+  supabase:
+    image: supabase/supabase-local:latest
+    ports:
+      - "54321:54321"  # REST API
+      - "54322:54322"  # Studio
+      - "54323:54323"  # Inbucket
+      - "54324:54324"  # Authentication
+      - "54325:54325"  # Realtime
+      - "54326:54326"  # Storage
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-your-super-secret-password}
+      JWT_SECRET: ${SUPABASE_JWT_SECRET:-your-super-secret-jwt-token}
+      DASHBOARD_USERNAME: ${DASHBOARD_USERNAME:-admin}
+      DASHBOARD_PASSWORD: ${DASHBOARD_PASSWORD:-admin}
+      STUDIO_PORT: 54322
+      API_PORT: 54321
+      DB_PORT: 54320
+      KONG_PORT: 54321
+      SUPABASE_URL: ${SUPABASE_URL:-http://localhost:54321}
+      SUPABASE_KEY: ${SUPABASE_KEY:-your-supabase-anon-key}
+      SUPABASE_JWT_SECRET: ${SUPABASE_JWT_SECRET:-your-super-secret-jwt-token}
+    volumes:
+      - supabase-data:/var/lib/postgresql/data
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+    driver: bridge
+
+volumes:
+  supabase-data:
+    driver: local

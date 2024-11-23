@@ -2,20 +2,16 @@
 FROM python:3.12-slim
 
 # Build-time arguments with default values
-ARG AUTHENTIK_CLIENT_ID
-ARG AUTHENTIK_CLIENT_SECRET
-ARG AUTHENTIK_HOST=0.0.0.0
-ARG AUTHENTIK_PORT=9000
 ARG BACKEND_HOST=0.0.0.0
 ARG BACKEND_PORT=8000
-ARG DATABASE_URL=sqlite:///./app/database/mycelium.db
+ARG DATABASE_TYPE=supabase
+ARG SUPABASE_URL
+ARG SUPABASE_KEY
 
 # Set environment variables
-ENV AUTHENTIK_URL=http://${AUTHENTIK_HOST}:${AUTHENTIK_PORT} \
-    AUTHENTIK_CLIENT_ID=${AUTHENTIK_CLIENT_ID} \
-    AUTHENTIK_CLIENT_SECRET=${AUTHENTIK_CLIENT_SECRET} \
-    DATABASE_URL=${DATABASE_URL}
-
+ENV DATABASE_TYPE=${DATABASE_TYPE} \
+    SUPABASE_URL=${SUPABASE_URL} \
+    SUPABASE_KEY=${SUPABASE_KEY}
     
 # Step 2: Set the working directory
 WORKDIR /app
@@ -41,17 +37,11 @@ COPY . .
 # Step 8: Install the project
 RUN poetry install --no-interaction --no-ansi
 
-# Modifications pour la sécurité et la configuration
-# Step 9: Create necessary directories
-RUN mkdir -p /app/app/database && \
-    chown -R nobody:nogroup /app/app/database && \
-    chmod 770 /app/app/database
-
-# Step 11: Switch to non-root user
+# Step 9: Switch to non-root user
 USER nobody
 
-# Step 12: Expose the FastAPI app port
+# Step 10: Expose the FastAPI app port
 EXPOSE 8000
 
-# Step 13: Command to run the FastAPI app
+# Step 11: Command to run the FastAPI app
 CMD ["sh", "-c", "uvicorn app.main:app --host $BACKEND_HOST --port $BACKEND_PORT"]

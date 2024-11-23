@@ -1,0 +1,15 @@
+FROM supabase/supabase-local:latest
+
+# Copy custom configuration files
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Install additional tools
+RUN apt-get update && apt-get install -y \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy initialization scripts
+COPY ../config/init.sql /docker-entrypoint-initdb.d/
+
+HEALTHCHECK --interval=5s --timeout=5s --start-period=5s --retries=5 \
+    CMD pg_isready -U postgres || exit 1 
