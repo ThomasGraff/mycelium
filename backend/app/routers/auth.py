@@ -1,3 +1,4 @@
+import json
 from datetime import timedelta
 from typing import Any, Dict
 
@@ -62,14 +63,18 @@ async def register(user_data: RegisterInput) -> RegisterResponse:
     try:
         access_token, token_type = await get_admin_token()
 
+        # Log request data (excluding sensitive info)
+        print(f" 💡 Attempting to register user: {user_data.username}")
+
         async with httpx.AsyncClient() as client:
-            # Debug logging
-            print(f"Token type: {token_type}")
-            print(f"Token (first 20 chars): {access_token[:20]}")
+            request_data = user_data.model_dump(mode="json")
+            # Remove password from logs
+            log_data = {k: v for k, v in request_data.items() if k != "password"}
+            print(f" 💡 Request data: {log_data}")
 
             response = await client.post(
                 f"{settings.AUTHENTIK_URL}/api/v3/core/users/",
-                json=user_data.model_dump(mode="json"),
+                json=request_data,
                 headers={
                     "Authorization": f"{token_type} {access_token}",
                     "Accept": "application/json",
@@ -77,10 +82,11 @@ async def register(user_data: RegisterInput) -> RegisterResponse:
                 },
             )
 
-            # Detailed error logging
-            print(f"Response status: {response.status_code}")
-            print(f"Response headers: {response.headers}")
-            print(f"Response body: {response.text}")
+            # Enhanced error logging
+            print(f" 💡 Response status: {response.status_code}")
+            print(f" 💡 Response headers: {dict(response.headers)}")
+            if response.status_code != 201:
+                print(f" ⚠️ Error response body: {response.text}")
 
             if response.status_code == 201:
                 return RegisterResponse(message=" ✅ User registered successfully")
@@ -90,7 +96,12 @@ async def register(user_data: RegisterInput) -> RegisterResponse:
                 error_json = response.json()
                 if isinstance(error_json, dict):
                     error_detail = error_json.get("detail", error_json)
-            except:
+            except json.JSONDecodeError:
+                # Explicitly catch JSON decode errors
+                pass
+            except Exception as e:
+                # Log unexpected errors but maintain original error message
+                print(f"Error parsing response: {str(e)} 🔴")
                 pass
 
             raise HTTPException(status_code=response.status_code, detail=f" ❌ Registration failed: {error_detail}")

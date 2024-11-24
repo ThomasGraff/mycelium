@@ -126,7 +126,7 @@ async def get_admin_token() -> Tuple[str, str]:
         "grant_type": "client_credentials",
         "client_id": settings.AUTHENTIK_CLIENT_ID,
         "client_secret": settings.AUTHENTIK_CLIENT_SECRET,
-        "scope": "openid goauthentik.io/api",
+        "scope": "admin openid goauthentik.io/api goauthentik.io/api/users",
     }
 
     async with httpx.AsyncClient() as client:
@@ -139,22 +139,12 @@ async def get_admin_token() -> Tuple[str, str]:
                     "Accept": "application/json",
                 },
             )
-
-            if response.status_code != 200:
-                print(f"Token request failed: {response.text}")
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail=f" ❌ Admin authentication failed: {response.text}",
-                )
-
+            response.raise_for_status()
             result = response.json()
-            print(f"Token response: {result}")
-
             return result["access_token"], result["token_type"]
         except HTTPException:
             raise
         except Exception as e:
-            print(f"Error getting token: {str(e)}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f" ❌ Admin authentication error: {str(e)}"
             )

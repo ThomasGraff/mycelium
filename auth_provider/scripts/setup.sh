@@ -1,20 +1,7 @@
 #!/bin/bash
 
-# Main setup script for Authentik integration
-
 # Set bash to exit on error
 set -e
-
-# Source utility functions and other scripts
-SCRIPT_DIR="$(dirname "$0")"
-chmod +x "${SCRIPT_DIR}/authentik_utils.sh"
-source "${SCRIPT_DIR}/authentik_utils.sh"
-
-chmod +x "${SCRIPT_DIR}/create_oauth_provider.sh"
-source "${SCRIPT_DIR}/create_oauth_provider.sh"
-
-chmod +x "${SCRIPT_DIR}/create_application.sh"
-source "${SCRIPT_DIR}/create_application.sh"
 
 # Variables
 AUTHENTIK_URL="http://${AUTHENTIK_HOST}:${AUTHENTIK_PORT}"
@@ -22,73 +9,145 @@ MAX_RETRIES=50
 RETRY_INTERVAL=15
 APP_SLUG="mycelium"
 
-main() {
-    check_requirements
-    check_authentik_health || exit 1
-    
-    echo "✅ Using bootstrap admin token"
-    
-    # Get authorization flow
-    local auth_flow_uuid
-    auth_flow_uuid=$(get_authorization_flow)
-    [ $? -eq 0 ] || exit 1
-    echo "✅ Found authorization flow UUID: $auth_flow_uuid"
-    
-    # Create or get provider first
-    local provider_id
-    provider_id=$(get_existing_provider)
-    provider_status=$?
-    
-    if [ $provider_status -ne 0 ] || [ -z "$provider_id" ] || [ "$provider_id" = "null" ]; then
-        echo "💡 No existing provider found, creating new one..."
-        provider_id=$(create_oauth_provider "$auth_flow_uuid")
-        if [ $? -ne 0 ] || [ -z "$provider_id" ]; then
-            echo "❌ Failed to create OAuth provider"
-            exit 1
-        fi
-        echo "✅ OAuth2 Provider created with ID: $provider_id"
-    else
-        echo "✅ Found existing OAuth2 provider with ID: $provider_id"
+echo "💡 Starting Authentik setup..."
+
+# Check requirements
+for cmd in curl jq; do
+    if ! command -v $cmd >/dev/null 2>&1; then
+        echo "❌ Required command '$cmd' is not installed"
+        exit 1
     fi
-    
-    # Create or update application with provider
-    local app_uuid
-    app_uuid=$(get_existing_application)
-    
-    if [ -z "$app_uuid" ] || [ "$app_uuid" = "null" ]; then
-        app_uuid=$(create_application "$provider_id")
-        [ $? -eq 0 ] || exit 1
-        echo "✅ Application created with UUID: $app_uuid"
-    else
-        echo "✅ Found existing application with UUID: $app_uuid"
+done
+
+for var in AUTHENTIK_ADMIN_TOKEN AUTHENTIK_HOST AUTHENTIK_PORT; do
+    if [ -z "${!var}" ]; then
+        echo "❌ Required environment variable '$var' is not set"
+        exit 1
     fi
+done
+
+# Check Authentik health
+retry_count=0
+while [ $retry_count -lt $MAX_RETRIES ]; do
+    if curl -sSf "$AUTHENTIK_URL/-/health/live/" > /dev/null 2>&1; then
+        echo "✅ Authentik is up and running"
+        break
+    fi
+    printf "⚠️ Waiting for Authentik to be ready... (%d/%d)\n" "$((retry_count + 1))" "${MAX_RETRIES}"
+    sleep $RETRY_INTERVAL
+    retry_count=$((retry_count + 1))
+done
+
+if [ $retry_count -eq $MAX_RETRIES ]; then
+    echo "❌ Authentik failed to become ready within the timeout period"
+    exit 1
+fi
+
+# Get authorization flow
+flow_response=$(curl -s -X GET "$AUTHENTIK_URL/api/v3/flows/instances/" \
+    -H "Authorization: Bearer $AUTHENTIK_ADMIN_TOKEN" \
+    -H "Content-Type: application/json")
+
+auth_flow_uuid=$(echo "$flow_response" | jq -r '.results[] | select(.slug=="default-provider-authorization-implicit-consent") | .pk')
+
+if [ -z "$auth_flow_uuid" ]; then
+    echo "❌ Failed to get authorization flow UUID"
+    exit 1
+fi
+
+echo "✅ Found authorization flow"
+
+# Check for existing provider
+existing_provider_response=$(curl -s -X GET "$AUTHENTIK_URL/api/v3/providers/oauth2/" \
+    -H "Authorization: Bearer $AUTHENTIK_ADMIN_TOKEN" \
+    -H "Content-Type: application/json")
+
+provider_id=$(echo "$existing_provider_response" | jq -r '.results[] | select(.name=="Mycelium OAuth Provider") | .pk')
+
+# Create provider if it doesn't exist
+if [ -z "$provider_id" ] || [ "$provider_id" = "null" ]; then
+    echo "💡 Creating new OAuth provider..."
     
-    # Get the final provider details and credentials
-    local provider_response
-    provider_response=$(curl -s -X GET "$AUTHENTIK_URL/api/v3/providers/oauth2/$provider_id/" \
+    provider_response=$(curl -s -X POST "$AUTHENTIK_URL/api/v3/providers/oauth2/" \
         -H "Authorization: Bearer $AUTHENTIK_ADMIN_TOKEN" \
-        -H "Content-Type: application/json")
+        -H "Content-Type: application/json" \
+        -d "{
+            \"name\": \"Mycelium OAuth Provider\",
+            \"authorization_flow\": \"$auth_flow_uuid\",
+            \"invalidation_flow\": \"$auth_flow_uuid\",
+            \"access_token_validity\": \"minutes=10\",
+            \"refresh_token_validity\": \"days=30\",
+            \"client_type\": \"confidential\",
+            \"include_claims_in_id_token\": true,
+            \"sub_mode\": \"hashed_user_id\",
+            \"issuer_mode\": \"global\",
+            \"redirect_uris\": []
+        }")
+    
+    provider_id=$(echo "$provider_response" | jq -r '.pk')
+    if [ -z "$provider_id" ] || [ "$provider_id" = "null" ]; then
+        echo "❌ Failed to create OAuth provider"
+        exit 1
+    fi
+    echo "✅ Created OAuth provider"
+else
+    echo "✅ Found existing OAuth provider"
+fi
 
-    # Extract and save credentials
-    local client_id
-    client_id=$(echo "$provider_response" | jq -r '.client_id // empty')
-    [ -n "$client_id" ] || { echo "❌ Failed to extract client_id"; exit 1; }
+# Check for existing application
+existing_app_response=$(curl -s -X GET "$AUTHENTIK_URL/api/v3/core/applications/" \
+    -H "Authorization: Bearer $AUTHENTIK_ADMIN_TOKEN" \
+    -H "Content-Type: application/json" \
+    -G --data-urlencode "slug=$APP_SLUG")
 
-    local client_secret
-    client_secret=$(echo "$provider_response" | jq -r '.client_secret // empty')
-    [ -n "$client_secret" ] || { echo "❌ Failed to extract client_secret"; exit 1; }
+app_uuid=$(echo "$existing_app_response" | jq -r ".results[] | select(.slug==\"$APP_SLUG\") | .pk")
 
-    # Save credentials
-    echo "{
-      \"client_id\": \"$client_id\",
-      \"client_secret\": \"$client_secret\"
-    }" > .oauth_creds.json
+# Create application if it doesn't exist
+if [ -z "$app_uuid" ] || [ "$app_uuid" = "null" ]; then
+    echo "💡 Creating new application..."
+    
+    app_response=$(curl -s -X POST "$AUTHENTIK_URL/api/v3/core/applications/" \
+        -H "Authorization: Bearer $AUTHENTIK_ADMIN_TOKEN" \
+        -H "Content-Type: application/json" \
+        -d "{
+            \"name\": \"Mycelium\",
+            \"slug\": \"$APP_SLUG\",
+            \"provider\": $provider_id,
+            \"meta_description\": \"Mycelium Application\",
+            \"meta_publisher\": \"Mycelium\",
+            \"policy_engine_mode\": \"all\",
+            \"open_in_new_tab\": false
+        }")
+    
+    app_uuid=$(echo "$app_response" | jq -r '.pk')
+    if [ -z "$app_uuid" ] || [ "$app_uuid" = "null" ]; then
+        echo "❌ Failed to create application"
+        exit 1
+    fi
+    echo "✅ Created application"
+else
+    echo "✅ Found existing application"
+fi
 
-    echo "✅ Setup complete!"
-    echo "📋 OAuth Credentials:"
-    echo "🔑 Client ID: $client_id"
-    echo "🔑 Client Secret: $client_secret"
-    echo "💡 Credentials have been saved to .oauth_creds.json"
-}
+# Get the final provider details and credentials
+provider_response=$(curl -s -X GET "$AUTHENTIK_URL/api/v3/providers/oauth2/$provider_id/" \
+    -H "Authorization: Bearer $AUTHENTIK_ADMIN_TOKEN" \
+    -H "Content-Type: application/json")
 
-main "$@" 
+# Extract credentials
+client_id=$(echo "$provider_response" | jq -r '.client_id')
+client_secret=$(echo "$provider_response" | jq -r '.client_secret')
+
+if [ -z "$client_id" ] || [ "$client_id" = "null" ] || [ -z "$client_secret" ] || [ "$client_secret" = "null" ]; then
+    echo "❌ Failed to extract OAuth credentials"
+    exit 1
+fi
+
+# Save credentials
+echo "{
+  \"client_id\": \"$client_id\",
+  \"client_secret\": \"$client_secret\"
+}" > .oauth_creds.json
+
+echo "✅ Setup complete!"
+echo "📋 OAuth credentials have been saved to .oauth_creds.json" 
