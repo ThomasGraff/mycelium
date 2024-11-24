@@ -37,6 +37,7 @@ launch: ## Launch the application
 front: ## Launch the frontend application
 	$(call load_env)
 	@cd mycelium && \
+	yarn install && \
 	yarn cross-env VUE_CLI_SERVICE_CONFIG_PATH=./config/vue.config.js \
 	BACKEND_URL=http://${BACKEND_HOST}:${BACKEND_PORT} \
 	yarn serve

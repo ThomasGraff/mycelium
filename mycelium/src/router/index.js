@@ -9,19 +9,19 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: false }
   },
   {
     path: '/login',
     name: 'Login',
     component: Login,
-    meta: { requiresUnauth: true }
+    meta: { requiresUnauth: false }
   },
   {
     path: '/register',
     name: 'Register',
     component: Register,
-    meta: { requiresUnauth: true }
+    meta: { requiresUnauth: false }
   },
 ]
 
