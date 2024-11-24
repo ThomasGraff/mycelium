@@ -3,10 +3,10 @@ name: CI/CD Frontend
 on:
   push:
     paths:
-      - 'frontend/**'  # Déclenche le workflow uniquement si des fichiers dans le dossier frontend sont modifiés
+      - 'mycelium/**'  # Déclenche le workflow uniquement si des fichiers dans le dossier frontend sont modifiés
   pull_request:
     paths:
-      - 'frontend/**'  # Déclenche le workflow pour les PR affectant le dossier frontend
+      - 'mycelium/**'  # Déclenche le workflow pour les PR affectant le dossier frontend
 
 jobs:
   build:
@@ -21,10 +21,10 @@ jobs:
 
       - name: Build frontend Docker image
         run: |
-          docker build -t mon-frontend ./frontend/mycelium
+          docker build -t mon-frontend ./mycelium
 
       - name: Run tests (optionnel)
-        working-directory: ./frontend
+        working-directory: ./mycelium
         run: |
           # Ajoutez des tests ici si nécessaire
           echo "No tests configured."

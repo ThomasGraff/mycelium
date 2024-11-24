@@ -1,10 +1,11 @@
 import importlib
 import logging
 import os
-from typing import List, Tuple
+from typing import Any, Dict, List, Tuple
 
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from .database.manager import db_manager
 from .utils.config import settings
@@ -27,6 +28,7 @@ class AppManager:
         )
         self.configure_cors()
         self.include_routers()
+        self.setup_health_check()
 
     def setup_database(self) -> None:
         """
@@ -111,6 +113,36 @@ class AppManager:
             logger.info(" ✅ All routers included successfully")
         except Exception as e:
             logger.error(f" ❌ Error including routers: {e}")
+
+    def setup_health_check(self) -> None:
+        """
+        Sets up the health check endpoint for the application.
+        """
+
+        @self.app.get("/health", tags=["Health"])
+        async def health_check() -> Dict[str, Any]:
+            """
+            Checks the health status of the application.
+
+            :return Dict[str, Any]: Health status information including database connectivity
+            """
+            try:
+                # Test database connection
+                db_manager.engine.connect()
+                return JSONResponse(
+                    content={"status": "healthy", "database": "connected", "message": " ✅ Service is healthy"},
+                    status_code=200,
+                )
+            except Exception as e:
+                logger.error(f" ❌ Health check failed: {str(e)}")
+                return JSONResponse(
+                    content={
+                        "status": "unhealthy",
+                        "database": "disconnected",
+                        "message": f" ❌ Service is unhealthy: {str(e)}",
+                    },
+                    status_code=503,
+                )
 
 
 app_manager = AppManager()

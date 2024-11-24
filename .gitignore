@@ -154,3 +154,4 @@ media/
 .env
 .env.*
 !.env.example
+.oauth_creds.json

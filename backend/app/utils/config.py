@@ -17,16 +17,18 @@ class Settings:
         """Initialize settings and validate required environment variables."""
         # Required environment variables
         self.SECRET_KEY: Final[str] = self._get_required_env("SECRET_KEY")
-        self.AUTHENTIK_URL: Final[str] = self._get_required_env("AUTHENTIK_URL")
         self.AUTHENTIK_CLIENT_ID: Final[str] = self._get_required_env("AUTHENTIK_CLIENT_ID")
         self.AUTHENTIK_CLIENT_SECRET: Final[str] = self._get_required_env("AUTHENTIK_CLIENT_SECRET")
+        self.DATABASE_URL: Final[str] = self._get_required_env("DATABASE_URL")
+        self.ACCESS_TOKEN_EXPIRE_MINUTES: Final[int] = int(self._get_required_env("ACCESS_TOKEN_EXPIRE_MINUTES"))
+        self.AUTHENTIK_PORT: Final[int] = int(self._get_required_env("AUTHENTIK_PORT"))
+        self.AUTHENTIK_HOST: Final[str] = self._get_required_env("AUTHENTIK_HOST")
 
-        # Optional environment variables with defaults
-        self.DATABASE_URL: str = getenv("DATABASE_URL", "sqlite:///./app/database/mycelium.db")
+        # Hardcoded constants
         self.ALLOWED_ORIGINS: List[str] = ["*"]
-        self.LOG_LEVEL: str = "INFO"
-        self.ALGORITHM: Final[str] = getenv("ALGORITHM", "HS256")
-        self.ACCESS_TOKEN_EXPIRE_MINUTES: Final[int] = int(getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
+        self.LOG_LEVEL: Final[str] = "INFO"
+        self.ALGORITHM: Final[str] = "HS256"
+        self.AUTHENTIK_URL: Final[str] = f"http://{self.AUTHENTIK_HOST}:{self.AUTHENTIK_PORT}"
 
     def _get_required_env(self, key: str) -> str:
         """

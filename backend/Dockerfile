@@ -4,11 +4,11 @@ FROM python:3.12-slim
 # Build-time arguments with default values
 ARG AUTHENTIK_CLIENT_ID
 ARG AUTHENTIK_CLIENT_SECRET
-ARG AUTHENTIK_HOST=0.0.0.0
-ARG AUTHENTIK_PORT=9000
-ARG BACKEND_HOST=0.0.0.0
-ARG BACKEND_PORT=8000
-ARG DATABASE_URL=sqlite:///./app/database/mycelium.db
+ARG AUTHENTIK_HOST
+ARG AUTHENTIK_PORT
+ARG BACKEND_HOST
+ARG BACKEND_PORT
+ARG DATABASE_URL
 
 # Set environment variables
 ENV AUTHENTIK_URL=http://${AUTHENTIK_HOST}:${AUTHENTIK_PORT} \
@@ -51,7 +51,7 @@ RUN mkdir -p /app/app/database && \
 USER nobody
 
 # Step 12: Expose the FastAPI app port
-EXPOSE 8000
+EXPOSE ${BACKEND_PORT}
 
 # Step 13: Command to run the FastAPI app
 CMD ["sh", "-c", "uvicorn app.main:app --host $BACKEND_HOST --port $BACKEND_PORT"]

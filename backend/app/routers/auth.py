@@ -17,7 +17,7 @@ from ..utils.auth import (
 )
 from ..utils.config import settings
 
-router = APIRouter(tags=["Authentication"])
+router = APIRouter(tags=["Auth"])
 
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

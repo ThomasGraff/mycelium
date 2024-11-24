@@ -1,94 +1,66 @@
 services:
   frontend:
     build:
-      context: ./frontend/mycelium
+      context: ./mycelium
       dockerfile: Dockerfile
       args:
-        - AUTHENTIK_HOST=${AUTHENTIK_HOST:-authentik-server}
-        - AUTHENTIK_PORT=${AUTHENTIK_PORT:-9000}
+        - AUTHENTIK_HOST=${AUTHENTIK_HOST}
+        - AUTHENTIK_PORT=${AUTHENTIK_PORT}
         - AUTHENTIK_CLIENT_ID=${AUTHENTIK_CLIENT_ID}
         - AUTHENTIK_CLIENT_SECRET=${AUTHENTIK_CLIENT_SECRET}
-        - BACKEND_HOST=${BACKEND_HOST:-backend}
-        - BACKEND_PORT=${BACKEND_PORT:-8000}
-        - FRONTEND_PORT=${FRONTEND_PORT:-80}
-        - FRONTEND_HOST=${FRONTEND_HOST:-0.0.0.0}
+        - BACKEND_HOST=${BACKEND_HOST}
+        - BACKEND_PORT=${BACKEND_PORT}
+        - FRONTEND_PORT=${FRONTEND_PORT}
+        - FRONTEND_HOST=${FRONTEND_HOST}
     container_name: frontend
     ports:
-      - "${FRONTEND_PORT:-80}:80"
+      - "${FRONTEND_PORT}:80"
     networks:
       - shared-network
     depends_on:
-      - backend
-      - authentik-server
+      backend:
+        condition: service_healthy
     env_file:
       - .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://${FRONTEND_HOST}:${FRONTEND_PORT}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
       args:
-        - BACKEND_HOST=${BACKEND_HOST:-0.0.0.0}
-        - BACKEND_PORT=${BACKEND_PORT:-8000}
-        - AUTHENTIK_HOST=${AUTHENTIK_HOST:-authentik-server}
-        - AUTHENTIK_PORT=${AUTHENTIK_PORT:-9000}
+        - BACKEND_HOST=${BACKEND_HOST}
+        - BACKEND_PORT=${BACKEND_PORT}
+        - AUTHENTIK_HOST=${AUTHENTIK_HOST}
+        - AUTHENTIK_PORT=${AUTHENTIK_PORT}
         - AUTHENTIK_CLIENT_ID=${AUTHENTIK_CLIENT_ID}
         - AUTHENTIK_CLIENT_SECRET=${AUTHENTIK_CLIENT_SECRET}
-        - DATABASE_URL=${DATABASE_URL:-sqlite:///./app/database/mycelium.db}
+        - DATABASE_URL=${DATABASE_URL}
     container_name: backend
     ports:
-      - "${BACKEND_PORT:-8000}:8000"
+      - "${BACKEND_PORT}:8000"
     networks:
       - shared-network
     volumes:
       - ./backend/app/database:/app/database
     env_file:
       - .env
-
-  authentik-postgresql:
-    extends:
-      file: authentik-base.yml
-      service: authentik-postgresql
-    networks:
-      - shared-network
-    env_file:
-      - .env
-
-  authentik-redis:
-    extends:
-      file: authentik-base.yml
-      service: authentik-redis
-    networks:
-      - shared-network
-    env_file:
-      - .env
-
-  authentik-server:
-    extends:
-      file: authentik-base.yml
-      service: authentik-server
-    networks:
-      - shared-network
-    env_file:
-      - .env
-
-  authentik-worker:
-    extends:
-      file: authentik-base.yml
-      service: authentik-worker
-    networks:
-      - shared-network
-    env_file:
-      - .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://${BACKEND_HOST}:${BACKEND_PORT}/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
 networks:
   shared-network:
-    driver: bridge
+    name: shared-network
 
 volumes:
-  authentik-database:
-    driver: local
-  authentik-redis:
-    driver: local
   backend-database:
     driver: local

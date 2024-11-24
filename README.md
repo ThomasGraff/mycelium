@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="frontend/mycelium/src/assets/logo.png" alt="Mycelium Logo" width="150"/>
+  <img src="mycelium/src/assets/logo.png" alt="Mycelium Logo" width="150"/>
   <br><br>
   
   <div>
@@ -158,7 +158,7 @@
   <tr>
     <td><code>FRONTEND_PORT</code></td>
     <td>❌</td>
-    <td>8080</td>
+    <td>80</td>
     <td>Frontend application port</td>
   </tr>
   <tr>
