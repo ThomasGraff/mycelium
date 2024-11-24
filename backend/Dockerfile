@@ -22,6 +22,7 @@ WORKDIR /app
 # Step 3: Install system dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Step 4: Install Poetry and configure it

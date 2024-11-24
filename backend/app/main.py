@@ -130,17 +130,13 @@ class AppManager:
                 # Test database connection
                 db_manager.engine.connect()
                 return JSONResponse(
-                    content={"status": "healthy", "database": "connected", "message": " ✅ Service is healthy"},
+                    content={"status": "healthy"},
                     status_code=200,
                 )
             except Exception as e:
                 logger.error(f" ❌ Health check failed: {str(e)}")
                 return JSONResponse(
-                    content={
-                        "status": "unhealthy",
-                        "database": "disconnected",
-                        "message": f" ❌ Service is unhealthy: {str(e)}",
-                    },
+                    content={"status": "unhealthy"},
                     status_code=503,
                 )
 

@@ -14,8 +14,8 @@ ENV BACKEND_URL=http://${BACKEND_HOST}:${BACKEND_PORT} \
     VUE_CLI_SERVICE_CONFIG_PATH=./config/vue.config.js \
     NGINX_LOG_LEVEL=${NGINX_LOG_LEVEL}
 
-# Install node and yarn
-RUN apk add --no-cache nodejs npm yarn
+# Install node, yarn and curl
+RUN apk add --no-cache nodejs npm yarn curl
 
 WORKDIR /app
 
