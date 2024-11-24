@@ -6,7 +6,6 @@ ARG AUTHENTIK_CLIENT_ID
 ARG AUTHENTIK_CLIENT_SECRET
 ARG AUTHENTIK_HOST
 ARG AUTHENTIK_PORT
-ARG BACKEND_HOST
 ARG BACKEND_PORT
 ARG DATABASE_URL
 
@@ -54,4 +53,4 @@ USER nobody
 EXPOSE ${BACKEND_PORT}
 
 # Step 13: Command to run the FastAPI app
-CMD ["sh", "-c", "uvicorn app.main:app --host $BACKEND_HOST --port $BACKEND_PORT"]
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port $BACKEND_PORT"]

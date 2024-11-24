@@ -34,7 +34,6 @@ services:
       context: ./backend
       dockerfile: Dockerfile
       args:
-        - BACKEND_HOST=${BACKEND_HOST}
         - BACKEND_PORT=${BACKEND_PORT}
         - AUTHENTIK_HOST=${AUTHENTIK_HOST}
         - AUTHENTIK_PORT=${AUTHENTIK_PORT}

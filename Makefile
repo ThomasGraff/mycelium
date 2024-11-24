@@ -44,8 +44,9 @@ front: ## Launch the frontend application
 back: ## Launch the backend application
 	$(call load_env)
 	@cd backend && \
-	poetry run uvicorn app.main:app --port ${BACKEND_PORT} --host ${BACKEND_HOST}
+	poetry run uvicorn app.main:app --port ${BACKEND_PORT} --host 0.0.0.0
 
+	
 auth: ## Launch the auth_provider application
 	$(call load_env)
 	@cd auth_provider && \
