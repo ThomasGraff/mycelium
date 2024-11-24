@@ -6,6 +6,10 @@ from app.utils.config import settings
 from fastapi import Cookie, Header, HTTPException, Request, status
 from jose import JWTError, jwt
 
+from .logger import get_logger
+
+logger = get_logger(__name__)
+
 
 async def get_authentik_tokens(username: str, password: str, mfa_code: str | None = None) -> Dict[str, Any]:
     """
@@ -37,12 +41,15 @@ async def get_authentik_tokens(username: str, password: str, mfa_code: str | Non
             )
 
             if response.status_code == 200:
+                logger.info(" ✅ User authenticated successfully")
                 return response.json()
 
+            logger.error(f" ❌ Authentication failed: {response.text}")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail=f" ❌ Authentication failed: {response.text}"
             )
         except Exception as e:
+            logger.error(f" ❌ Authentication error: {str(e)}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f" ❌ Authentication error: {str(e)}"
             )

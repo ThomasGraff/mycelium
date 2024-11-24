@@ -18,12 +18,15 @@ from ..utils.auth import (
     get_current_user_from_token,
 )
 from ..utils.config import settings
+from ..utils.logger import get_logger
 
 router = APIRouter(tags=["Auth"])
 
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 security = HTTPBearer()
+
+logger = get_logger(__name__)
 
 
 @router.post(
@@ -62,16 +65,8 @@ async def register(user_data: RegisterInput) -> RegisterResponse:
     """
     try:
         access_token, token_type = await get_admin_token()
-
-        # Log request data (excluding sensitive info)
-        print(f" 💡 Attempting to register user: {user_data.username}")
-
         async with httpx.AsyncClient() as client:
             request_data = user_data.model_dump(mode="json")
-            # Remove password from logs
-            log_data = {k: v for k, v in request_data.items() if k != "password"}
-            print(f" 💡 Request data: {log_data}")
-
             response = await client.post(
                 f"{settings.AUTHENTIK_URL}/api/v3/core/users/",
                 json=request_data,
@@ -82,13 +77,11 @@ async def register(user_data: RegisterInput) -> RegisterResponse:
                 },
             )
 
-            # Enhanced error logging
-            print(f" 💡 Response status: {response.status_code}")
-            print(f" 💡 Response headers: {dict(response.headers)}")
             if response.status_code != 201:
-                print(f" ⚠️ Error response body: {response.text}")
+                logger.error(f" ⚠️ Registration failed with response: {response.text}")
 
             if response.status_code == 201:
+                logger.info(" ✅ User registered successfully")
                 return RegisterResponse(message=" ✅ User registered successfully")
 
             error_detail = response.text
@@ -97,19 +90,16 @@ async def register(user_data: RegisterInput) -> RegisterResponse:
                 if isinstance(error_json, dict):
                     error_detail = error_json.get("detail", error_json)
             except json.JSONDecodeError:
-                # Explicitly catch JSON decode errors
-                pass
+                logger.error(" ❌ Failed to parse error response as JSON")
             except Exception as e:
-                # Log unexpected errors but maintain original error message
-                print(f"Error parsing response: {str(e)} 🔴")
-                pass
+                logger.error(f" ❌ Error processing response: {str(e)}")
 
             raise HTTPException(status_code=response.status_code, detail=f" ❌ Registration failed: {error_detail}")
 
     except HTTPException:
         raise
     except Exception as e:
-        print(f"Unexpected error: {str(e)}")  # Debug log
+        logger.error(f" ❌ Unexpected registration error: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f" ❌ Registration error: {str(e)}"
         )
