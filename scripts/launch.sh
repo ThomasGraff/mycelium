@@ -5,6 +5,7 @@ set -e
 # Start Authentik services first
 echo "🚀 Starting Authentik services..."
 cd auth_provider
+chmod +x ./scripts/launch.sh
 ./scripts/launch.sh
 
 # Check if setup was successful and get credentials

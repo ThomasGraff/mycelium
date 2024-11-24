@@ -7,8 +7,13 @@ set -e
 
 # Source utility functions and other scripts
 SCRIPT_DIR="$(dirname "$0")"
+chmod +x "${SCRIPT_DIR}/authentik_utils.sh"
 source "${SCRIPT_DIR}/authentik_utils.sh"
+
+chmod +x "${SCRIPT_DIR}/create_oauth_provider.sh"
 source "${SCRIPT_DIR}/create_oauth_provider.sh"
+
+chmod +x "${SCRIPT_DIR}/create_application.sh"
 source "${SCRIPT_DIR}/create_application.sh"
 
 # Variables

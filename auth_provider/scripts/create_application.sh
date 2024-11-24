@@ -4,8 +4,6 @@
 
 create_application() {
     local provider_id=$1
-    
-    echo "💡 Creating new application..."
     local application_response
     application_response=$(curl -s -X POST "$AUTHENTIK_URL/api/v3/core/applications/" \
         -H "Authorization: Bearer $AUTHENTIK_ADMIN_TOKEN" \
@@ -24,8 +22,6 @@ create_application() {
     app_uuid=$(echo $application_response | jq -r '.pk')
 
     if [ -z "$app_uuid" ] || [ "$app_uuid" = "null" ]; then
-        echo "❌ Failed to create Application"
-        echo "$application_response"
         return 1
     fi
     

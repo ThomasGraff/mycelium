@@ -3,7 +3,7 @@
 set -e
 
 # Replace environment variables in the Nginx config
-envsubst '$BACKEND_URL $FRONTEND_PORT $FRONTEND_HOST' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
+envsubst '$BACKEND_URL $BACKEND_HOST $FRONTEND_PORT $FRONTEND_HOST' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
 # Verify nginx configuration
 nginx -t

@@ -23,7 +23,6 @@ WORKDIR /app
 # Copy files and build frontend
 COPY package*.json ./
 RUN yarn install
-COPY config ./config
 COPY . .
 RUN yarn build
 

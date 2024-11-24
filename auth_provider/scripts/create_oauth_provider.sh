@@ -5,12 +5,9 @@
 create_oauth_provider() {
     local auth_flow_uuid=$1
     local app_uuid=$2
-    
-    echo "💡 Creating OAuth2 Provider..."
-    
+
     # Validate input
     if [ -z "$auth_flow_uuid" ]; then
-        echo "❌ Authorization flow UUID is required"
         return 1
     fi
     
@@ -31,8 +28,6 @@ create_oauth_provider() {
 
     # Check if the response is valid JSON
     if ! echo "$provider_response" | jq empty 2>/dev/null; then
-        echo "❌ Invalid JSON response from server"
-        echo "Response: $provider_response"
         return 1
     fi
 
@@ -40,9 +35,6 @@ create_oauth_provider() {
     provider_id=$(echo "$provider_response" | jq -r '.pk // empty')
 
     if [ -z "$provider_id" ] || [ "$provider_id" = "null" ]; then
-        echo "❌ Failed to create OAuth2 Provider"
-        echo "Error response:"
-        echo "$provider_response" | jq '.'
         return 1
     fi
     
@@ -57,8 +49,6 @@ get_existing_provider() {
 
     # Check if the response is valid JSON
     if ! echo "$existing_provider_response" | jq empty 2>/dev/null; then
-        echo "❌ Invalid JSON response while getting existing provider"
-        echo "Response: $existing_provider_response"
         return 1
     fi
 
