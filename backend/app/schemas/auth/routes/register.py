@@ -7,7 +7,7 @@ class RegisterInput(BaseModel):
     email: EmailStr
     username: str
     password: str
-    full_name: str
+    name: str
 
 
 class RegisterResponse(BaseModel):

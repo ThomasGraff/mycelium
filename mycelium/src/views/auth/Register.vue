@@ -65,7 +65,7 @@
 <script>
 import { defineComponent, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
+import auth from '@/services/auth'
 
 export default defineComponent({
   name: 'UserRegister',
@@ -100,18 +100,22 @@ export default defineComponent({
     ])
 
     const register = async () => {
+      if (!valid.value) return
+
       try {
-        const response = await axios.post('/auth/api/v3/core/users/', {
+        const userData = {
           username: email.value,
           name: name.value,
           email: email.value,
           password: password.value
-        })
-        console.log('✅ User registered successfully:', response.data)
+        }
+        
+        await auth.register(userData)
+        console.log('✅ Registration successful')
         router.push('/login')
       } catch (error) {
         console.error('❌ Registration failed:', error)
-        errorMessage.value = 'Registration failed. Please try again.'
+        errorMessage.value = error.response?.data?.detail || 'Registration failed. Please try again.'
       }
     }
 

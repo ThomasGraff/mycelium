@@ -12,6 +12,7 @@ from ..schemas.auth.routes.me import MeResponse
 from ..schemas.auth.routes.register import RegisterInput, RegisterResponse
 from ..utils.auth import (
     create_access_token,
+    get_admin_token,
     get_authentik_tokens,
     get_current_user_from_token,
 )
@@ -50,7 +51,7 @@ async def register(user_data: RegisterInput) -> RegisterResponse:
     Registers a new user in Authentik.
 
     This endpoint accepts user registration data and creates a new user account
-    in the Authentik authentication system.
+    in the Authentik authentication system using an API token.
 
     :param RegisterInput user_data: The user registration information
     :return RegisterResponse: Success message
@@ -58,24 +59,49 @@ async def register(user_data: RegisterInput) -> RegisterResponse:
         - 400 Bad Request: If registration data is invalid
         - 500 Internal Server Error: If there's an unexpected error during registration
     """
-    async with httpx.AsyncClient() as client:
-        try:
+    try:
+        access_token, token_type = await get_admin_token()
+
+        async with httpx.AsyncClient() as client:
+            # Debug logging
+            print(f"Token type: {token_type}")
+            print(f"Token (first 20 chars): {access_token[:20]}")
+
             response = await client.post(
                 f"{settings.AUTHENTIK_URL}/api/v3/core/users/",
-                json={
-                    "username": user_data.username,
-                    "email": user_data.email,
-                    "password": user_data.password,
-                    "name": user_data.full_name,
+                json=user_data.model_dump(mode="json"),
+                headers={
+                    "Authorization": f"{token_type} {access_token}",
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
                 },
             )
+
+            # Detailed error logging
+            print(f"Response status: {response.status_code}")
+            print(f"Response headers: {response.headers}")
+            print(f"Response body: {response.text}")
+
             if response.status_code == 201:
                 return RegisterResponse(message=" ✅ User registered successfully")
-            raise HTTPException(status_code=response.status_code, detail=f" ❌ Registration failed: {response.text}")
-        except Exception as e:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f" ❌ Registration error: {str(e)}"
-            )
+
+            error_detail = response.text
+            try:
+                error_json = response.json()
+                if isinstance(error_json, dict):
+                    error_detail = error_json.get("detail", error_json)
+            except:
+                pass
+
+            raise HTTPException(status_code=response.status_code, detail=f" ❌ Registration failed: {error_detail}")
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Unexpected error: {str(e)}")  # Debug log
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f" ❌ Registration error: {str(e)}"
+        )
 
 
 @router.post(

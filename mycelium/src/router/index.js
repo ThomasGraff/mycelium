@@ -14,12 +14,14 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: Login
+    component: Login,
+    meta: { requiresUnauth: true }
   },
   {
     path: '/register',
     name: 'Register',
-    component: Register
+    component: Register,
+    meta: { requiresUnauth: true }
   },
 ]
 
@@ -30,12 +32,23 @@ const router = createRouter({
 
 // Navigation guard
 router.beforeEach(async (to, from, next) => {
+  // Initialize auth service if not already done
+  if (!auth.isInitialized) {
+    await auth.initialize();
+  }
+
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    try {
-      await auth.getCurrentUser();
-      next();
-    } catch (error) {
+    if (!auth.isAuthenticated) {
       next('/login');
+    } else {
+      next();
+    }
+  } else if (to.matched.some(record => record.meta.requiresUnauth)) {
+    // Redirect to home if user is already authenticated
+    if (auth.isAuthenticated) {
+      next('/');
+    } else {
+      next();
     }
   } else {
     next();

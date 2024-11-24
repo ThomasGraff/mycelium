@@ -4,6 +4,7 @@ class AuthService {
   constructor() {
     this.isAuthenticated = false;
     this.user = null;
+    this.isInitialized = false;
     
     // Add axios interceptor for handling 401 responses
     axios.interceptors.response.use(
@@ -12,7 +13,6 @@ class AuthService {
         if (error.response?.status === 401) {
           this.isAuthenticated = false;
           this.user = null;
-          window.location.href = '/login';
         }
         return Promise.reject(error);
       }
@@ -20,6 +20,22 @@ class AuthService {
 
     // Configure axios to include credentials
     axios.defaults.withCredentials = true;
+  }
+
+  async initialize() {
+    if (this.isInitialized) {
+      return;
+    }
+
+    try {
+      await this.getCurrentUser();
+    } catch (error) {
+      // Silently handle initialization error
+      this.isAuthenticated = false;
+      this.user = null;
+    } finally {
+      this.isInitialized = true;
+    }
   }
 
   async login(username, password, mfaCode = null) {
@@ -42,6 +58,7 @@ class AuthService {
 
   async register(userData) {
     try {
+      console.log('🔑 Registering user:', userData);
       const response = await axios.post('/api/auth/register', userData);
       return response.data;
     } catch (error) {

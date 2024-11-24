@@ -94,20 +94,12 @@ export default defineComponent({
       error.value = ''
 
       try {
-        // Check if MFA is required
-        if (!mfaRequired.value) {
-          const isMfaRequired = await auth.checkMfaRequired(username.value)
-          if (isMfaRequired) {
-            mfaRequired.value = true
-            loading.value = false
-            return
-          }
-        }
-
-        // Attempt login
+        // Attempt login using AuthService
         await auth.login(username.value, password.value, mfaCode.value)
+        console.log('✅ Login successful')
         router.push('/')
       } catch (err) {
+        console.error('❌ Login failed:', err)
         error.value = err.response?.data?.detail || 'Login failed'
       } finally {
         loading.value = false

@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 
 import httpx
 from app.utils.config import settings
@@ -112,3 +112,49 @@ def verify_token(token: str) -> Dict[str, Any]:
             detail=" ❌ Invalid authentication credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
+
+
+async def get_admin_token() -> Tuple[str, str]:
+    """
+    Get an admin access token from Authentik using OAuth2 client credentials flow.
+    This generates a short-lived token with specific scopes for user management.
+
+    :return Tuple[str, str]: A tuple containing (access_token, token_type)
+    :raises HTTPException: If authentication fails
+    """
+    data = {
+        "grant_type": "client_credentials",
+        "client_id": settings.AUTHENTIK_CLIENT_ID,
+        "client_secret": settings.AUTHENTIK_CLIENT_SECRET,
+        "scope": "openid goauthentik.io/api",
+    }
+
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.post(
+                f"{settings.AUTHENTIK_URL}/application/o/token/",
+                data=data,
+                headers={
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Accept": "application/json",
+                },
+            )
+
+            if response.status_code != 200:
+                print(f"Token request failed: {response.text}")
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail=f" ❌ Admin authentication failed: {response.text}",
+                )
+
+            result = response.json()
+            print(f"Token response: {result}")
+
+            return result["access_token"], result["token_type"]
+        except HTTPException:
+            raise
+        except Exception as e:
+            print(f"Error getting token: {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f" ❌ Admin authentication error: {str(e)}"
+            )
