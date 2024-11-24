@@ -4,15 +4,16 @@ define load_env
 	$(eval export)
 endef
 
-.PHONY: help setup install-deps launch front back auth
+.PHONY: help setup setup-env install-deps launch front back auth
 
 help: ## Show this help message
 	@echo '🔍 Usage:'
 	@echo '  make <command>'
 	@echo ''
 	@echo '🎯 Available commands:'
-	@echo '  install-deps - Install required dependencies'
 	@echo '  setup        - Install dependencies and create .env file'
+	@echo '  setup-env    - Create .env file from example'
+	@echo '  install-deps - Install required dependencies'
 	@echo '  launch       - Start the application'
 	@echo '  front        - Start the frontend application'
 	@echo '  back         - Start the backend application'
@@ -22,9 +23,11 @@ install-deps: ## Install required dependencies
 	@chmod +x ./scripts/install_deps.sh
 	@./scripts/install_deps.sh
 
-setup: install-deps ## Create .env file from example and install dependencies
+setup-env:## Create .env file from example
 	@chmod +x ./scripts/setup_env.sh
 	@./scripts/setup_env.sh
+
+setup: install-deps setup-env ## Create .env file from example and install dependencies
 
 launch: ## Launch the application
 	$(call load_env)

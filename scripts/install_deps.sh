@@ -41,13 +41,10 @@ install_package() {
 
 # Required dependencies
 dependencies=(
-    "docker"
-    "docker-compose"
     "curl"
     "jq"
     "openssl"
     "sed"
-    "git"
 )
 
 # Check Python and Poetry
@@ -76,24 +73,8 @@ check_python() {
     fi
 }
 
-# Check Node.js and Yarn
-check_node() {
-    if ! check_command "node"; then
-        echo "❌ Node.js is not installed"
-        if [ "$(uname)" == "Darwin" ]; then
-            install_package "node"
-        else
-            echo "💡 Installing Node.js using NVM..."
-            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            nvm install --lts
-            nvm use --lts
-        fi
-    else
-        echo "✅ Node.js is installed"
-    fi
-
+# Check Yarn
+check_yarn() {
     if ! check_command "yarn"; then
         echo "💡 Installing Yarn..."
         npm install -g yarn
@@ -117,8 +98,8 @@ main() {
     # Check Python environment."
     check_python
 
-    # Check Node.js environment
-    check_node
+    # Check Yarn
+    check_yarn
 
     # Verify Docker is running
     if ! docker info >/dev/null 2>&1; then
