@@ -16,8 +16,16 @@ if [ -f "auth_provider/.oauth_creds.json" ]; then
     export AUTHENTIK_CLIENT_SECRET=$(jq -r '.client_secret' auth_provider/.oauth_creds.json)
 
     # Modify the two lines in-place without creating backup files
-    sed -i "s|^AUTHENTIK_CLIENT_ID=.*|AUTHENTIK_CLIENT_ID=$AUTHENTIK_CLIENT_ID|" .env
-    sed -i "s|^AUTHENTIK_CLIENT_SECRET=.*|AUTHENTIK_CLIENT_SECRET=$AUTHENTIK_CLIENT_SECRET|" .env
+    # Use different sed syntax for Mac vs Linux
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS
+        sed -i '' "s|^AUTHENTIK_CLIENT_ID=.*|AUTHENTIK_CLIENT_ID=$AUTHENTIK_CLIENT_ID|" .env
+        sed -i '' "s|^AUTHENTIK_CLIENT_SECRET=.*|AUTHENTIK_CLIENT_SECRET=$AUTHENTIK_CLIENT_SECRET|" .env
+    else
+        # Linux
+        sed -i "s|^AUTHENTIK_CLIENT_ID=.*|AUTHENTIK_CLIENT_ID=$AUTHENTIK_CLIENT_ID|" .env
+        sed -i "s|^AUTHENTIK_CLIENT_SECRET=.*|AUTHENTIK_CLIENT_SECRET=$AUTHENTIK_CLIENT_SECRET|" .env
+    fi
     
     # Start frontend and backend services
     echo "🚀 Starting frontend and backend services..."

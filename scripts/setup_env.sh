@@ -39,11 +39,13 @@ update_env_var() {
     local value=$2
     local escaped_value=$(echo "$value" | sed 's/[\/&]/\\&/g')
     
-    # Use different delimiters if value contains forward slashes
-    if echo "$value" | grep -q "/"; then
-        sed -i "s|^$key=.*|$key=$escaped_value|" .env
+    # Create temp file for sed operations (compatible with both Linux and macOS)
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS requires an empty string after -i
+        sed -i '' "s|^$key=.*|$key=$escaped_value|" .env
     else
-        sed -i "s/$key=.*/$key=$escaped_value/" .env
+        # Linux version
+        sed -i "s|^$key=.*|$key=$escaped_value|" .env
     fi
     
     # Verify the replacement
@@ -71,4 +73,3 @@ fi
 echo "✅ Environment setup complete!"
 echo "📝 Your .env file has been created with secure random values"
 echo "⚠️ Please review the .env file and modify any other values as needed"
-
