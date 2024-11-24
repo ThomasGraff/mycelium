@@ -9,6 +9,7 @@ ARG NGINX_LOG_LEVEL=error
 
 # Set environment variables
 ENV BACKEND_URL=http://${BACKEND_HOST}:${BACKEND_PORT} \
+    BACKEND_HOST=${BACKEND_HOST} \
     FRONTEND_HOST=${FRONTEND_HOST} \
     FRONTEND_PORT=${FRONTEND_PORT} \
     VUE_CLI_SERVICE_CONFIG_PATH=./config/vue.config.js \
