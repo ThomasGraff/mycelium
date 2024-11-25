@@ -6,7 +6,7 @@ endef
 
 .PHONY: help check check-dev check-prod setup-env auth front-dev back-dev \
         build-front build-back push-front push-back run-front run-back \
-        run-front-local run-back-local clean
+        run-front-local run-back-local clean clean-front clean-back clean-auth
 
 help: ## Show this help message
 	@echo '🔧 Setup & Utils:'
@@ -14,6 +14,9 @@ help: ## Show this help message
 	@echo '  check-prod      - Check production/deployment dependencies'
 	@echo '  setup-env       - Create .env file from example'
 	@echo '  clean           - Remove all Docker resources (images, containers, volumes) and .env file'
+	@echo '  clean-front     - Remove frontend Docker resources'
+	@echo '  clean-back      - Remove backend Docker resources'
+	@echo '  clean-auth      - Remove auth provider Docker resources'
 	@echo ''
 	@echo '🚀 Running Applications:'
 	@echo '  auth            - Launch the auth_provider application (same for dev and prod)'
@@ -130,7 +133,6 @@ push-front: build-front ## Push frontend image to Docker Hub
 	@echo "💡 Pushing frontend image to Docker Hub..."
 	@docker tag mycelium-frontend:local ${DOCKER_USERNAME}/mycelium-frontend:${IMAGE_TAG}
 	@docker push ${DOCKER_USERNAME}/mycelium-frontend:${IMAGE_TAG}
-	@docker tag ${DOCKER_USERNAME}/mycelium-frontend:${IMAGE_TAG} mycelium-frontend:local
 	@echo "✅ Frontend image pushed successfully"
 
 push-back: build-back ## Push backend image to Docker Hub
@@ -138,29 +140,37 @@ push-back: build-back ## Push backend image to Docker Hub
 	@echo "💡 Pushing backend image to Docker Hub..."
 	@docker tag mycelium-backend:local ${DOCKER_USERNAME}/mycelium-backend:${IMAGE_TAG}
 	@docker push ${DOCKER_USERNAME}/mycelium-backend:${IMAGE_TAG}
-	@docker tag ${DOCKER_USERNAME}/mycelium-backend:${IMAGE_TAG} mycelium-backend:local
 	@echo "✅ Backend image pushed successfully"
 
-clean: ## Clean all Docker resources and configuration files
-	@echo "💡 Starting cleanup process..."
-	
-	@echo "\n🗑️  Stopping and removing containers..."
-	-docker stop mycelium-frontend-hub mycelium-backend-hub mycelium-frontend-local mycelium-backend-local authentik-server authentik-worker authentik-postgresql authentik-redis 2>/dev/null || true
-	-docker rm mycelium-frontend-hub mycelium-backend-hub mycelium-frontend-local mycelium-backend-local authentik-server authentik-worker authentik-postgresql authentik-redis 2>/dev/null || true
-	
-	@echo "\n🗑️  Removing Docker images..."
-	-docker rmi mycelium-frontend:local mycelium-backend:local 2>/dev/null || true
-	-docker rmi $$(docker images --filter "reference=*/mycelium-*" -q) 2>/dev/null || true
-	
-	@echo "\n🗑️  Removing Docker volumes..."
-	-docker volume rm authentik-database authentik-redis 2>/dev/null || true
-	-docker volume rm $$(docker volume ls -q --filter name=mycelium) 2>/dev/null || true
-	
+clean-front: ## Clean frontend Docker resources
+	@echo "💡 Starting frontend cleanup..."
+	-docker stop mycelium-frontend-hub mycelium-frontend-local 2>/dev/null || true
+	-docker rm mycelium-frontend-hub mycelium-frontend-local 2>/dev/null || true
+	-docker rmi mycelium-frontend:local 2>/dev/null || true
+	-docker rmi $$(docker images --filter "reference=*/mycelium-frontend" -q) 2>/dev/null || true
+	@echo "✅ Frontend cleanup completed"
+
+clean-back: ## Clean backend Docker resources
+	@echo "💡 Starting backend cleanup..."
+	-docker stop mycelium-backend-hub mycelium-backend-local 2>/dev/null || true
+	-docker rm mycelium-backend-hub mycelium-backend-local 2>/dev/null || true
+	-docker rmi mycelium-backend:local 2>/dev/null || true
+	-docker rmi $$(docker images --filter "reference=*/mycelium-backend" -q) 2>/dev/null || true
+	@echo "✅ Backend cleanup completed"
+
+clean-auth: ## Clean auth provider Docker resources
+	@echo "💡 Starting auth provider cleanup..."
+	-docker stop $$(docker ps -a --filter "name=auth_provider" -q) 2>/dev/null || true
+	-docker rm $$(docker ps -a --filter "name=auth_provider" -q) 2>/dev/null || true
+	-docker volume rm auth_provider_authentik-database auth_provider_authentik-redis 2>/dev/null || true
+	-docker rmi $$(docker images --filter "reference=ghcr.io/goauthentik/server" -q) 2>/dev/null || true
+	@echo "✅ Auth provider cleanup completed"
+
+clean: clean-front clean-back clean-auth ## Clean all Docker resources and configuration files
 	@echo "\n🗑️  Removing .env file..."
 	-rm -f .env
-	
-	@echo "\n✅ Cleanup completed successfully"
+	@echo "\n✅ All cleanup completed successfully"
 
-.PHONY: clean
+.PHONY: clean clean-front clean-back clean-auth
 
 
