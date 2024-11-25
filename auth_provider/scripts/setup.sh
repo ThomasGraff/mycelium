@@ -9,7 +9,7 @@ MAX_RETRIES=50
 RETRY_INTERVAL=15
 APP_SLUG="mycelium"
 
-echo "💡 Starting Authentik setup..."
+echo "💡 Launching Authentik setup"
 
 # Check requirements
 for cmd in curl jq; do
@@ -30,6 +30,7 @@ done
 retry_count=0
 while [ $retry_count -lt $MAX_RETRIES ]; do
     if curl -sSf "$AUTHENTIK_URL/-/health/live/" > /dev/null 2>&1; then
+        sleep 5
         echo "✅ Authentik is up and running"
         break
     fi
@@ -83,7 +84,6 @@ if [ -z "$provider_id" ] || [ "$provider_id" = "null" ]; then
             \"issuer_mode\": \"global\",
             \"redirect_uris\": []
         }")
-    
     provider_id=$(echo "$provider_response" | jq -r '.pk')
     if [ -z "$provider_id" ] || [ "$provider_id" = "null" ]; then
         echo "❌ Failed to create OAuth provider"
