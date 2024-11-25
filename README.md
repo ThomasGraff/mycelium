@@ -145,7 +145,7 @@
     </table>
     <details>
       <summary>
-        <b> Click to View Configuration Details</b>
+        <b>click to view configuration details</b>
       </summary>
       <br>
       <table>
@@ -299,13 +299,12 @@
           <br>
           <code>make launch</code>
           <br>
-          <small>Deploys Auth, Frontend, and Backend services</small>
         </td>
       </tr>
     </table>
     <details>
       <summary>
-        <b> Click to View Individual Service Commands</b>
+        <b>click to view individual service commands</b>
       </summary>
       <br>
       <table>
