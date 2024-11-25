@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="mycelium/src/assets/logo.png" alt="Mycelium Logo" width="150"/>
+  <img src="https://images.weserv.nl/?url=https://github.com/myceliumAI/mycelium/blob/main/mycelium/src/assets/logo.png?raw=true&fit=cover&mask=circle&maxage=7d" alt="Mycelium Logo" width="150"/>
   <br><br>
   
   <div>
@@ -108,41 +108,31 @@
     <br><br>
 
 
-<code>> Prerequisites</code>
-
 <table>
   <tr>
     <td align="center" width="50%">
       <img src="https://img.icons8.com/color/48/000000/docker.png" width="30"/>
       <br />
-      <b>> Local Usage</b>
+      <b> Production</b>
       <br />
-      <ul align="left">
-        <li>Docker and Docker Compose</li>
-        <li>Git</li>
-      </ul>
+      <code>> make check-prod</code>
     </td>
     <td align="center" width="50%">
       <img src="https://img.icons8.com/color/48/000000/code.png" width="30"/>
       <br />
-      <b>> Development</b>
+      <b> Development</b>
       <br />
-      <ul align="left">
-        <li>Node.js (v18+)</li>
-        <li>Yarn (preferred over npm)</li>
-        <li>Python (v3.10+)</li>
-        <li>Poetry</li>
-        <li>Git</li>
-      </ul>
+      <code>> make check-dev</code>
     </td>
   </tr>
 </table>
 
 <br>
-
-<code>> Environment Configuration</code>
-
+<code>> make setup-env</code>
 <table>
+  <tr>
+    <th colspan="4" align="center">Authentik Configuration</th>
+  </tr>
   <tr>
     <th>Variable</th>
     <th>Required</th>
@@ -150,46 +140,120 @@
     <th>Description</th>
   </tr>
   <tr>
+    <td><code>AUTHENTIK_PORT</code></td>
+    <td>❌</td>
+    <td>9000</td>
+    <td>Port on which Authentik server will listen</td>
+  </tr>
+  <tr>
+    <td><code>AUTHENTIK_HOST</code></td>
+    <td>❌</td>
+    <td>localhost</td>
+    <td>Hostname for the Authentik service in the Docker network</td>
+  </tr>
+  <tr>
+    <td><code>AUTHENTIK_BOOTSTRAP_EMAIL</code></td>
+    <td>❌</td>
+    <td>admin@localhost</td>
+    <td>Email for the admin user</td>
+  </tr>
+  <tr>
+    <td><code>AUTHENTIK_SECRET_KEY</code></td>
+    <td>✅</td>
+    <td>-</td>
+    <td>Secret key for JWT token generation</td>
+  </tr>
+  <tr>
+    <td><code>AUTHENTIK_ADMIN_PASSWORD</code></td>
+    <td>✅</td>
+    <td>-</td>
+    <td>Password for the admin user</td>
+  </tr>
+  <tr>
+    <td><code>AUTHENTIK_ADMIN_TOKEN</code></td>
+    <td>✅</td>
+    <td>-</td>
+    <td>API token for the admin user</td>
+  </tr>
+  <tr>
+    <td><code>AUTHENTIK_CLIENT_ID</code></td>
+    <td>✅</td>
+    <td>-</td>
+    <td>Client ID for the backend service</td>
+  </tr>
+  <tr>
+    <td><code>AUTHENTIK_CLIENT_SECRET</code></td>
+    <td>✅</td>
+    <td>-</td>
+    <td>Client secret for the backend service</td>
+  </tr>
+  <tr>
+    <td><code>PG_USER</code></td>
+    <td>❌</td>
+    <td>authentik</td>
+    <td>PostgreSQL user</td>
+  </tr>
+  <tr>
+    <td><code>PG_DB</code></td>
+    <td>❌</td>
+    <td>authentik</td>
+    <td>PostgreSQL database name</td>
+  </tr>
+  <tr>
     <td><code>PG_PASS</code></td>
     <td>✅</td>
     <td>-</td>
-    <td>PostgreSQL password for Authentik</td>
+    <td>PostgreSQL password for Authentik database</td>
   </tr>
+
   <tr>
-    <td><code>FRONTEND_PORT</code></td>
-    <td>❌</td>
-    <td>80</td>
-    <td>Frontend application port</td>
+    <th colspan="4" align="center">Backend Configuration</th>
   </tr>
   <tr>
     <td><code>BACKEND_PORT</code></td>
     <td>❌</td>
     <td>8000</td>
-    <td>Backend API port</td>
+    <td>Port on which the FastAPI backend service will listen</td>
   </tr>
   <tr>
-    <td><code>AUTHENTIK_PORT</code></td>
+    <td><code>BACKEND_HOST</code></td>
     <td>❌</td>
-    <td>9000</td>
-    <td>Authentik HTTP port</td>
+    <td>localhost</td>
+    <td>Hostname for the backend service in the Docker network</td>
   </tr>
   <tr>
-    <td><code>AUTHENTIK_PORT_HTTPS</code></td>
+    <td><code>DATABASE_URL</code></td>
     <td>❌</td>
-    <td>9443</td>
-    <td>Authentik HTTPS port</td>
+    <td>sqlite:///./app/database/mycelium.db</td>
+    <td>SQLite database connection string for the application</td>
+  </tr>
+
+  <tr>
+    <th colspan="4" align="center">Frontend Configuration</th>
+  </tr>
+  <tr>
+    <td><code>FRONTEND_PORT</code></td>
+    <td>❌</td>
+    <td>8080</td>
+    <td>Port on which the Vue.js frontend will be served</td>
+  </tr>
+  <tr>
+    <td><code>FRONTEND_HOST</code></td>
+    <td>❌</td>
+    <td>localhost</td>
+    <td>Hostname for the frontend service in the Docker network</td>
   </tr>
 </table>
 
 <div align="center">
-  <i>.env file required for next step</i>
+  <i>This is not exhaustive, check the .env.example file for more details</i>
 </div>
 <br><br>
-<code>> One-Line Setup</code>
+<code>> Launch all services (auth, frontend, backend)</code>
 <br><br>
 
 ```bash
-git clone https://github.com/ThomasGraff/mycelium.git && cd mycelium && docker-compose up -d
+make launch
 ```
 
 

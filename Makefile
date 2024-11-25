@@ -19,6 +19,7 @@ help: ## Show this help message
 	@echo '  clean-auth      - Remove auth provider Docker resources'
 	@echo ''
 	@echo '🚀 Running Applications:'
+	@echo '  launch          - Launch the three services (auth, frontend, backend) in production mode'
 	@echo '  auth            - Launch the auth_provider application (same for dev and prod)'
 	@echo '  front           - Run frontend from Docker Hub image'
 	@echo '  back            - Run backend from Docker Hub image'
@@ -69,6 +70,8 @@ back: ## Run backend from Docker Hub image
 		-p ${BACKEND_PORT}:${BACKEND_PORT} \
 		${DOCKER_USERNAME}/mycelium-backend:${IMAGE_TAG}
 	@echo "✅ Backend container started on port ${BACKEND_PORT}"
+
+launch: auth front back ## Launch the three services (auth, frontend, backend) in production mode
 
 front-local: build-front ## Run frontend from local image
 	$(call load_env)
