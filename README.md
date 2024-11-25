@@ -105,162 +105,191 @@
 <div align="center">
   <div>
     <kbd><h2 align="center">[ INITIALIZATION_SEQUENCE ]</h2></kbd>
+    <br>
+    <h3>1. Check Dependencies</h3>
+    <table>
+      <tr>
+        <td align="center" width="50%">
+          <img src="https://img.icons8.com/color/48/000000/docker.png" width="30"/>
+          <br />
+          <kbd><code>make check-prod</code></kbd>
+        </td>
+        <td align="center" width="50%">
+          <img src="https://img.icons8.com/color/48/000000/code.png" width="30"/>
+          <br />
+          <kbd><code>make check-dev</code></kbd>
+        </td>
+      </tr>
+    </table>
+    <h3>2. Configure Environment</h3>
+    <kbd><code>make setup-env</code></kbd>
     <br><br>
-
-
-<table>
-  <tr>
-    <td align="center" width="50%">
-      <img src="https://img.icons8.com/color/48/000000/docker.png" width="30"/>
-      <br />
-      <b> Production</b>
-      <br />
-      <code>> make check-prod</code>
-    </td>
-    <td align="center" width="50%">
-      <img src="https://img.icons8.com/color/48/000000/code.png" width="30"/>
-      <br />
-      <b> Development</b>
-      <br />
-      <code>> make check-dev</code>
-    </td>
-  </tr>
-</table>
-
-<br>
-<code>> make setup-env</code>
-<table>
-  <tr>
-    <th colspan="4" align="center">Authentik Configuration</th>
-  </tr>
-  <tr>
-    <th>Variable</th>
-    <th>Required</th>
-    <th>Default</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><code>AUTHENTIK_PORT</code></td>
-    <td>❌</td>
-    <td>9000</td>
-    <td>Port on which Authentik server will listen</td>
-  </tr>
-  <tr>
-    <td><code>AUTHENTIK_HOST</code></td>
-    <td>❌</td>
-    <td>localhost</td>
-    <td>Hostname for the Authentik service in the Docker network</td>
-  </tr>
-  <tr>
-    <td><code>AUTHENTIK_BOOTSTRAP_EMAIL</code></td>
-    <td>❌</td>
-    <td>admin@localhost</td>
-    <td>Email for the admin user</td>
-  </tr>
-  <tr>
-    <td><code>AUTHENTIK_SECRET_KEY</code></td>
-    <td>✅</td>
-    <td>-</td>
-    <td>Secret key for JWT token generation</td>
-  </tr>
-  <tr>
-    <td><code>AUTHENTIK_ADMIN_PASSWORD</code></td>
-    <td>✅</td>
-    <td>-</td>
-    <td>Password for the admin user</td>
-  </tr>
-  <tr>
-    <td><code>AUTHENTIK_ADMIN_TOKEN</code></td>
-    <td>✅</td>
-    <td>-</td>
-    <td>API token for the admin user</td>
-  </tr>
-  <tr>
-    <td><code>AUTHENTIK_CLIENT_ID</code></td>
-    <td>✅</td>
-    <td>-</td>
-    <td>Client ID for the backend service</td>
-  </tr>
-  <tr>
-    <td><code>AUTHENTIK_CLIENT_SECRET</code></td>
-    <td>✅</td>
-    <td>-</td>
-    <td>Client secret for the backend service</td>
-  </tr>
-  <tr>
-    <td><code>PG_USER</code></td>
-    <td>❌</td>
-    <td>authentik</td>
-    <td>PostgreSQL user</td>
-  </tr>
-  <tr>
-    <td><code>PG_DB</code></td>
-    <td>❌</td>
-    <td>authentik</td>
-    <td>PostgreSQL database name</td>
-  </tr>
-  <tr>
-    <td><code>PG_PASS</code></td>
-    <td>✅</td>
-    <td>-</td>
-    <td>PostgreSQL password for Authentik database</td>
-  </tr>
-
-  <tr>
-    <th colspan="4" align="center">Backend Configuration</th>
-  </tr>
-  <tr>
-    <td><code>BACKEND_PORT</code></td>
-    <td>❌</td>
-    <td>8000</td>
-    <td>Port on which the FastAPI backend service will listen</td>
-  </tr>
-  <tr>
-    <td><code>BACKEND_HOST</code></td>
-    <td>❌</td>
-    <td>localhost</td>
-    <td>Hostname for the backend service in the Docker network</td>
-  </tr>
-  <tr>
-    <td><code>DATABASE_URL</code></td>
-    <td>❌</td>
-    <td>sqlite:///./app/database/mycelium.db</td>
-    <td>SQLite database connection string for the application</td>
-  </tr>
-
-  <tr>
-    <th colspan="4" align="center">Frontend Configuration</th>
-  </tr>
-  <tr>
-    <td><code>FRONTEND_PORT</code></td>
-    <td>❌</td>
-    <td>8080</td>
-    <td>Port on which the Vue.js frontend will be served</td>
-  </tr>
-  <tr>
-    <td><code>FRONTEND_HOST</code></td>
-    <td>❌</td>
-    <td>localhost</td>
-    <td>Hostname for the frontend service in the Docker network</td>
-  </tr>
-</table>
-
-<div align="center">
-  <i>This is not exhaustive, check the .env.example file for more details</i>
+    <details>
+      <summary><b>📝 Environment Variables Configuration</b></summary>
+      <br>
+      <table>
+        <tr>
+          <th colspan="4" align="center">Authentik Configuration</th>
+        </tr>
+        <tr>
+          <th>Variable</th>
+          <th>Required</th>
+          <th>Default</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td><code>AUTHENTIK_PORT</code></td>
+          <td>❌</td>
+          <td>9000</td>
+          <td>Port on which Authentik server will listen</td>
+        </tr>
+        <tr>
+          <td><code>AUTHENTIK_HOST</code></td>
+          <td>❌</td>
+          <td>localhost</td>
+          <td>Hostname for the Authentik service in the Docker network</td>
+        </tr>
+        <tr>
+          <td><code>AUTHENTIK_BOOTSTRAP_EMAIL</code></td>
+          <td>❌</td>
+          <td>admin@localhost</td>
+          <td>Email for the admin user</td>
+        </tr>
+        <tr>
+          <td><code>AUTHENTIK_SECRET_KEY</code></td>
+          <td>✅</td>
+          <td>-</td>
+          <td>Secret key for JWT token generation</td>
+        </tr>
+        <tr>
+          <td><code>AUTHENTIK_ADMIN_PASSWORD</code></td>
+          <td>✅</td>
+          <td>-</td>
+          <td>Password for the admin user</td>
+        </tr>
+        <tr>
+          <td><code>AUTHENTIK_ADMIN_TOKEN</code></td>
+          <td>✅</td>
+          <td>-</td>
+          <td>API token for the admin user</td>
+        </tr>
+        <tr>
+          <td><code>AUTHENTIK_CLIENT_ID</code></td>
+          <td>✅</td>
+          <td>-</td>
+          <td>Client ID for the backend service</td>
+        </tr>
+        <tr>
+          <td><code>AUTHENTIK_CLIENT_SECRET</code></td>
+          <td>✅</td>
+          <td>-</td>
+          <td>Client secret for the backend service</td>
+        </tr>
+        <tr>
+          <td><code>PG_USER</code></td>
+          <td>❌</td>
+          <td>authentik</td>
+          <td>PostgreSQL user</td>
+        </tr>
+        <tr>
+          <td><code>PG_DB</code></td>
+          <td>❌</td>
+          <td>authentik</td>
+          <td>PostgreSQL database name</td>
+        </tr>
+        <tr>
+          <td><code>PG_PASS</code></td>
+          <td>✅</td>
+          <td>-</td>
+          <td>PostgreSQL password for Authentik database</td>
+        </tr>
+        <tr>
+          <th colspan="4" align="center">Backend Configuration</th>
+        </tr>
+        <tr>
+          <td><code>BACKEND_PORT</code></td>
+          <td>❌</td>
+          <td>8000</td>
+          <td>Port on which the FastAPI backend service will listen</td>
+        </tr>
+        <tr>
+          <td><code>BACKEND_HOST</code></td>
+          <td>❌</td>
+          <td>localhost</td>
+          <td>Hostname for the backend service in the Docker network</td>
+        </tr>
+        <tr>
+          <td><code>DATABASE_URL</code></td>
+          <td>❌</td>
+          <td>sqlite:///./app/database/mycelium.db</td>
+          <td>SQLite database connection string for the application</td>
+        </tr>
+        <tr>
+          <th colspan="4" align="center">Frontend Configuration</th>
+        </tr>
+        <tr>
+          <td><code>FRONTEND_PORT</code></td>
+          <td>❌</td>
+          <td>8080</td>
+          <td>Port on which the Vue.js frontend will be served</td>
+        </tr>
+        <tr>
+          <td><code>FRONTEND_HOST</code></td>
+          <td>❌</td>
+          <td>localhost</td>
+          <td>Hostname for the frontend service in the Docker network</td>
+        </tr>
+      </table>
+      <div align="center">
+        <i>For complete configuration options, refer to .env.example</i>
+      </div>
+    </details>
+    <br>
+    <h3>3. Launch Services</h3>
+    <table>
+      <tr>
+        <td align="center">
+          <img src="https://img.icons8.com/color/48/000000/launch-box.png" width="30"/>
+          <br>
+          <b>Launch All Services</b>
+          <br>
+          <kbd><code>make launch</code></kbd>
+          <br><br>
+          <small>Starts Auth, Frontend, and Backend</small>
+        </td>
+      </tr>
+    </table>
+    <details>
+      <summary><b>🔧 Individual Service Commands</b></summary>
+      <br>
+      <table>
+        <tr>
+          <td align="center">
+            <img src="https://img.icons8.com/color/48/000000/password.png" width="25"/>
+            <br>
+            <b>Auth Service</b>
+            <br>
+            <kbd><code>make auth</code></kbd>
+          </td>
+          <td align="center">
+            <img src="https://img.icons8.com/color/48/000000/web.png" width="25"/>
+            <br>
+            <b>Frontend</b>
+            <br>
+            <kbd><code>make front</code></kbd>
+          </td>
+          <td align="center">
+            <img src="https://img.icons8.com/color/48/000000/api.png" width="25"/>
+            <br>
+            <b>Backend</b>
+            <br>
+            <kbd><code>make back</code></kbd>
+          </td>
+        </tr>
+      </table>
+    </details>
+  </div>
 </div>
-<br><br>
-<code>> Launch all services (auth, frontend, backend)</code>
-<br><br>
-
-```bash
-make launch
-```
-
-
-</div>
-</div>
-
-
 
 <div align="center">│</div>
 <div align="center">▼</div>
