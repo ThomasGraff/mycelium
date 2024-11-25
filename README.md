@@ -104,8 +104,8 @@
 <br>
 <div align="center">
   <div>
-    <kbd><h2 align="center">[ DEPENDENCY CHECK ]</h2></kbd>
-    <br>
+    <kbd><h2 align="center">[ DEPENDENCY_CHECK ]</h2></kbd>
+    <br><br>
     <table>
       <tr>
         <td align="center" width="50%">
@@ -113,14 +113,14 @@
           <br />
           <b>Production</b>
           <br />
-          <kbd><code>make check-prod</code></kbd>
+          <code>make check-prod</code>
         </td>
         <td align="center" width="50%">
           <img src="https://img.icons8.com/color/48/000000/code.png" width="30"/>
           <br />
           <b>Development</b>
           <br />
-          <kbd><code>make check-dev</code></kbd>
+          <code>make check-dev</code>
         </td>
       </tr>
     </table>
@@ -132,14 +132,14 @@
 <br>
 <div align="center">
   <div>
-    <kbd><h2 align="center">[ ENVIRONMENT SETUP ]</h2></kbd>
-    <br>
+    <kbd><h2 align="center">[ ENVIRONMENT_SETUP ]</h2></kbd>
+    <br><br>
     <table>
       <tr>
         <td align="center">
           <img src="https://img.icons8.com/color/48/000000/settings.png" width="30"/>
           <br />
-          <kbd><code>make setup-env</code></kbd>
+          <code>make setup-env</code>
         </td>
       </tr>
     </table>
@@ -290,14 +290,14 @@
 <br>
 <div align="center">
   <div>
-    <kbd><h2 align="center">[ DEPLOYMENT ]</h2></kbd>
-    <br>
+    <kbd><h2 align="center">[ LAUNCHING.. ]</h2></kbd>
+    <br><br>
     <table>
       <tr>
         <td align="center">
           <img src="https://img.icons8.com/color/48/000000/launch-box.png" width="30"/>
           <br>
-          <kbd><code>make launch</code></kbd>
+          <code>make launch</code>
           <br>
           <small>Deploys Auth, Frontend, and Backend services</small>
         </td>
@@ -313,21 +313,21 @@
           <td align="center">
             <img src="https://img.icons8.com/color/48/000000/password.png" width="25"/>
             <br>
-            <kbd><code>make auth</code></kbd>
+            <code>make auth</code>
             <br>
             <small>Authentication</small>
           </td>
           <td align="center">
             <img src="https://img.icons8.com/color/48/000000/web.png" width="25"/>
             <br>
-            <kbd><code>make front</code></kbd>
+            <code>make front</code>
             <br>
             <small>Frontend</small>
           </td>
           <td align="center">
             <img src="https://img.icons8.com/color/48/000000/api.png" width="25"/>
             <br>
-            <kbd><code>make back</code></kbd>
+            <code>make back</code>
             <br>
             <small>Backend</small>
           </td>
