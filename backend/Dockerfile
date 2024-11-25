@@ -1,21 +1,24 @@
 # Step 1: Use Python 3.12 as the base image
 FROM python:3.12-slim
 
-# Build-time arguments with default values
-ARG AUTHENTIK_CLIENT_ID
-ARG AUTHENTIK_CLIENT_SECRET
+# Set environment variables with default values
+ARG BACKEND_PORT
 ARG AUTHENTIK_HOST
 ARG AUTHENTIK_PORT
-ARG BACKEND_PORT
 ARG DATABASE_URL
+ARG ACCESS_TOKEN_EXPIRE_MINUTES
 
-# Set environment variables
-ENV AUTHENTIK_URL=http://${AUTHENTIK_HOST}:${AUTHENTIK_PORT} \
-    AUTHENTIK_CLIENT_ID=${AUTHENTIK_CLIENT_ID} \
-    AUTHENTIK_CLIENT_SECRET=${AUTHENTIK_CLIENT_SECRET} \
-    DATABASE_URL=${DATABASE_URL}
+ENV AUTHENTIK_HOST=${AUTHENTIK_HOST} \
+    AUTHENTIK_PORT=${AUTHENTIK_PORT} \
+    BACKEND_PORT=${BACKEND_PORT} \
+    DATABASE_URL=${DATABASE_URL} \
+    ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
 
-    
+# Required additional environment variables to add at runtime:
+# AUTHENTIK_CLIENT_ID
+# AUTHENTIK_CLIENT_SECRET
+# SECRET_KEY
+
 # Step 2: Set the working directory
 WORKDIR /app
 
@@ -46,6 +49,10 @@ RUN poetry install --no-interaction --no-ansi
 RUN mkdir -p /app/app/database && \
     chown -R nobody:nogroup /app/app/database && \
     chmod 770 /app/app/database
+
+# Step 10: Add healthcheck
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:${BACKEND_PORT}/health || exit 1
 
 # Step 11: Switch to non-root user
 USER nobody

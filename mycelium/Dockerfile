@@ -1,15 +1,14 @@
 FROM nginx:alpine
 
-# Build-time arguments with default values
+# Set environment variables with default values
 ARG BACKEND_HOST
 ARG BACKEND_PORT
 ARG FRONTEND_HOST
 ARG FRONTEND_PORT
-ARG NGINX_LOG_LEVEL=error
+ARG NGINX_LOG_LEVEL
 
-# Set environment variables
-ENV BACKEND_URL=http://${BACKEND_HOST}:${BACKEND_PORT} \
-    BACKEND_HOST=${BACKEND_HOST} \
+ENV BACKEND_HOST=${BACKEND_HOST} \
+    BACKEND_PORT=${BACKEND_PORT} \
     FRONTEND_HOST=${FRONTEND_HOST} \
     FRONTEND_PORT=${FRONTEND_PORT} \
     VUE_CLI_SERVICE_CONFIG_PATH=./config/vue.config.js \
@@ -32,6 +31,10 @@ COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh && \
     mv /app/dist/* /usr/share/nginx/html/ && \
     rm -rf /app
+
+# Add healthcheck
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:${FRONTEND_PORT} || exit 1
 
 EXPOSE ${FRONTEND_PORT}
 

@@ -33,7 +33,7 @@ while [ $retry_count -lt $MAX_RETRIES ]; do
         echo "✅ Authentik is up and running"
         break
     fi
-    printf "⚠️ Waiting for Authentik to be ready... (%d/%d)\n" "$((retry_count + 1))" "${MAX_RETRIES}"
+    printf "⚠️  Waiting for Authentik to be ready... (%d/%d)\n" "$((retry_count + 1))" "${MAX_RETRIES}"
     sleep $RETRY_INTERVAL
     retry_count=$((retry_count + 1))
 done
