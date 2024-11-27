@@ -15,14 +15,16 @@ class Settings:
 
     def __init__(self):
         """Initialize settings and validate required environment variables."""
-        # Required environment variables
-        self.SECRET_KEY: Final[str] = self._get_required_env("SECRET_KEY")
-        self.AUTHENTIK_CLIENT_ID: Final[str] = self._get_required_env("AUTHENTIK_CLIENT_ID")
-        self.AUTHENTIK_CLIENT_SECRET: Final[str] = self._get_required_env("AUTHENTIK_CLIENT_SECRET")
+        # Required environment variables that have default values in Dockerfile
+        self.AUTHENTIK_HOST: Final[str] = self._get_required_env("AUTHENTIK_HOST")
+        self.AUTHENTIK_PORT: Final[int] = int(self._get_required_env("AUTHENTIK_PORT"))
         self.DATABASE_URL: Final[str] = self._get_required_env("DATABASE_URL")
         self.ACCESS_TOKEN_EXPIRE_MINUTES: Final[int] = int(self._get_required_env("ACCESS_TOKEN_EXPIRE_MINUTES"))
-        self.AUTHENTIK_PORT: Final[int] = int(self._get_required_env("AUTHENTIK_PORT"))
-        self.AUTHENTIK_HOST: Final[str] = self._get_required_env("AUTHENTIK_HOST")
+
+        # Required environment variables that don't have default values in Dockerfile
+        self.AUTHENTIK_CLIENT_ID: Final[str] = self._get_required_env("AUTHENTIK_CLIENT_ID")
+        self.AUTHENTIK_CLIENT_SECRET: Final[str] = self._get_required_env("AUTHENTIK_CLIENT_SECRET")
+        self.SECRET_KEY: Final[str] = self._get_required_env("SECRET_KEY")
 
         # Hardcoded constants
         self.ALLOWED_ORIGINS: List[str] = ["*"]

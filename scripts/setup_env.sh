@@ -72,4 +72,4 @@ fi
 
 echo "✅ Environment setup complete!"
 echo "📝 Your .env file has been created with secure random values"
-echo "⚠️ Please review the .env file and modify any other values as needed"
+echo "⚠️  Please review the .env file and modify any other values as needed"
