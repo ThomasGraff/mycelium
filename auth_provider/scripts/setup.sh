@@ -69,6 +69,23 @@ existing_provider_response=$(curl -s -X GET "$AUTHENTIK_URL/api/v3/providers/oau
 
 provider_id=$(echo "$existing_provider_response" | jq -r '.results[] | select(.name=="Mycelium OAuth Provider") | .pk')
 
+# First, get the standard scope mappings
+echo "💡 Fetching standard scope mappings..."
+scope_mappings_response=$(curl -s -X GET "$AUTHENTIK_URL/api/v3/propertymappings/provider/scope/" \
+    -H "Authorization: Bearer $AUTHENTIK_ADMIN_TOKEN" \
+    -H "Content-Type: application/json")
+
+# Extract the UUIDs of the standard scope mappings
+scope_mapping_ids=$(echo "$scope_mappings_response" | jq -r '.results[] | select(.scope_name | IN("openid", "email", "profile", "offline_access", "goauthentik.io/api")) | .pk')
+
+if [ -z "$scope_mapping_ids" ]; then
+    echo "❌ Failed to find scope mappings"
+    exit 1
+fi
+
+# Convert the scope mapping IDs to a JSON array
+scope_mappings_json=$(echo "$scope_mapping_ids" | jq -R . | jq -s .)
+
 # Create provider if it doesn't exist
 if [ -z "$provider_id" ] || [ "$provider_id" = "null" ]; then
     echo "💡 Creating new OAuth provider..."
@@ -86,7 +103,8 @@ if [ -z "$provider_id" ] || [ "$provider_id" = "null" ]; then
             \"include_claims_in_id_token\": true,
             \"sub_mode\": \"hashed_user_id\",
             \"issuer_mode\": \"global\",
-            \"redirect_uris\": []
+            \"redirect_uris\": [],
+            \"property_mappings\": $scope_mappings_json
         }")
     provider_id=$(echo "$provider_response" | jq -r '.pk')
     if [ -z "$provider_id" ] || [ "$provider_id" = "null" ]; then
@@ -95,7 +113,19 @@ if [ -z "$provider_id" ] || [ "$provider_id" = "null" ]; then
     fi
     echo "✅ Created OAuth provider"
 else
-    echo "✅ Found existing OAuth provider"
+    echo "💡 Updating existing OAuth provider with scope mappings..."
+    provider_update_response=$(curl -s -X PATCH "$AUTHENTIK_URL/api/v3/providers/oauth2/$provider_id/" \
+        -H "Authorization: Bearer $AUTHENTIK_ADMIN_TOKEN" \
+        -H "Content-Type: application/json" \
+        -d "{
+            \"property_mappings\": $scope_mappings_json
+        }")
+    if echo "$provider_update_response" | jq -e '.pk' > /dev/null 2>&1; then
+        echo "✅ Updated OAuth provider scope mappings"
+    else
+        echo "❌ Failed to update OAuth provider scope mappings"
+        exit 1
+    fi
 fi
 
 # Check for existing application
