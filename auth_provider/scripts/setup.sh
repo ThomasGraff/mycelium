@@ -217,7 +217,6 @@ group_response=$(curl -s -X GET "$AUTHENTIK_URL/api/v3/core/groups/" \
 group_id=$(echo "$group_response" | jq -r --arg GROUP_NAME "$GROUP_NAME" '.results[] | select(.name == $GROUP_NAME) | .pk // empty')
 
 if [ -z "$group_id" ]; then
-    echo "💡 Creating group '$GROUP_NAME'..."
     group_response=$(curl -s -X POST "$AUTHENTIK_URL/api/v3/core/groups/" \
         -H "Authorization: Bearer $AUTHENTIK_ADMIN_TOKEN" \
         -H "Content-Type: application/json" \
@@ -231,13 +230,24 @@ else
     echo "✅ Found existing group with ID $group_id"
 fi
 
+# Trigger system user creation by making a token request
+echo "💡 Triggering system user creation..."
+token_response=$(curl -s -X POST "$AUTHENTIK_URL/application/o/token/" \
+    -H "Content-Type: application/x-www-form-urlencoded" \
+    -d "grant_type=client_credentials&client_id=$client_id&client_secret=$client_secret")
+
+if echo "$token_response" | jq -e '.access_token' > /dev/null 2>&1; then
+    echo "✅ Successfully triggered system user creation"
+else
+    echo "⚠️ Token request completed but may have failed: $token_response"
+fi
+
 # Add system users to the group
 echo "💡 Adding system users to group '$GROUP_NAME'..."
 system_users_response=$(curl -s -X GET "$AUTHENTIK_URL/api/v3/core/users/" \
     -H "Authorization: Bearer $AUTHENTIK_ADMIN_TOKEN" \
     -H "Content-Type: application/json" \
     -G --data-urlencode "username__startswith=ak-")
-
 system_user_ids=$(echo "$system_users_response" | jq -r '.results[] | select(.username!="akadmin") | .pk // empty')
 
 if [ -z "$system_user_ids" ]; then
