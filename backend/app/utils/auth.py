@@ -11,7 +11,36 @@ from .logger import get_logger
 logger = get_logger(__name__)
 
 
-async def get_authentik_tokens(username: str, password: str, mfa_code: str | None = None) -> Dict[str, Any]:
+async def get_system_user_token() -> Tuple[str, str]:
+    """
+    Get a system user access token from Authentik using OAuth2 client credentials flow.
+    This generates a short-lived token with specific scopes for user management.
+
+    :return Tuple[str, str]: A tuple containing (access_token, token_type)
+    :raises httpx.HTTPError: If the HTTP request fails
+    """
+    data = {
+        "grant_type": "client_credentials",
+        "client_id": settings.AUTHENTIK_CLIENT_ID,
+        "client_secret": settings.AUTHENTIK_CLIENT_SECRET,
+        "scope": "goauthentik.io/api/users",
+    }
+
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            f"{settings.AUTHENTIK_URL}/application/o/token/",
+            data=data,
+            headers={
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Accept": "application/json",
+            },
+        )
+        response.raise_for_status()
+        result = response.json()
+        return result["access_token"], result["token_type"]
+
+
+async def get_current_user_token(username: str, password: str, mfa_code: str | None = None) -> Dict[str, Any]:
     """
     Authenticates user credentials against Authentik's token endpoint.
 
@@ -19,7 +48,7 @@ async def get_authentik_tokens(username: str, password: str, mfa_code: str | Non
     :param str password: The user's password
     :param str | None mfa_code: Optional MFA code if enabled
     :return Dict[str, Any]: The token response from Authentik
-    :raises HTTPException: If authentication fails
+    :raises httpx.HTTPError: If the HTTP request fails
     """
     data = {
         "grant_type": "password",
@@ -33,26 +62,13 @@ async def get_authentik_tokens(username: str, password: str, mfa_code: str | Non
         data["mfa_code"] = mfa_code
 
     async with httpx.AsyncClient() as client:
-        try:
-            response = await client.post(
-                f"{settings.AUTHENTIK_URL}/application/o/token/",
-                data=data,
-                headers={"Content-Type": "application/x-www-form-urlencoded"},
-            )
-
-            if response.status_code == 200:
-                logger.info(" ✅ User authenticated successfully")
-                return response.json()
-
-            logger.error(f" ❌ Authentication failed: {response.text}")
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail=f" ❌ Authentication failed: {response.text}"
-            )
-        except Exception as e:
-            logger.error(f" ❌ Authentication error: {str(e)}")
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f" ❌ Authentication error: {str(e)}"
-            )
+        response = await client.post(
+            f"{settings.AUTHENTIK_URL}/application/o/token/",
+            data=data,
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+        )
+        response.raise_for_status()
+        return response.json()
 
 
 def create_access_token(data: Dict[str, Any], expires_delta: timedelta) -> str:
@@ -119,39 +135,3 @@ def verify_token(token: str) -> Dict[str, Any]:
             detail=" ❌ Invalid authentication credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-
-
-async def get_admin_token() -> Tuple[str, str]:
-    """
-    Get an admin access token from Authentik using OAuth2 client credentials flow.
-    This generates a short-lived token with specific scopes for user management.
-
-    :return Tuple[str, str]: A tuple containing (access_token, token_type)
-    :raises HTTPException: If authentication fails
-    """
-    data = {
-        "grant_type": "client_credentials",
-        "client_id": settings.AUTHENTIK_CLIENT_ID,
-        "client_secret": settings.AUTHENTIK_CLIENT_SECRET,
-        "scope": "adminopenid goauthentik.io/api goauthentik.io/api/users goauthentik.io/api/core",
-    }
-
-    async with httpx.AsyncClient() as client:
-        try:
-            response = await client.post(
-                f"{settings.AUTHENTIK_URL}/application/o/token/",
-                data=data,
-                headers={
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "Accept": "application/json",
-                },
-            )
-            response.raise_for_status()
-            result = response.json()
-            return result["access_token"], result["token_type"]
-        except HTTPException:
-            raise
-        except Exception as e:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f" ❌ Admin authentication error: {str(e)}"
-            )

@@ -33,7 +33,6 @@ done
 retry_count=0
 while [ $retry_count -lt $MAX_RETRIES ]; do
     if curl -sSf "$AUTHENTIK_URL/-/health/live/" > /dev/null 2>&1; then
-        sleep 5
         echo "✅ Authentik is up and running"
         break
     fi
@@ -48,17 +47,33 @@ if [ $retry_count -eq $MAX_RETRIES ]; then
 fi
 
 
-# Get authorization flow
-flow_response=$(curl -s -X GET "$AUTHENTIK_URL/api/v3/flows/instances/" \
-    -H "Authorization: Bearer $AUTHENTIK_ADMIN_TOKEN" \
-    -H "Content-Type: application/json")
+# Get authorization flow with retries
+echo "💡 Attempting to get authorization flow..."
+retry_count=0
+auth_flow_uuid=""
 
-auth_flow_uuid=$(echo "$flow_response" | jq -r '.results[] | select(.slug=="default-provider-authorization-implicit-consent") | .pk')
+while [ $retry_count -lt $MAX_RETRIES ]; do
+    flow_response=$(curl -s -X GET "$AUTHENTIK_URL/api/v3/flows/instances/" \
+        -H "Authorization: Bearer $AUTHENTIK_ADMIN_TOKEN" \
+        -H "Content-Type: application/json")
+    
+    auth_flow_uuid=$(echo "$flow_response" | jq -r '.results[] | select(.slug=="default-provider-authorization-implicit-consent") | .pk')
+    
+    if [ -n "$auth_flow_uuid" ] && [ "$auth_flow_uuid" != "null" ]; then
+        echo "✅ Found authorization flow with UUID: $auth_flow_uuid"
+        break
+    fi
+    
+    printf "⚠️  Authorization flow not found yet... Retrying (%d/%d)\n" "$((retry_count + 1))" "${MAX_RETRIES}"
+    sleep $RETRY_INTERVAL
+    retry_count=$((retry_count + 1))
+done
 
-if [ -z "$auth_flow_uuid" ]; then
-    echo "❌ Failed to get authorization flow UUID"
+if [ -z "$auth_flow_uuid" ] || [ "$auth_flow_uuid" = "null" ]; then
+    echo "❌ Failed to get authorization flow UUID after $MAX_RETRIES attempts"
     exit 1
 fi
+
 
 echo "✅ Found authorization flow"
 

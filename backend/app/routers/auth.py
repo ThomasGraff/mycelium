@@ -13,9 +13,9 @@ from ..schemas.auth.routes.me import MeResponse
 from ..schemas.auth.routes.register import RegisterInput, RegisterResponse
 from ..utils.auth import (
     create_access_token,
-    get_admin_token,
-    get_authentik_tokens,
     get_current_user_from_token,
+    get_current_user_token,
+    get_system_user_token,
 )
 from ..utils.config import settings
 from ..utils.logger import get_logger
@@ -64,8 +64,7 @@ async def register(user_data: RegisterInput) -> RegisterResponse:
         - 500 Internal Server Error: If there's an unexpected error during registration
     """
     try:
-        access_token, token_type = await get_admin_token()
-        print(access_token, token_type)
+        access_token, token_type = await get_system_user_token()
         async with httpx.AsyncClient() as client:
             request_data = user_data.model_dump(mode="json")
             response = await client.post(
@@ -77,32 +76,25 @@ async def register(user_data: RegisterInput) -> RegisterResponse:
                     "Content-Type": "application/json",
                 },
             )
+            response.raise_for_status()
+            logger.info(" ✅ User registered successfully")
+            return RegisterResponse(message=" ✅ User registered successfully")
 
-            if response.status_code != 201:
-                logger.error(f" ⚠️ Registration failed with response: {response.text}")
-
-            if response.status_code == 201:
-                logger.info(" ✅ User registered successfully")
-                return RegisterResponse(message=" ✅ User registered successfully")
-
-            error_detail = response.text
-            try:
-                error_json = response.json()
-                if isinstance(error_json, dict):
-                    error_detail = error_json.get("detail", error_json)
-            except json.JSONDecodeError:
-                logger.error(" ❌ Failed to parse error response as JSON")
-            except Exception as e:
-                logger.error(f" ❌ Error processing response: {str(e)}")
-
-            raise HTTPException(status_code=response.status_code, detail=f" ❌ Registration failed: {error_detail}")
-
-    except HTTPException:
-        raise
+    except httpx.HTTPStatusError as e:
+        logger.error(f" ❌ Registration failed: {e.response.text}")
+        error_detail = " ❌ Registration failed"
+        try:
+            error_json = e.response.json()
+            if isinstance(error_json, dict):
+                error_detail = f" ❌ Registration failed: {error_json.get('detail', str(e))}"
+        except json.JSONDecodeError:
+            error_detail = f" ❌ Registration failed: {e.response.text}"
+        raise HTTPException(status_code=e.response.status_code, detail=error_detail)
     except Exception as e:
         logger.error(f" ❌ Unexpected registration error: {str(e)}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f" ❌ Registration error: {str(e)}"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=" ❌ Registration failed: Internal server error",
         )
 
 
@@ -139,10 +131,8 @@ async def login(response: Response, user_data: LoginInput) -> LoginResponse:
     :raises HTTPException: If authentication fails
     """
     try:
-        # Get tokens from Authentik
-        auth_result = await get_authentik_tokens(user_data.username, user_data.password, user_data.mfa_code)
+        auth_result = await get_current_user_token(user_data.username, user_data.password, user_data.mfa_code)
 
-        # Create our own access token that includes user info
         access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = create_access_token(
             data={
@@ -153,15 +143,14 @@ async def login(response: Response, user_data: LoginInput) -> LoginResponse:
             expires_delta=access_token_expires,
         )
 
-        # Set secure cookie with access token
         response.set_cookie(
             key="access_token",
             value=f"Bearer {access_token}",
-            httponly=True,  # Prevents JavaScript access
-            secure=True,  # Only sent over HTTPS
-            samesite="lax",  # Protects against CSRF
+            httponly=True,
+            secure=True,
+            samesite="lax",
             max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-            path="/",  # Available across all paths
+            path="/",
         )
 
         return LoginResponse(
@@ -169,10 +158,23 @@ async def login(response: Response, user_data: LoginInput) -> LoginResponse:
             token_type="bearer",
             expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
         )
-    except HTTPException:
-        raise
+
+    except httpx.HTTPStatusError as e:
+        logger.error(f" ❌ Authentication failed: {e.response.text}")
+        error_detail = " ❌ Invalid username or password"
+        if e.response.status_code != 401:
+            try:
+                error_json = e.response.json()
+                error_detail = f" ❌ Authentication failed: {error_json.get('detail', str(e))}"
+            except json.JSONDecodeError:
+                error_detail = f" ❌ Authentication failed: {e.response.text}"
+        raise HTTPException(status_code=e.response.status_code, detail=error_detail)
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f" ❌ Login failed: {str(e)}")
+        logger.error(f" ❌ Unexpected authentication error: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=" ❌ Authentication failed: Internal server error",
+        )
 
 
 @router.post(
