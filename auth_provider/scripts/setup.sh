@@ -119,7 +119,13 @@ if [ -z "$provider_id" ] || [ "$provider_id" = "null" ]; then
             \"sub_mode\": \"hashed_user_id\",
             \"issuer_mode\": \"global\",
             \"redirect_uris\": [],
-            \"property_mappings\": $scope_mappings_json
+            \"property_mappings\": $scope_mappings_json,
+            \"token_validity\": \"minutes=10\",
+            \"grant_types\": [
+                \"client_credentials\",
+                \"authorization_code\",
+                \"refresh_token\"
+            ]
         }")
     provider_id=$(echo "$provider_response" | jq -r '.pk')
     if [ -z "$provider_id" ] || [ "$provider_id" = "null" ]; then
@@ -308,12 +314,6 @@ else
     done
     echo "✅ Added $count system user(s) to group '$GROUP_NAME'"
 fi
-
-# Save credentials
-echo "{
-  \"client_id\": \"$client_id\",
-  \"client_secret\": \"$client_secret\"
-}" > .oauth_creds.json
 
 echo "✅ Setup complete!"
 echo "📋 OAuth credentials have been saved to .oauth_creds.json" 
