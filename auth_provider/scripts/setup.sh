@@ -315,5 +315,11 @@ else
     echo "✅ Added $count system user(s) to group '$GROUP_NAME'"
 fi
 
+# Save credentials
+echo "{
+  \"client_id\": \"$client_id\",
+  \"client_secret\": \"$client_secret\"
+}" > .oauth_creds.json
+
 echo "✅ Setup complete!"
 echo "📋 OAuth credentials have been saved to .oauth_creds.json" 
