@@ -25,8 +25,8 @@ export default defineComponent({
 
     onMounted(async () => {
       try {
-        await auth.getCurrentUser()
-        isAuthenticated.value = auth.isAuthenticated
+        //await auth.getCurrentUser()
+        //isAuthenticated.value = auth.isAuthenticated
       } catch (error) {
         console.error('❌ Failed to get user:', error)
       }
