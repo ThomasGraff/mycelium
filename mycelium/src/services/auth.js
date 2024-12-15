@@ -5,14 +5,66 @@ class AuthService {
     this.isAuthenticated = false;
     this.user = null;
     this.isInitialized = false;
+    this.publicPaths = ['/register', '/login', '/auth/register', '/auth/login', '/auth/refresh'];
+    this.isRefreshing = false;
+    this.failedQueue = [];
     
     // Add axios interceptor for handling 401 responses
     axios.interceptors.response.use(
       (response) => response,
       async (error) => {
         if (error.response?.status === 401) {
-          this.isAuthenticated = false;
-          this.user = null;
+          // Don't try to refresh token for public paths
+          const isPublicPath = this.publicPaths.some(path => 
+            error.config.url.includes(path)
+          );
+          
+          if (isPublicPath) {
+            return Promise.reject(error);
+          }
+          
+          // Try to refresh token if available
+          try {
+            // If already refreshing, queue the request
+            if (this.isRefreshing) {
+              return new Promise((resolve, reject) => {
+                this.failedQueue.push({ resolve, reject });
+              })
+                .then(token => {
+                  error.config.headers['Authorization'] = 'Bearer ' + token;
+                  return axios(error.config);
+                })
+                .catch(err => {
+                  return Promise.reject(err);
+                });
+            }
+
+            this.isRefreshing = true;
+            const response = await this.refreshToken();
+            this.isRefreshing = false;
+
+            // Process queued requests
+            this.failedQueue.forEach(prom => {
+              prom.resolve(response.access_token);
+            });
+            this.failedQueue = [];
+
+            // Retry the original request
+            error.config.headers['Authorization'] = 'Bearer ' + response.access_token;
+            return axios(error.config);
+          } catch (refreshError) {
+            this.isAuthenticated = false;
+            this.user = null;
+            this.isRefreshing = false;
+            
+            // Reject all queued requests
+            this.failedQueue.forEach(prom => {
+              prom.reject(refreshError);
+            });
+            this.failedQueue = [];
+
+            throw error;
+          }
         }
         return Promise.reject(error);
       }
@@ -28,7 +80,15 @@ class AuthService {
     }
 
     try {
-      await this.getCurrentUser();
+      // Only try to get current user if we're not on a public path
+      const currentPath = window.location.pathname;
+      const isPublicPath = this.publicPaths.some(path => 
+        currentPath.includes(path)
+      );
+      
+      if (!isPublicPath) {
+        await this.getCurrentUser();
+      }
     } catch (error) {
       // Silently handle initialization error
       this.isAuthenticated = false;
@@ -51,8 +111,10 @@ class AuthService {
       
       return response.data;
     } catch (error) {
-      console.error(' ❌ Login failed:', error);
-      throw error;
+      const errorMessage = error.response?.data?.detail || ' ❌ Login failed';
+      console.error(errorMessage);
+      // Rethrow with the error message from the backend
+      throw new Error(errorMessage);
     }
   }
 
@@ -88,6 +150,16 @@ class AuthService {
     } catch (error) {
       this.isAuthenticated = false;
       this.user = null;
+      throw error;
+    }
+  }
+
+  async refreshToken() {
+    try {
+      const response = await axios.post('/api/auth/refresh');
+      return response.data;
+    } catch (error) {
+      console.error(' ❌ Token refresh failed:', error);
       throw error;
     }
   }

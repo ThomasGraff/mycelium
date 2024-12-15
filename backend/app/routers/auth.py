@@ -1,31 +1,19 @@
-import json
-from datetime import timedelta
-from typing import Any, Dict
+"""Authentication router."""
 
-import httpx
-from fastapi import APIRouter, Depends, HTTPException, Response, status
-from fastapi.security import HTTPBearer
-from passlib.context import CryptContext
+from typing import Any, Dict, Optional
 
+from fastapi import APIRouter, Cookie, Depends, HTTPException, Response, status
+
+from ..auth import authenticate_user, get_current_user_from_token, register_user
+from ..auth.providers.authentik import AuthentikProvider
+from ..auth.utils.cookies import clear_auth_cookies, set_auth_cookies
 from ..schemas.auth.routes.login import LoginInput, LoginResponse
 from ..schemas.auth.routes.logout import LogoutResponse
 from ..schemas.auth.routes.me import MeResponse
 from ..schemas.auth.routes.register import RegisterInput, RegisterResponse
-from ..utils.auth import (
-    create_access_token,
-    get_admin_token,
-    get_authentik_tokens,
-    get_current_user_from_token,
-)
-from ..utils.config import settings
 from ..utils.logger import get_logger
 
 router = APIRouter(tags=["Auth"])
-
-# Password hashing
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-security = HTTPBearer()
-
 logger = get_logger(__name__)
 
 
@@ -55,7 +43,7 @@ async def register(user_data: RegisterInput) -> RegisterResponse:
     Registers a new user in Authentik.
 
     This endpoint accepts user registration data and creates a new user account
-    in the Authentik authentication system using an API token.
+    in the Authentik authentication system.
 
     :param RegisterInput user_data: The user registration information
     :return RegisterResponse: Success message
@@ -64,44 +52,15 @@ async def register(user_data: RegisterInput) -> RegisterResponse:
         - 500 Internal Server Error: If there's an unexpected error during registration
     """
     try:
-        access_token, token_type = await get_admin_token()
-        async with httpx.AsyncClient() as client:
-            request_data = user_data.model_dump(mode="json")
-            response = await client.post(
-                f"{settings.AUTHENTIK_URL}/api/v3/core/users/",
-                json=request_data,
-                headers={
-                    "Authorization": f"{token_type} {access_token}",
-                    "Accept": "application/json",
-                    "Content-Type": "application/json",
-                },
-            )
-
-            if response.status_code != 201:
-                logger.error(f" ⚠️ Registration failed with response: {response.text}")
-
-            if response.status_code == 201:
-                logger.info(" ✅ User registered successfully")
-                return RegisterResponse(message=" ✅ User registered successfully")
-
-            error_detail = response.text
-            try:
-                error_json = response.json()
-                if isinstance(error_json, dict):
-                    error_detail = error_json.get("detail", error_json)
-            except json.JSONDecodeError:
-                logger.error(" ❌ Failed to parse error response as JSON")
-            except Exception as e:
-                logger.error(f" ❌ Error processing response: {str(e)}")
-
-            raise HTTPException(status_code=response.status_code, detail=f" ❌ Registration failed: {error_detail}")
-
+        await register_user(user_data.model_dump(mode="json"))
+        return RegisterResponse(message=" ✅ User registered successfully")
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f" ❌ Unexpected registration error: {str(e)}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f" ❌ Registration error: {str(e)}"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=" ❌ Registration failed: Internal server error",
         )
 
 
@@ -110,7 +69,7 @@ async def register(user_data: RegisterInput) -> RegisterResponse:
     response_model=LoginResponse,
     status_code=status.HTTP_200_OK,
     summary="Login user",
-    description="Authenticates a user against Authentik and returns access tokens.",
+    description="Authenticates a user using Authentik's authentication flow and returns access tokens.",
     response_description="Successfully authenticated user",
     responses={
         200: {
@@ -130,7 +89,7 @@ async def register(user_data: RegisterInput) -> RegisterResponse:
 )
 async def login(response: Response, user_data: LoginInput) -> LoginResponse:
     """
-    Authenticates a user against Authentik and returns access tokens.
+    Authenticates a user using Authentik's authentication flow and returns access tokens.
 
     :param Response response: FastAPI response object for setting cookies
     :param LoginInput user_data: The user credentials for authentication
@@ -138,40 +97,21 @@ async def login(response: Response, user_data: LoginInput) -> LoginResponse:
     :raises HTTPException: If authentication fails
     """
     try:
-        # Get tokens from Authentik
-        auth_result = await get_authentik_tokens(user_data.username, user_data.password, user_data.mfa_code)
-
-        # Create our own access token that includes user info
-        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-        access_token = create_access_token(
-            data={
-                "sub": user_data.username,
-                "authentik_token": auth_result["access_token"],
-                "scope": auth_result.get("scope", ""),
-            },
-            expires_delta=access_token_expires,
-        )
-
-        # Set secure cookie with access token
-        response.set_cookie(
-            key="access_token",
-            value=f"Bearer {access_token}",
-            httponly=True,  # Prevents JavaScript access
-            secure=True,  # Only sent over HTTPS
-            samesite="lax",  # Protects against CSRF
-            max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-            path="/",  # Available across all paths
-        )
-
+        auth_result = await authenticate_user(user_data.username, user_data.password, user_data.mfa_code)
+        set_auth_cookies(response, auth_result)
         return LoginResponse(
-            access_token=access_token,
+            access_token=auth_result["access_token"],
             token_type="bearer",
-            expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+            expires_in=3600,  # 1 hour, matching Authentik's default
         )
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f" ❌ Login failed: {str(e)}")
+        logger.error(f" ❌ Unexpected login error: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f" ❌ Login failed: {str(e)}",
+        )
 
 
 @router.post(
@@ -196,7 +136,7 @@ async def logout(response: Response) -> LogoutResponse:
     :param Response response: FastAPI response object for clearing cookies
     :return LogoutResponse: Success message
     """
-    response.delete_cookie("access_token")
+    clear_auth_cookies(response)
     return LogoutResponse(message=" ✅ Logged out successfully")
 
 
@@ -224,9 +164,59 @@ async def get_current_user(user: Dict[str, Any] = Depends(get_current_user_from_
     This endpoint extracts user information from the access token
     in the request cookies.
 
-    :param Request request: FastAPI request object containing cookies
+    :param Dict[str, Any] user: Current user information from token
     :return MeResponse: Current user information
     :raises HTTPException:
         - 401 Unauthorized: If user is not authenticated or token is invalid
     """
     return MeResponse(user=user)
+
+
+@router.post(
+    "/refresh",
+    response_model=LoginResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Refresh access token",
+    description="Refreshes the access token using the refresh token cookie.",
+    response_description="Successfully refreshed access token",
+    responses={
+        200: {
+            "content": {
+                "application/json": {"example": {"access_token": "token", "token_type": "bearer", "expires_in": 1800}}
+            },
+        },
+        401: {
+            "description": "Invalid refresh token",
+            "content": {"application/json": {"example": {"detail": " ❌ Invalid refresh token"}}},
+        },
+    },
+)
+async def refresh_token(
+    response: Response,
+    refresh_token: Optional[str] = Cookie(None),
+) -> LoginResponse:
+    """Refresh the access token using the refresh token cookie."""
+    if not refresh_token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=" ❌ No refresh token provided",
+        )
+
+    try:
+        provider = AuthentikProvider()
+        auth_result = await provider.get_oauth_token(
+            grant_type="refresh_token",
+            refresh_token=refresh_token,
+        )
+        set_auth_cookies(response, auth_result)
+        return LoginResponse(
+            access_token=auth_result["access_token"],
+            token_type="bearer",
+            expires_in=3600,
+        )
+    except Exception as e:
+        logger.error(f" ❌ Token refresh failed: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=" ❌ Invalid refresh token",
+        )
