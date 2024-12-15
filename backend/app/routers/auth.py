@@ -1,31 +1,18 @@
-import json
-from datetime import timedelta
+"""Authentication router."""
+
 from typing import Any, Dict
 
-import httpx
 from fastapi import APIRouter, Depends, HTTPException, Response, status
-from fastapi.security import HTTPBearer
-from passlib.context import CryptContext
 
+from ..auth import authenticate_user, get_current_user_from_token, register_user
+from ..auth.utils.cookies import clear_auth_cookies, set_auth_cookies
 from ..schemas.auth.routes.login import LoginInput, LoginResponse
 from ..schemas.auth.routes.logout import LogoutResponse
 from ..schemas.auth.routes.me import MeResponse
 from ..schemas.auth.routes.register import RegisterInput, RegisterResponse
-from ..utils.auth import (
-    create_access_token,
-    get_current_user_from_token,
-    get_current_user_token,
-    get_system_user_token,
-)
-from ..utils.config import settings
 from ..utils.logger import get_logger
 
 router = APIRouter(tags=["Auth"])
-
-# Password hashing
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-security = HTTPBearer()
-
 logger = get_logger(__name__)
 
 
@@ -55,7 +42,7 @@ async def register(user_data: RegisterInput) -> RegisterResponse:
     Registers a new user in Authentik.
 
     This endpoint accepts user registration data and creates a new user account
-    in the Authentik authentication system using an API token.
+    in the Authentik authentication system.
 
     :param RegisterInput user_data: The user registration information
     :return RegisterResponse: Success message
@@ -64,32 +51,10 @@ async def register(user_data: RegisterInput) -> RegisterResponse:
         - 500 Internal Server Error: If there's an unexpected error during registration
     """
     try:
-        access_token, token_type = await get_system_user_token()
-        async with httpx.AsyncClient() as client:
-            request_data = user_data.model_dump(mode="json")
-            response = await client.post(
-                f"{settings.AUTHENTIK_URL}/api/v3/core/users/",
-                json=request_data,
-                headers={
-                    "Authorization": f"{token_type} {access_token}",
-                    "Accept": "application/json",
-                    "Content-Type": "application/json",
-                },
-            )
-            response.raise_for_status()
-            logger.info(" ✅ User registered successfully")
-            return RegisterResponse(message=" ✅ User registered successfully")
-
-    except httpx.HTTPStatusError as e:
-        logger.error(f" ❌ Registration failed: {e.response.text}")
-        error_detail = " ❌ Registration failed"
-        try:
-            error_json = e.response.json()
-            if isinstance(error_json, dict):
-                error_detail = f" ❌ Registration failed: {error_json.get('detail', str(e))}"
-        except json.JSONDecodeError:
-            error_detail = f" ❌ Registration failed: {e.response.text}"
-        raise HTTPException(status_code=e.response.status_code, detail=error_detail)
+        await register_user(user_data.model_dump(mode="json"))
+        return RegisterResponse(message=" ✅ User registered successfully")
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f" ❌ Unexpected registration error: {str(e)}")
         raise HTTPException(
@@ -103,7 +68,7 @@ async def register(user_data: RegisterInput) -> RegisterResponse:
     response_model=LoginResponse,
     status_code=status.HTTP_200_OK,
     summary="Login user",
-    description="Authenticates a user against Authentik and returns access tokens.",
+    description="Authenticates a user using Authentik's authentication flow and returns access tokens.",
     response_description="Successfully authenticated user",
     responses={
         200: {
@@ -123,7 +88,7 @@ async def register(user_data: RegisterInput) -> RegisterResponse:
 )
 async def login(response: Response, user_data: LoginInput) -> LoginResponse:
     """
-    Authenticates a user against Authentik and returns access tokens.
+    Authenticates a user using Authentik's authentication flow and returns access tokens.
 
     :param Response response: FastAPI response object for setting cookies
     :param LoginInput user_data: The user credentials for authentication
@@ -131,49 +96,20 @@ async def login(response: Response, user_data: LoginInput) -> LoginResponse:
     :raises HTTPException: If authentication fails
     """
     try:
-        auth_result = await get_current_user_token(user_data.username, user_data.password, user_data.mfa_code)
-
-        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-        access_token = create_access_token(
-            data={
-                "sub": user_data.username,
-                "authentik_token": auth_result["access_token"],
-                "scope": auth_result.get("scope", ""),
-            },
-            expires_delta=access_token_expires,
-        )
-
-        response.set_cookie(
-            key="access_token",
-            value=f"Bearer {access_token}",
-            httponly=True,
-            secure=True,
-            samesite="lax",
-            max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-            path="/",
-        )
-
+        auth_result = await authenticate_user(user_data.username, user_data.password, user_data.mfa_code)
+        set_auth_cookies(response, auth_result)
         return LoginResponse(
-            access_token=access_token,
+            access_token=auth_result["access_token"],
             token_type="bearer",
-            expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+            expires_in=3600,  # 1 hour, matching Authentik's default
         )
-
-    except httpx.HTTPStatusError as e:
-        logger.error(f" ❌ Authentication failed: {e.response.text}")
-        error_detail = " ❌ Invalid username or password"
-        if e.response.status_code != 401:
-            try:
-                error_json = e.response.json()
-                error_detail = f" ❌ Authentication failed: {error_json.get('detail', str(e))}"
-            except json.JSONDecodeError:
-                error_detail = f" ❌ Authentication failed: {e.response.text}"
-        raise HTTPException(status_code=e.response.status_code, detail=error_detail)
+    except HTTPException:
+        raise
     except Exception as e:
-        logger.error(f" ❌ Unexpected authentication error: {str(e)}")
+        logger.error(f" ❌ Unexpected login error: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=" ❌ Authentication failed: Internal server error",
+            detail=f" ❌ Login failed: {str(e)}",
         )
 
 
@@ -199,7 +135,7 @@ async def logout(response: Response) -> LogoutResponse:
     :param Response response: FastAPI response object for clearing cookies
     :return LogoutResponse: Success message
     """
-    response.delete_cookie("access_token")
+    clear_auth_cookies(response)
     return LogoutResponse(message=" ✅ Logged out successfully")
 
 
@@ -227,7 +163,7 @@ async def get_current_user(user: Dict[str, Any] = Depends(get_current_user_from_
     This endpoint extracts user information from the access token
     in the request cookies.
 
-    :param Request request: FastAPI request object containing cookies
+    :param Dict[str, Any] user: Current user information from token
     :return MeResponse: Current user information
     :raises HTTPException:
         - 401 Unauthorized: If user is not authenticated or token is invalid
