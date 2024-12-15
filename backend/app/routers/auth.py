@@ -1,10 +1,11 @@
 """Authentication router."""
 
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Cookie, Depends, HTTPException, Response, status
 
 from ..auth import authenticate_user, get_current_user_from_token, register_user
+from ..auth.providers.authentik import AuthentikProvider
 from ..auth.utils.cookies import clear_auth_cookies, set_auth_cookies
 from ..schemas.auth.routes.login import LoginInput, LoginResponse
 from ..schemas.auth.routes.logout import LogoutResponse
@@ -169,3 +170,53 @@ async def get_current_user(user: Dict[str, Any] = Depends(get_current_user_from_
         - 401 Unauthorized: If user is not authenticated or token is invalid
     """
     return MeResponse(user=user)
+
+
+@router.post(
+    "/refresh",
+    response_model=LoginResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Refresh access token",
+    description="Refreshes the access token using the refresh token cookie.",
+    response_description="Successfully refreshed access token",
+    responses={
+        200: {
+            "content": {
+                "application/json": {"example": {"access_token": "token", "token_type": "bearer", "expires_in": 1800}}
+            },
+        },
+        401: {
+            "description": "Invalid refresh token",
+            "content": {"application/json": {"example": {"detail": " ❌ Invalid refresh token"}}},
+        },
+    },
+)
+async def refresh_token(
+    response: Response,
+    refresh_token: Optional[str] = Cookie(None),
+) -> LoginResponse:
+    """Refresh the access token using the refresh token cookie."""
+    if not refresh_token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=" ❌ No refresh token provided",
+        )
+
+    try:
+        provider = AuthentikProvider()
+        auth_result = await provider.get_oauth_token(
+            grant_type="refresh_token",
+            refresh_token=refresh_token,
+        )
+        set_auth_cookies(response, auth_result)
+        return LoginResponse(
+            access_token=auth_result["access_token"],
+            token_type="bearer",
+            expires_in=3600,
+        )
+    except Exception as e:
+        logger.error(f" ❌ Token refresh failed: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=" ❌ Invalid refresh token",
+        )
