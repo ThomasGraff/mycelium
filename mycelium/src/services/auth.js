@@ -80,7 +80,6 @@ class AuthService {
 
   async getCurrentUser() {
     try {
-      // The cookie will be automatically included in the request
       const response = await axios.get('/api/auth/me');
       this.user = response.data.user;
       this.isAuthenticated = true;
